@@ -374,6 +374,48 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 573838098}
   m_GameObject: {fileID: 190899524}
+--- !u!1 &307887583
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 307887584}
+  - 61: {fileID: 307887585}
+  m_Layer: 0
+  m_Name: Deleter
+  m_TagString: Deleter
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &307887584
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 307887583}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 433473362}
+  m_RootOrder: 5
+--- !u!61 &307887585
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 307887583}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_Offset: {x: -1, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 10}
 --- !u!1001 &433473356
 Prefab:
   m_ObjectHideFlags: 0
@@ -452,7 +494,11 @@ Transform:
 Transform:
   m_PrefabParentObject: {fileID: 468344, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
   m_PrefabInternal: {fileID: 433473356}
---- !u!1 &457132615
+--- !u!4 &433473362 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 439202, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+  m_PrefabInternal: {fileID: 433473356}
+--- !u!1 &518580225
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 194162, guid: b5944dc7a451d6f4f9dc104ca713c05b, type: 2}
@@ -884,6 +930,19 @@ Prefab:
       propertyPath: rails.Array.data[4]
       value: 
       objectReference: {fileID: 433473357}
+    - target: {fileID: 136982, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: obstaclePrefab
+      value: 
+      objectReference: {fileID: 11408318, guid: 5f8607846f7b69d44a00bf043f3814e2,
+        type: 2}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: speed
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
   m_IsPrefabParent: 0
@@ -1067,7 +1126,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
