@@ -48,6 +48,10 @@ public class GameManager : MonoBehaviour {
 				player.transform.position = rails [targetRail].position;
 				currentRail = targetRail;
 			}
+			if (Input.GetButtonDown ("Swap"))
+			{
+				player.GetComponent<PlayerController> ().SwapColor ();
+			}
 		}
 
 	}
