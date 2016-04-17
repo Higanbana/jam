@@ -27,6 +27,11 @@ public class GameManager : MonoBehaviour {
 		player = Instantiate (playerPrefab, rails[currentRail].position, Quaternion.identity) as GameObject;
 	}
 
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
 	// Update is called once per frame
 	void Update () 
 	{
