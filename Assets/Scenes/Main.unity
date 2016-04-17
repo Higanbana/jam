@@ -264,11 +264,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 439202, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -2.1743882
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 439202, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 4.0296
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 439202, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
       propertyPath: m_LocalPosition.z
@@ -294,9 +294,45 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 468344, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 481970, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 451208, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 470310, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
   m_IsPrefabParent: 0
+--- !u!4 &433473357 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 470310, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+  m_PrefabInternal: {fileID: 433473356}
+--- !u!4 &433473358 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 451208, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+  m_PrefabInternal: {fileID: 433473356}
+--- !u!4 &433473359 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 447028, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+  m_PrefabInternal: {fileID: 433473356}
+--- !u!4 &433473360 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 481970, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+  m_PrefabInternal: {fileID: 433473356}
+--- !u!4 &433473361 stripped
+Transform:
+  m_PrefabParentObject: {fileID: 468344, guid: 48bde26166185764982f06c6caebd3ff, type: 2}
+  m_PrefabInternal: {fileID: 433473356}
 --- !u!1 &518580225
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,13 +582,17 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: rails.Array.size
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 486674, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -2.1743882
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 486674, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 4.0296
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 486674, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
       propertyPath: m_LocalPosition.z
@@ -578,6 +618,26 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: rails.Array.data[0]
+      value: 
+      objectReference: {fileID: 433473361}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: rails.Array.data[1]
+      value: 
+      objectReference: {fileID: 433473360}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: rails.Array.data[2]
+      value: 
+      objectReference: {fileID: 433473359}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: rails.Array.data[3]
+      value: 
+      objectReference: {fileID: 433473358}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: rails.Array.data[4]
+      value: 
+      objectReference: {fileID: 433473357}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
   m_IsPrefabParent: 0
