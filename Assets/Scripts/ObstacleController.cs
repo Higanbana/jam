@@ -9,9 +9,8 @@ public class ObstacleController : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void Setup(float height, float length, Vector2 position, float speed)
+    public void Setup(float height, float length, float speed)
     {
-        transform.position = position;
         Vector3 scale = transform.localScale;
         scale.x = length;
         scale.y = height;
@@ -19,5 +18,11 @@ public class ObstacleController : MonoBehaviour {
         rb.velocity = Vector3.left * speed;
     }
 
-
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Deleter"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

@@ -441,6 +441,15 @@ Prefab:
       propertyPath: rails.Array.data[4]
       value: 
       objectReference: {fileID: 433473357}
+    - target: {fileID: 136982, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11457298, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
+      propertyPath: obstaclePrefab
+      value: 
+      objectReference: {fileID: 11408318, guid: 5f8607846f7b69d44a00bf043f3814e2,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0697b08181a5d9e4592ecb0e05920957, type: 2}
   m_IsPrefabParent: 0
@@ -639,7 +648,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0.019607844}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
