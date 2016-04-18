@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
     public int gameState = (int) GameState.GameOff; // -1 = not started, 0 = started, 1 = paused
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
+    public float testStartTime;
 
     enum GameState { GameOn, GamePaused, GameOff};
 
@@ -27,10 +28,30 @@ public class GameManager : MonoBehaviour {
 
 	public void StartGame()
 	{
-		player.SetActive(true);
+        if (testStartTime == 0)
+        {
+            player.SetActive(true);
+            spawner.SetActive(true);
+            setPauseState((int)GameState.GameOn);
+            SoundManager.instance.ChangeBackgroundMusic(2);
+        }
+        else
+        {
+            StartGameAtTime(testStartTime);
+        }
+		
+    }
+
+    public void StartGameAtTime(float time)
+    {
+        player.SetActive(true);
         spawner.SetActive(true);
         setPauseState((int)GameState.GameOn);
         SoundManager.instance.ChangeBackgroundMusic(2);
+        SoundManager.instance.setMusicAtTime(time);
+        SpawnerController controller = spawner.GetComponent<SpawnerController>();
+        controller.setTime(time);
+
     }
 
     public void QuitGame()

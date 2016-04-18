@@ -2780,6 +2780,7 @@ MonoBehaviour:
   gameState: 2
   pauseCanvas: {fileID: 1011122825}
   gameOverCanvas: {fileID: 1886352094}
+  testStartTime: 15.5
 --- !u!4 &2082912470
 Transform:
   m_ObjectHideFlags: 0

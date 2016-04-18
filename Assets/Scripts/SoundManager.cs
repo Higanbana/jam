@@ -34,5 +34,10 @@ public class SoundManager : MonoBehaviour {
         musicSource.clip = musicClips[musicIndex];
         musicSource.Play();
     }
+
+    public void setMusicAtTime(float time)
+    {
+        musicSource.PlayScheduled(time);
+    }
 	
 }

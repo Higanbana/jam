@@ -41,7 +41,18 @@ public class SpawnerController : MonoBehaviour {
         spawnParameters[1] = new SpawnParameters(1f, 1, 4f);
         spawnParameters[2] = new SpawnParameters(7f, 3, 6f);
     }
-	
+
+    public void setTime(float newTime)
+    {
+        time = newTime;
+        int newIndex = 0;
+        while (newIndex < spawnParameters.Length && spawnParameters[newIndex].spawnTime <= time)
+        {
+            newIndex++;
+        }
+        spawnIndex = newIndex;
+    }	
+
 	// Update is called once per frame
 	void Update ()
     {
