@@ -998,6 +998,7 @@ MonoBehaviour:
   - {fileID: 321028247}
   - {fileID: 1242334326}
   maxRailNumber: 3
+  dieSound: {fileID: 8300000, guid: d3379c4170dd3d44289d7ab965e71e27, type: 3}
 --- !u!58 &1090049517
 CircleCollider2D:
   m_ObjectHideFlags: 0

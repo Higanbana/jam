@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
     private bool collided = false;
     private bool goUp = false;
     private bool goDown = false;
+    public AudioClip dieSound;
 
 	// Use this for initialization
 	void Awake ()
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour {
 	void FixedUpdate () {
 	    if(!collided && spriteRenderer.color == Color.white)
         {
-            Destroy(gameObject);
+            PlayerDie();
         }
         if (goUp)
         {
@@ -86,9 +87,15 @@ public class PlayerController : MonoBehaviour {
                 Vector2 right = transform.position + circleCollider.radius * Vector3.right;
                 if (box.OverlapPoint(left) && box.OverlapPoint(right))
                 {
-                    Destroy(gameObject);
+                    PlayerDie();
                 }
             }
         }
+    }
+
+    void PlayerDie()
+    {
+        Destroy(gameObject);
+        SoundManager.instance.PlaySound(dieSound);
     }
 }
