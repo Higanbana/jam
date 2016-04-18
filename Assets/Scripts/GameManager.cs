@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour {
 	{
 		player.SetActive(true);
         spawner.SetActive(true);
-        setPauseState(0);
+        setPauseState((int)GameState.GameOn);
         SoundManager.instance.ChangeBackgroundMusic(2);
     }
 
@@ -44,9 +44,16 @@ public class GameManager : MonoBehaviour {
         gameOverCanvas.SetActive(true);
     }
 
+    public void RestartGame()
+    {
+        EndGame();
+        StartGame();
+    }
+
     void EndGame()
     {
         setPauseState((int)GameState.GameOff);
+        spawner.SetActive(false);
 
         //Hide Player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -81,6 +88,18 @@ public class GameManager : MonoBehaviour {
         }
 
 
+    }
+
+    public bool isPaused()
+    {
+        if (gameState == (int) GameState.GamePaused)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void setPauseState(int pauseState)

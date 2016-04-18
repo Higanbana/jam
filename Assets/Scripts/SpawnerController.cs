@@ -49,6 +49,12 @@ public class SpawnerController : MonoBehaviour {
         LoadLevels();
     }
 
+    void OnEnable()
+    {
+        spawnIndex = 0;
+        time = 0f;
+    }
+
     void LoadLevels ()
     {
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
