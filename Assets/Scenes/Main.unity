@@ -847,7 +847,7 @@ MonoBehaviour:
   - {fileID: 624954911}
   - {fileID: 321028247}
   - {fileID: 1242334326}
-  speed: 3
+  speed: 6
   time: 0
 --- !u!4 &420866086
 Transform:
@@ -2460,7 +2460,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1090049515}
   spawner: {fileID: 420866084}
-  gamePaused: 1
+  gameState: 2
   pauseCanvas: {fileID: 1011122825}
   gameOverCanvas: {fileID: 1886352094}
 --- !u!4 &2082912470
