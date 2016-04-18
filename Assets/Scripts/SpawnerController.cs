@@ -78,6 +78,10 @@ public class SpawnerController : MonoBehaviour {
 
                     levelParameters[lineIndex] = new SpawnParameters(spawnTime, railIndex, railLength);
                 }
+                else
+                {
+                    levelParameters[lineIndex] = new SpawnParameters(0f, 2, 0f);
+                }
             }
 
             levels[levelIndex] = new Level(levelParameters);
