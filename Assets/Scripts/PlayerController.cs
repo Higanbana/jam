@@ -11,6 +11,15 @@ public class PlayerController : MonoBehaviour {
     private bool goUp = false;
     private bool goDown = false;
     public AudioClip dieSound;
+	private Color color;
+
+	public int segments;
+	private float radius = 1;
+	private float alpha = 1f;
+	public float radiusIncrement;
+	public float pulseInterval;
+	private float pulseCooldown = 0f;
+	LineRenderer line;
 
 	// Use this for initialization
 	void OnEnable ()
@@ -18,8 +27,14 @@ public class PlayerController : MonoBehaviour {
         currentRail = 2;
         transform.position = rails[currentRail].position;
 		spriteRenderer = GetComponent<SpriteRenderer> ();
-        circleCollider = GetComponent<CircleCollider2D> ();
-		spriteRenderer.color = Color.black;
+		circleCollider = GetComponent<CircleCollider2D> ();
+		color = Color.black;
+		spriteRenderer.color = color;
+
+		line = GetComponent<LineRenderer>();
+		line.SetVertexCount (segments + 1);
+		line.useWorldSpace = false;
+		DrawCircle ();
 	}
 	
 	void FixedUpdate () {
@@ -45,12 +60,13 @@ public class PlayerController : MonoBehaviour {
 
 	public void SwapColor ()
 	{
-		if (spriteRenderer.color == Color.black)
+		if (color == Color.black)
 		{
-			spriteRenderer.color = Color.white;
+			color = Color.white;
 		} else {
-			spriteRenderer.color = Color.black;
+			color = Color.black;
 		}
+		spriteRenderer.color = color;
 	}
 
     public void Update ()
@@ -71,6 +87,7 @@ public class PlayerController : MonoBehaviour {
             }
         }
         
+		DrawCircle ();
     }
 
     void SetRail (int railIndex)
@@ -98,11 +115,44 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    void PlayerDie()
-    {
-        gameObject.SetActive(false);
-        SoundManager.instance.PlaySound(dieSound);
-        GameManager.instance.GameOver();
-    }
+	void PlayerDie()
+	{
+		gameObject.SetActive(false);
+		SoundManager.instance.PlaySound(dieSound);
+		GameManager.instance.GameOver();
+	}
+
+	void DrawCircle()
+	{
+		float x;
+		float y;
+		float z = -1f;
+
+		Color c = color;
+		float angle = 0f;
+		alpha -= radiusIncrement/2.5f;
+		radius += radiusIncrement;
+
+		for (int i = 0; i < (segments + 1); i++)
+		{
+			x = Mathf.Sin (Mathf.Deg2Rad * angle);
+			y = Mathf.Cos (Mathf.Deg2Rad * angle);
+			line.SetPosition (i,new Vector3(x,y,z) * radius);
+			c.a = alpha;
+			line.SetColors (c, c);
+			angle += (360.25f / segments);
+		}
+
+		if (pulseCooldown <= 0)
+		{
+			radius = 1;
+			alpha = 1;
+			pulseCooldown = pulseInterval;
+		}
+		else
+		{
+			pulseCooldown -= Time.deltaTime;
+		}
+	}
 
 }
