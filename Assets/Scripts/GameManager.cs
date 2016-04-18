@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour {
 		player.SetActive(true);
         spawner.SetActive(true);
         setPauseState(0);
+        SoundManager.instance.ChangeBackgroundMusic(2);
     }
 
     public void QuitGame()
@@ -75,6 +76,7 @@ public class GameManager : MonoBehaviour {
             else if (gameState == (int)GameState.GamePaused)
             {
                 setPauseState((int)GameState.GameOn);
+                SoundManager.instance.musicSource.Play();
             }
             
         }
