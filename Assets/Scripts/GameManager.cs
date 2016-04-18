@@ -5,6 +5,8 @@ public class GameManager : MonoBehaviour {
 
     public GameObject player;
     public GameObject spawner;
+    public int gamePaused = -1; // -1 = not started, 0 = started, 1 = paused
+    public GameObject pauseCanvas;
 
 	public static GameManager instance = null;
 
@@ -24,10 +26,36 @@ public class GameManager : MonoBehaviour {
 	{
 		player.SetActive(true);
         spawner.SetActive(true);
+        gamePaused = 0;
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    void Update()
+    {
+        // Pause game with esc button
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (gamePaused == 0)
+            {
+                Time.timeScale = 0;
+                gamePaused = 1;
+                pauseCanvas.SetActive(true);
+
+            }
+
+            else if (gamePaused == 1)
+            {
+                Time.timeScale = 1;
+                gamePaused = 0;
+                pauseCanvas.SetActive(false);
+            }
+            
+        }
+
+
     }
 }

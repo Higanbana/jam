@@ -35,8 +35,4 @@ public class SoundManager : MonoBehaviour {
         musicSource.Play();
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
