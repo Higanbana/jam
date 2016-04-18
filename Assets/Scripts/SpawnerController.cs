@@ -31,9 +31,11 @@ public class SpawnerController : MonoBehaviour {
     public float time = 0.0f;
 
 	// Use this for initialization
-	void Awake ()
+	void OnEnable ()
     {
         //Test code
+        spawnIndex = 0;
+        time = 0;
         spawnParameters =  new SpawnParameters[3];
         spawnParameters[0] = new SpawnParameters(1f, 2, 3f);
         spawnParameters[1] = new SpawnParameters(1f, 1, 4f);

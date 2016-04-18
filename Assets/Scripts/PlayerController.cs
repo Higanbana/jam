@@ -5,7 +5,7 @@ public class PlayerController : MonoBehaviour {
 	private SpriteRenderer spriteRenderer;
     private CircleCollider2D circleCollider;
     public Transform[] rails;
-    private int currentRail = 2;
+    private int currentRail;
     public int maxRailNumber = 3;
     private bool collided = false;
     private bool goUp = false;
@@ -13,8 +13,9 @@ public class PlayerController : MonoBehaviour {
     public AudioClip dieSound;
 
 	// Use this for initialization
-	void Awake ()
+	void OnEnable ()
 	{
+        currentRail = 2;
         transform.position = rails[currentRail].position;
 		spriteRenderer = GetComponent<SpriteRenderer> ();
         circleCollider = GetComponent<CircleCollider2D> ();
@@ -54,18 +55,22 @@ public class PlayerController : MonoBehaviour {
 
     public void Update ()
     {
-        if (Input.GetButtonDown("Up"))
+        if (!GameManager.instance.isPaused())
         {
-            goUp = true;
+            if (Input.GetButtonDown("Up"))
+            {
+                goUp = true;
+            }
+            if (Input.GetButtonDown("Down"))
+            {
+                goDown = true;
+            }
+            if (Input.GetButtonDown("Swap"))
+            {
+                SwapColor();
+            }
         }
-        if (Input.GetButtonDown("Down"))
-        {
-            goDown = true;
-        }
-        if (Input.GetButtonDown("Swap"))
-        {
-            SwapColor();
-        }
+        
     }
 
     void SetRail (int railIndex)
@@ -99,4 +104,5 @@ public class PlayerController : MonoBehaviour {
         SoundManager.instance.PlaySound(dieSound);
         GameManager.instance.GameOver();
     }
+
 }
