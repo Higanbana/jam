@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour {
                 Time.timeScale = 0;
                 gamePaused = 1;
                 pauseCanvas.SetActive(true);
-
+                SoundManager.instance.musicSource.Pause();
             }
 
             else if (gamePaused == 1)
@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour {
                 Time.timeScale = 1;
                 gamePaused = 0;
                 pauseCanvas.SetActive(false);
+                SoundManager.instance.musicSource.Play();
             }
             
         }
