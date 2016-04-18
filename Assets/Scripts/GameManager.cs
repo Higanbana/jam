@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public GameObject spawner;
     public int gamePaused = -1; // -1 = not started, 0 = started, 1 = paused
     public GameObject pauseCanvas;
+    
 
 	public static GameManager instance = null;
 
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour {
 		player.SetActive(true);
         spawner.SetActive(true);
         gamePaused = 0;
+        SoundManager.instance.ChangeBackgroundMusic(2);
     }
 
     public void QuitGame()
