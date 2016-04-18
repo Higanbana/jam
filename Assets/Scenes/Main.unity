@@ -847,7 +847,7 @@ MonoBehaviour:
   - {fileID: 624954911}
   - {fileID: 321028247}
   - {fileID: 1242334326}
-  speed: 3
+  speed: 6
   time: 0
 --- !u!4 &420866086
 Transform:
