@@ -37,7 +37,8 @@ public class SoundManager : MonoBehaviour {
 
     public void setMusicAtTime(float time)
     {
-        musicSource.PlayScheduled(time);
+        //musicSource.PlayScheduled(time);
+        musicSource.time = time;
     }
 	
 }
