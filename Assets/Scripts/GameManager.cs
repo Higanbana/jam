@@ -76,7 +76,6 @@ public class GameManager : MonoBehaviour {
             else if (gameState == (int)GameState.GamePaused)
             {
                 setPauseState((int)GameState.GameOn);
-                SoundManager.instance.musicSource.Play();
             }
             
         }
@@ -91,6 +90,7 @@ public class GameManager : MonoBehaviour {
             Time.timeScale = 0;
             gameState = (int)GameState.GamePaused;
             pauseCanvas.SetActive(true);
+            SoundManager.instance.musicSource.Pause();
 
         }
 
@@ -99,13 +99,14 @@ public class GameManager : MonoBehaviour {
             Time.timeScale = 1;
             gameState = (int)GameState.GameOn;
             pauseCanvas.SetActive(false);
+            SoundManager.instance.musicSource.Play();
         }
         else
         {
             Time.timeScale = 0;
             gameState = (int)GameState.GameOff;
             pauseCanvas.SetActive(false);
-
+            SoundManager.instance.musicSource.Pause();
         }
 
     }
