@@ -5,8 +5,11 @@ public class GameManager : MonoBehaviour {
 
     public GameObject player;
     public GameObject spawner;
-    public int gamePaused = -1; // -1 = not started, 0 = started, 1 = paused
+    public int gameState = (int) GameState.GameOff; // -1 = not started, 0 = started, 1 = paused
     public GameObject pauseCanvas;
+    public GameObject gameOverCanvas;
+
+    enum GameState { GameOn, GamePaused, GameOff};
 
 	public static GameManager instance = null;
 
@@ -26,7 +29,7 @@ public class GameManager : MonoBehaviour {
 	{
 		player.SetActive(true);
         spawner.SetActive(true);
-        gamePaused = 0;
+        setPauseState(0);
     }
 
     public void QuitGame()
@@ -34,28 +37,74 @@ public class GameManager : MonoBehaviour {
         Application.Quit();
     }
 
+    public void GameOver()
+    {
+        EndGame();
+        gameOverCanvas.SetActive(true);
+    }
+
+    void EndGame()
+    {
+        setPauseState((int)GameState.GameOff);
+
+        //Hide Player
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            player.SetActive(false);
+        }
+
+        //Destroy every obstacle
+        GameObject[] names = GameObject.FindGameObjectsWithTag("Obstacle");
+ 
+        foreach (GameObject item in names)
+        {
+            Destroy(item);
+        }
+    }
+
     void Update()
     {
         // Pause game with esc button
         if (Input.GetButtonDown("Cancel"))
         {
-            if (gamePaused == 0)
+            if (gameState == (int)GameState.GameOn)
             {
-                Time.timeScale = 0;
-                gamePaused = 1;
-                pauseCanvas.SetActive(true);
-
+                setPauseState((int)GameState.GamePaused);
             }
-
-            else if (gamePaused == 1)
+            else if (gameState == (int)GameState.GamePaused)
             {
-                Time.timeScale = 1;
-                gamePaused = 0;
-                pauseCanvas.SetActive(false);
+                setPauseState((int)GameState.GameOn);
             }
             
         }
 
+
+    }
+
+    private void setPauseState(int pauseState)
+    {
+        if (pauseState == (int)GameState.GamePaused)
+        {
+            Time.timeScale = 0;
+            gameState = (int)GameState.GamePaused;
+            pauseCanvas.SetActive(true);
+
+        }
+
+        else if (pauseState == (int)GameState.GameOn)
+        {
+            Time.timeScale = 1;
+            gameState = (int)GameState.GameOn;
+            pauseCanvas.SetActive(false);
+        }
+        else
+        {
+            Time.timeScale = 0;
+            gameState = (int)GameState.GameOff;
+            pauseCanvas.SetActive(false);
+
+        }
 
     }
 }

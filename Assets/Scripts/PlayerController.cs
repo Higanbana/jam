@@ -95,7 +95,8 @@ public class PlayerController : MonoBehaviour {
 
     void PlayerDie()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
         SoundManager.instance.PlaySound(dieSound);
+        GameManager.instance.GameOver();
     }
 }
