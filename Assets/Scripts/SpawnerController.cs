@@ -132,7 +132,17 @@ public class SpawnerController : MonoBehaviour {
             }
             spawnIndex++;
         }
+        if(spawnIndex == levels[levelIndex].spawns.Length)
+        {
+            StartCoroutine(EndLevel());
+        }
 	}
+
+    IEnumerator EndLevel ()
+    {
+        yield return new WaitForSeconds(3f);
+        levelIndex++;
+    }
 
     GameObject SpawnObstacle()
     {

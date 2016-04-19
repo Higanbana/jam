@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
 
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
-    public float testStartTime;
+    public float startTime;
 
     public int blackCollected;
     public int whiteCollected;
@@ -37,29 +37,9 @@ public class GameManager : MonoBehaviour {
 
 	public void StartGame()
 	{
-        if (testStartTime == 0f)
-        {
-            player.SetActive(true);
-            spawner.SetActive(true);
-
-            GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
-
-            SetPauseState(GameState.GameOn);
-            SoundManager.instance.ChangeBackgroundMusic(2);
-
-            blackCollected = 0;
-            whiteCollected = 0;
-        }
-        else
-        {
-            StartGameAtTime(testStartTime);
-        }
-		
-    }
-
-    public void StartGameAtTime(float time)
-    {
         player.SetActive(true);
+        player.GetComponent<PlayerController>().touchTrigger = false;
+
         spawner.SetActive(true);
 
         GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
@@ -70,10 +50,9 @@ public class GameManager : MonoBehaviour {
         blackCollected = 0;
         whiteCollected = 0;
 
-        SoundManager.instance.setMusicAtTime(time);
+        SoundManager.instance.setMusicAtTime(startTime);
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
-        controller.SetTime(time);
-
+        controller.SetTime(startTime);
     }
 
     public void QuitGame()
