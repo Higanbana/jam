@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum GameState { GameOn, GamePaused, GameOff };
+
 public class GameManager : MonoBehaviour {
 
     public GameObject player;
     public GameObject spawner;
 
-    public int gameState = (int) GameState.GameOff; // -1 = not started, 0 = started, 1 = paused
+    public GameState gameState = GameState.GameOff;
 
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
@@ -14,8 +16,6 @@ public class GameManager : MonoBehaviour {
 
     public int blackCollected;
     public int whiteCollected;
-
-    enum GameState { GameOn, GamePaused, GameOff};
 
 	public static GameManager instance = null;
 
@@ -34,12 +34,18 @@ public class GameManager : MonoBehaviour {
 
 	public void StartGame()
 	{
-        if (testStartTime == 0)
+        if (testStartTime == 0f)
         {
             player.SetActive(true);
             spawner.SetActive(true);
-            SetPauseState((int)GameState.GameOn);
+
+            GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
+
+            SetPauseState(GameState.GameOn);
             SoundManager.instance.ChangeBackgroundMusic(2);
+
+            blackCollected = 0;
+            whiteCollected = 0;
         }
         else
         {
@@ -52,8 +58,12 @@ public class GameManager : MonoBehaviour {
     {
         player.SetActive(true);
         spawner.SetActive(true);
-        SetPauseState((int)GameState.GameOn);
+
+        GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
+
+        SetPauseState(GameState.GameOn);
         SoundManager.instance.ChangeBackgroundMusic(2);
+
         blackCollected = 0;
         whiteCollected = 0;
 
@@ -82,7 +92,7 @@ public class GameManager : MonoBehaviour {
 
     void EndGame()
     {
-        SetPauseState((int)GameState.GameOff);
+        SetPauseState(GameState.GameOff);
         spawner.SetActive(false);
 
         //Hide Player
@@ -94,7 +104,6 @@ public class GameManager : MonoBehaviour {
 
         //Destroy every obstacle
         GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
- 
         foreach (GameObject item in obstacles)
         {
             Destroy(item);
@@ -102,7 +111,6 @@ public class GameManager : MonoBehaviour {
 
         //Destroy every collectible
         GameObject[] collectibles = GameObject.FindGameObjectsWithTag("Collectible");
-
         foreach (GameObject item in collectibles)
         {
             Destroy(item);
@@ -114,20 +122,20 @@ public class GameManager : MonoBehaviour {
         // Pause game with esc button
         if (Input.GetButtonDown("Cancel"))
         {
-            if (gameState == (int)GameState.GameOn)
+            if (gameState == GameState.GameOn)
             {
-                SetPauseState((int)GameState.GamePaused);
+                SetPauseState(GameState.GamePaused);
             }
-            else if (gameState == (int)GameState.GamePaused)
+            else if (gameState == GameState.GamePaused)
             {
-                SetPauseState((int)GameState.GameOn);
+                SetPauseState(GameState.GameOn);
             }           
         }
     }
 
     public bool IsPaused()
     {
-        if (gameState == (int) GameState.GamePaused)
+        if (gameState == GameState.GamePaused)
         {
             return true;
         }
@@ -137,27 +145,27 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    private void SetPauseState(int pauseState)
+    private void SetPauseState(GameState pauseState)
     {
-        if (pauseState == (int)GameState.GamePaused)
+        if (pauseState == GameState.GamePaused)
         {
             Time.timeScale = 0;
-            gameState = (int)GameState.GamePaused;
+            gameState = GameState.GamePaused;
             pauseCanvas.SetActive(true);
             SoundManager.instance.musicSource.Pause();
 
         }
-        else if (pauseState == (int)GameState.GameOn)
+        else if (pauseState == GameState.GameOn)
         {
             Time.timeScale = 1;
-            gameState = (int)GameState.GameOn;
+            gameState = GameState.GameOn;
             pauseCanvas.SetActive(false);
             SoundManager.instance.musicSource.Play();
         }
         else
         {
             Time.timeScale = 0;
-            gameState = (int)GameState.GameOff;
+            gameState = GameState.GameOff;
             pauseCanvas.SetActive(false);
             SoundManager.instance.musicSource.Pause();
         }

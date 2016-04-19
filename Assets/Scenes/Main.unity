@@ -1406,7 +1406,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0.019607844}
+  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -1581,6 +1581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4bd960c768d59c4a93d79e1beb45b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCamera: {fileID: 985347365}
   rails:
   - {fileID: 1197067175}
   - {fileID: 1775818181}
@@ -1588,6 +1589,7 @@ MonoBehaviour:
   - {fileID: 321028247}
   - {fileID: 1242334326}
   maxRailNumber: 3
+  touchTrigger: 0
   dieSound: {fileID: 8300000, guid: d3379c4170dd3d44289d7ab965e71e27, type: 3}
   segments: 50
   radiusIncrement: 0.05
@@ -2781,6 +2783,7 @@ MonoBehaviour:
   gameState: 2
   pauseCanvas: {fileID: 1011122825}
   gameOverCanvas: {fileID: 1886352094}
+  testStartTime: 0
   blackCollected: 0
   whiteCollected: 0
 --- !u!4 &2082912470

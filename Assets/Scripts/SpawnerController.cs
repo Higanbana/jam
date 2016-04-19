@@ -7,14 +7,16 @@ public class SpawnParameters
     public string spawnType;
     public float spawnTime;
     public float spawnAngle;
+    public string spawnColor;
     public int railIndex;
     public float railLength;
 
-    public SpawnParameters(string type, float time, int index, float length, float angle)
+    public SpawnParameters(string type, float time, int index, float length, float angle, string color)
     {
         spawnType = type;
         spawnTime = time;
         spawnAngle = angle;
+        spawnColor = color;
         railIndex = index;
         railLength = length;
     }
@@ -82,7 +84,7 @@ public class SpawnerController : MonoBehaviour {
             for (int lineIndex = 0; lineIndex < spawns.Length; lineIndex++)
             {
                 string[] spawnParameters = spawns[lineIndex].Split(fieldSeparator);
-                if(spawnParameters.Length >= 3)
+                if(spawnParameters.Length >= 5)
                 {
                     string type = spawnParameters[0];
                     float spawnTime = float.Parse(spawnParameters[1]);
@@ -90,20 +92,20 @@ public class SpawnerController : MonoBehaviour {
                     float railLength = 0f;
                     float angle = 0f;
 
-                    if (type.Equals("O"))
-                    {
-                        railLength = float.Parse(spawnParameters[3]);
-                    }
-                    else
+                    if (type.Equals("C"))
                     {
                         angle = float.Parse(spawnParameters[3]);
                     }
-
-                    levelParameters[lineIndex] = new SpawnParameters(type,spawnTime, railIndex, railLength, angle);
+                    else
+                    {
+                        railLength = float.Parse(spawnParameters[3]);
+                    }
+                    string color = spawnParameters[4];
+                    levelParameters[lineIndex] = new SpawnParameters(type,spawnTime, railIndex, railLength, angle, color);
                 }
                 else
                 {
-                    levelParameters[lineIndex] = new SpawnParameters("C", 0f, 2, 0f, 0f);
+                    levelParameters[lineIndex] = new SpawnParameters("C", 0f, 2, 0f, 0f, "B");
                 }
             }
             levels[levelIndex] = new Level(levelParameters);
@@ -116,20 +118,23 @@ public class SpawnerController : MonoBehaviour {
         time += Time.deltaTime;
         while (spawnIndex < levels[levelIndex].spawns.Length && levels[levelIndex].spawns[spawnIndex].spawnTime <= time)
         {
-            if (levels[levelIndex].spawns[spawnIndex].railLength != 0)
+            if (levels[levelIndex].spawns[spawnIndex].spawnType.Contains("O"))
             {
                 SpawnObstacle();
             }
-            else
+            else if (levels[levelIndex].spawns[spawnIndex].spawnType.Contains("C"))
             {
                 SpawnCollectible();
             }
-            
+            else if (levels[levelIndex].spawns[spawnIndex].spawnType.Contains("S"))
+            {
+                SpawnTrigger();
+            }
             spawnIndex++;
         }
 	}
 
-    void SpawnObstacle()
+    GameObject SpawnObstacle()
     {
         int railIndex = levels[levelIndex].spawns[spawnIndex].railIndex;
         float height;
@@ -152,15 +157,31 @@ public class SpawnerController : MonoBehaviour {
             offset = 0.5f * (toPrevious - toNext);
         }
         Vector3 obstaclePosition = new Vector3(transform.position.x + levels[levelIndex].spawns[spawnIndex].railLength * 0.5f, rails[railIndex].position.y + offset, 0f);
+        Color obstacleColor;
+        if(levels[levelIndex].spawns[spawnIndex].spawnColor.Contains("W"))
+        {
+            obstacleColor = Color.white;
+        }
+        else
+        {
+            obstacleColor = Color.black;
+        }
         ObstacleController obstacle = (ObstacleController)Instantiate(obstaclePrefab, obstaclePosition, Quaternion.identity);
-        obstacle.Setup(height, levels[levelIndex].spawns[spawnIndex].railLength, speed);
+        obstacle.Setup(height, levels[levelIndex].spawns[spawnIndex].railLength, speed, obstacleColor);
+        return obstacle.gameObject;
     }
 
-    void SpawnCollectible()
+    GameObject SpawnCollectible()
     {
         int railIndex = levels[levelIndex].spawns[spawnIndex].railIndex;
         Vector3 collectiblePosition = new Vector3(transform.position.x, rails[railIndex].position.y , 0f);
         CollectibleController collectible = (CollectibleController)Instantiate(collectiblePrefab, collectiblePosition, Quaternion.identity);
         collectible.Setup(levels[levelIndex].spawns[spawnIndex].spawnAngle, speed);
+        return collectible.gameObject;
+    }
+
+    void SpawnTrigger()
+    {
+        SpawnObstacle().AddComponent<TriggerObstacleController>();
     }
 }
