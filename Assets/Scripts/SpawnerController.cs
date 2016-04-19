@@ -101,11 +101,11 @@ public class SpawnerController : MonoBehaviour {
                         railLength = float.Parse(spawnParameters[3]);
                     }
                     string color = spawnParameters[4];
-                    levelParameters[lineIndex] = new SpawnParameters(type,spawnTime, railIndex, railLength, angle, color);
+                    levelParameters[lineIndex] = new SpawnParameters(type, spawnTime, railIndex, railLength, angle, color);
                 }
                 else
                 {
-                    levelParameters[lineIndex] = new SpawnParameters("C", 0f, 2, 0f, 0f, "B");
+                    levelParameters[lineIndex] = new SpawnParameters("O", 0f, 2, 0f, 0f, "B");
                 }
             }
             levels[levelIndex] = new Level(levelParameters);
