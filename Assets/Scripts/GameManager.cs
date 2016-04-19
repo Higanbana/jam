@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
     public GameObject player;
     public GameObject spawner;
+    public Text scoreText;
+    public Text timeText;
 
     public int gameState = (int) GameState.GameOff; // -1 = not started, 0 = started, 1 = paused
 
@@ -123,6 +126,9 @@ public class GameManager : MonoBehaviour {
                 SetPauseState((int)GameState.GameOn);
             }           
         }
+
+        //update score display
+        UpdateScoreText();
     }
 
     public bool IsPaused()
@@ -161,5 +167,12 @@ public class GameManager : MonoBehaviour {
             pauseCanvas.SetActive(false);
             SoundManager.instance.musicSource.Pause();
         }
+    }
+
+    void UpdateScoreText()
+    {
+        scoreText.text = "Score : " + (blackCollected + whiteCollected);
+        SpawnerController controller = spawner.GetComponent<SpawnerController>();
+        timeText.text = "Time : " + string.Format("{0:0.00}", controller.time);
     }
 }
