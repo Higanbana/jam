@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
 
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
+    public float testStartTime;
 
     public int blackCollected;
     public int whiteCollected;
@@ -33,12 +34,33 @@ public class GameManager : MonoBehaviour {
 
 	public void StartGame()
 	{
-		player.SetActive(true);
+        if (testStartTime == 0)
+        {
+            player.SetActive(true);
+            spawner.SetActive(true);
+            setPauseState((int)GameState.GameOn);
+            SoundManager.instance.ChangeBackgroundMusic(2);
+        }
+        else
+        {
+            StartGameAtTime(testStartTime);
+        }
+		
+    }
+
+    public void StartGameAtTime(float time)
+    {
+        player.SetActive(true);
         spawner.SetActive(true);
         SetPauseState((int)GameState.GameOn);
         SoundManager.instance.ChangeBackgroundMusic(2);
         blackCollected = 0;
         whiteCollected = 0;
+
+        SoundManager.instance.setMusicAtTime(time);
+        SpawnerController controller = spawner.GetComponent<SpawnerController>();
+        controller.setTime(time);
+
     }
 
     public void QuitGame()

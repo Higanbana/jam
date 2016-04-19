@@ -48,17 +48,24 @@ public class SpawnerController : MonoBehaviour {
 
     private char lineSeparator = '\n';
     private char fieldSeparator = ',';
-	
-    void Start ()
-    {
-        LoadLevels();
-    }
 
     void OnEnable()
     {
         spawnIndex = 0;
         time = 0f;
+        LoadLevels();
     }
+
+    public void setTime(float newTime)
+    {
+        time = newTime;
+        int newIndex = 0;
+        while (newIndex < levels[levelIndex].spawns.Length && levels[levelIndex].spawns[newIndex].spawnTime <= time)
+        {
+            newIndex++;
+        }
+        spawnIndex = newIndex;
+    }	
 
     void LoadLevels ()
     {
