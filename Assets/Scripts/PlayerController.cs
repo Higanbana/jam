@@ -2,16 +2,23 @@
 using System.Collections;
 
 public class PlayerController : MonoBehaviour {
+
 	private SpriteRenderer spriteRenderer;
     private CircleCollider2D circleCollider;
+
+    public Camera mainCamera;
+
     public Transform[] rails;
     private int currentRail;
     public int maxRailNumber = 3;
-    private bool collided = false;
+
+    [HideInInspector]
+    public bool touchTrigger = false;
+    private bool touchObstacle = false;
+
     private bool goUp = false;
     private bool goDown = false;
     public AudioClip dieSound;
-	private Color color;
 
 	public int segments;
 	private float radius = 1;
@@ -21,24 +28,22 @@ public class PlayerController : MonoBehaviour {
 	private float pulseCooldown = 0f;
 	LineRenderer line;
 
-	// Use this for initialization
 	void OnEnable ()
 	{
         currentRail = 2;
         transform.position = rails[currentRail].position;
 		spriteRenderer = GetComponent<SpriteRenderer> ();
 		circleCollider = GetComponent<CircleCollider2D> ();
-		color = Color.black;
-		spriteRenderer.color = color;
+		spriteRenderer.color = Color.black;
 
-		line = GetComponent<LineRenderer>();
+        line = GetComponent<LineRenderer>();
 		line.SetVertexCount (segments + 1);
 		line.useWorldSpace = false;
 		DrawCircle ();
 	}
 	
 	void FixedUpdate () {
-	    if(!collided && spriteRenderer.color == Color.white)
+	    if(!touchObstacle && spriteRenderer.color == mainCamera.backgroundColor)
         {
             PlayerDie();
         }
@@ -54,19 +59,30 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            collided = false;
+            touchObstacle = false;
+        }
+    }
+
+    Color GetOppositeColor(Color color)
+    {
+        if (color == Color.black)
+        {
+            return Color.white;
+        }
+        else
+        {
+            return Color.black;
         }
     }
 
 	public void SwapColor ()
 	{
-		if (color == Color.black)
-		{
-			color = Color.white;
-		} else {
-			color = Color.black;
-		}
-		spriteRenderer.color = color;
+        spriteRenderer.color = GetOppositeColor(spriteRenderer.color);
+
+        if (touchTrigger)
+        {
+            mainCamera.backgroundColor = GetOppositeColor(mainCamera.backgroundColor);
+        }
 	}
 
     public void Update ()
@@ -101,8 +117,8 @@ public class PlayerController : MonoBehaviour {
     {
         if (collider.gameObject.CompareTag("Obstacle"))
         {
-            collided = true;
-            if (spriteRenderer.color == Color.black)
+            touchObstacle = true;
+            if (spriteRenderer.color == collider.gameObject.GetComponent<SpriteRenderer>().color)
             {
                 BoxCollider2D box = collider.gameObject.GetComponent<BoxCollider2D>();
                 Vector2 left = transform.position + circleCollider.radius * Vector3.left;
@@ -128,7 +144,7 @@ public class PlayerController : MonoBehaviour {
 		float y;
 		float z = -1f;
 
-		Color c = color;
+		Color c = spriteRenderer.color;
 		float angle = 0f;
 		alpha -= radiusIncrement/2.5f;
 		radius += radiusIncrement;
