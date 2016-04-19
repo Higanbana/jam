@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour {
 
     public void Update ()
     {
-        if (!GameManager.instance.isPaused())
+        if (!GameManager.instance.IsPaused())
         {
             if (Input.GetButtonDown("Up"))
             {

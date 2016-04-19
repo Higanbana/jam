@@ -841,6 +841,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 11408318, guid: 5f8607846f7b69d44a00bf043f3814e2, type: 2}
+  collectiblePrefab: {fileID: 11458434, guid: a319e8e95ecc45247990374c5dc4ae93, type: 2}
   rails:
   - {fileID: 1197067175}
   - {fileID: 1775818181}
@@ -2780,6 +2781,8 @@ MonoBehaviour:
   gameState: 2
   pauseCanvas: {fileID: 1011122825}
   gameOverCanvas: {fileID: 1886352094}
+  blackCollected: 0
+  whiteCollected: 0
 --- !u!4 &2082912470
 Transform:
   m_ObjectHideFlags: 0

@@ -4,13 +4,17 @@ using System.Collections;
 
 public class SpawnParameters
 {
+    public string spawnType;
     public float spawnTime;
+    public float spawnAngle;
     public int railIndex;
     public float railLength;
 
-    public SpawnParameters(float time, int index, float length)
+    public SpawnParameters(string type, float time, int index, float length, float angle)
     {
+        spawnType = type;
         spawnTime = time;
+        spawnAngle = angle;
         railIndex = index;
         railLength = length;
     }
@@ -29,6 +33,7 @@ public class Level
 public class SpawnerController : MonoBehaviour {
 
     public ObstacleController obstaclePrefab;
+    public CollectibleController collectiblePrefab;
 
     public Transform[] rails;
 
@@ -72,15 +77,26 @@ public class SpawnerController : MonoBehaviour {
                 string[] spawnParameters = spawns[lineIndex].Split(fieldSeparator);
                 if(spawnParameters.Length >= 3)
                 {
-                    float spawnTime = float.Parse(spawnParameters[0]);
-                    int railIndex = int.Parse(spawnParameters[1]);
-                    float railLength = float.Parse(spawnParameters[2]);
+                    string type = spawnParameters[0];
+                    float spawnTime = float.Parse(spawnParameters[1]);
+                    int railIndex = int.Parse(spawnParameters[2]);
+                    float railLength = 0f;
+                    float angle = 0f;
 
-                    levelParameters[lineIndex] = new SpawnParameters(spawnTime, railIndex, railLength);
+                    if (type.Equals("O"))
+                    {
+                        railLength = float.Parse(spawnParameters[3]);
+                    }
+                    else
+                    {
+                        angle = float.Parse(spawnParameters[3]);
+                    }
+
+                    levelParameters[lineIndex] = new SpawnParameters(type,spawnTime, railIndex, railLength, angle);
                 }
                 else
                 {
-                    levelParameters[lineIndex] = new SpawnParameters(0f, 2, 0f);
+                    levelParameters[lineIndex] = new SpawnParameters("C", 0f, 2, 0f, 0f);
                 }
             }
 
@@ -94,30 +110,51 @@ public class SpawnerController : MonoBehaviour {
         time += Time.deltaTime;
         while (spawnIndex < levels[levelIndex].spawns.Length && levels[levelIndex].spawns[spawnIndex].spawnTime <= time)
         {
-            int railIndex = levels[levelIndex].spawns[spawnIndex].railIndex;
-            float height;
-            float offset;
-            if (railIndex == 0)
+            if (levels[levelIndex].spawns[spawnIndex].railLength != 0)
             {
-                height = Mathf.Abs(rails[1].position.y - rails[0].position.y);
-                offset = 0f;
-            }
-            else if (railIndex == rails.Length - 1)
-            {
-                height = Mathf.Abs(rails[rails.Length - 1].position.y - rails[rails.Length - 2].position.y);
-                offset = 0f;
+                SpawnObstacle();
             }
             else
             {
-                float toNext = Mathf.Abs(rails[railIndex + 1].position.y - rails[railIndex].position.y);
-                float toPrevious = Mathf.Abs(rails[railIndex - 1].position.y - rails[railIndex].position.y);
-                height = 0.5f * (toPrevious + toNext);
-                offset = 0.5f * (toPrevious - toNext);
+                SpawnCollectible();
             }
-            Vector3 obstaclePosition = new Vector3(transform.position.x + levels[levelIndex].spawns[spawnIndex].railLength * 0.5f, rails[railIndex].position.y + offset, 0f);
-            ObstacleController obstacle = (ObstacleController)Instantiate(obstaclePrefab, obstaclePosition, Quaternion.identity);
-            obstacle.Setup(height, levels[levelIndex].spawns[spawnIndex].railLength, speed);
+            
             spawnIndex++;
         }
 	}
+
+    void SpawnObstacle()
+    {
+        int railIndex = levels[levelIndex].spawns[spawnIndex].railIndex;
+        float height;
+        float offset;
+        if (railIndex == 0)
+        {
+            height = Mathf.Abs(rails[1].position.y - rails[0].position.y);
+            offset = 0f;
+        }
+        else if (railIndex == rails.Length - 1)
+        {
+            height = Mathf.Abs(rails[rails.Length - 1].position.y - rails[rails.Length - 2].position.y);
+            offset = 0f;
+        }
+        else
+        {
+            float toNext = Mathf.Abs(rails[railIndex + 1].position.y - rails[railIndex].position.y);
+            float toPrevious = Mathf.Abs(rails[railIndex - 1].position.y - rails[railIndex].position.y);
+            height = 0.5f * (toPrevious + toNext);
+            offset = 0.5f * (toPrevious - toNext);
+        }
+        Vector3 obstaclePosition = new Vector3(transform.position.x + levels[levelIndex].spawns[spawnIndex].railLength * 0.5f, rails[railIndex].position.y + offset, 0f);
+        ObstacleController obstacle = (ObstacleController)Instantiate(obstaclePrefab, obstaclePosition, Quaternion.identity);
+        obstacle.Setup(height, levels[levelIndex].spawns[spawnIndex].railLength, speed);
+    }
+
+    void SpawnCollectible()
+    {
+        int railIndex = levels[levelIndex].spawns[spawnIndex].railIndex;
+        Vector3 collectiblePosition = new Vector3(transform.position.x, rails[railIndex].position.y , 0f);
+        CollectibleController collectible = (CollectibleController)Instantiate(collectiblePrefab, collectiblePosition, Quaternion.identity);
+        collectible.Setup(levels[levelIndex].spawns[spawnIndex].spawnAngle, speed);
+    }
 }
