@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour {
         {
             player.SetActive(true);
             spawner.SetActive(true);
-            setPauseState((int)GameState.GameOn);
+            SetPauseState((int)GameState.GameOn);
             SoundManager.instance.ChangeBackgroundMusic(2);
         }
         else
@@ -59,7 +59,7 @@ public class GameManager : MonoBehaviour {
 
         SoundManager.instance.setMusicAtTime(time);
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
-        controller.setTime(time);
+        controller.SetTime(time);
 
     }
 
@@ -121,11 +121,8 @@ public class GameManager : MonoBehaviour {
             else if (gameState == (int)GameState.GamePaused)
             {
                 SetPauseState((int)GameState.GameOn);
-            }
-            
+            }           
         }
-
-
     }
 
     public bool IsPaused()

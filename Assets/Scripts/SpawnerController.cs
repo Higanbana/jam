@@ -56,7 +56,7 @@ public class SpawnerController : MonoBehaviour {
         LoadLevels();
     }
 
-    public void setTime(float newTime)
+    public void SetTime(float newTime)
     {
         time = newTime;
         int newIndex = 0;
@@ -106,7 +106,6 @@ public class SpawnerController : MonoBehaviour {
                     levelParameters[lineIndex] = new SpawnParameters("C", 0f, 2, 0f, 0f);
                 }
             }
-
             levels[levelIndex] = new Level(levelParameters);
         }
     }
