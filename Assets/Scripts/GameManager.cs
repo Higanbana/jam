@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour {
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
     public float startTime;
-
+	public GameObject gameCanvas;
     public int blackCollected;
     public int whiteCollected;
 
@@ -146,13 +146,15 @@ public class GameManager : MonoBehaviour {
             gameState = GameState.GameOn;
             pauseCanvas.SetActive(false);
             SoundManager.instance.musicSource.Play();
+            gameCanvas.SetActive(true);
         }
-        else
+        else // Game off !
         {
             Time.timeScale = 0;
             gameState = GameState.GameOff;
             pauseCanvas.SetActive(false);
             SoundManager.instance.musicSource.Pause();
+            gameCanvas.SetActive(false);
         }
     }
 
