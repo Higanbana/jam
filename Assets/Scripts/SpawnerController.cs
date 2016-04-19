@@ -92,7 +92,7 @@ public class SpawnerController : MonoBehaviour {
                     float railLength = 0f;
                     float angle = 0f;
 
-                    if (type.Equals("C"))
+                    if (type.Contains("C"))
                     {
                         angle = float.Parse(spawnParameters[3]);
                     }
