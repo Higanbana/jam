@@ -9,6 +9,7 @@ TagManager:
   - Spawner
   - SoundManager
   - Collectible
+  - Visualizer
   layers:
   - Default
   - TransparentFX
@@ -45,6 +46,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Obstacle
+    uniqueID: 2365394607
     locked: 0
   - name: Collectible
     uniqueID: 1418177591
