@@ -49,11 +49,11 @@ public class CollectibleController : MonoBehaviour {
         {
             if(spriteRenderer.color == Color.black)
             {
-                GameManager.instance.blackCollected++;
+                GameManager.instance.BlackCollected();
             }
             else
             {
-                GameManager.instance.whiteCollected++;
+                GameManager.instance.WhiteCollected();
             }
             StartCoroutine(DeathAnimation());
         }

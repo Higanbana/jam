@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour {
     public static SoundManager instance = null;
     public AudioSource soundSource;
     public AudioSource musicSource;
+    public AudioSource achievementSource;
     public AudioClip[] musicClips;
 
 	// Use this for initialization
@@ -22,6 +23,11 @@ public class SoundManager : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
 	
 	}
+
+    public void PlayAchievementSound()
+    {
+        achievementSource.Play();
+    }
 
     public void PlaySound (AudioClip clip)
     {
