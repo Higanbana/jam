@@ -127,6 +127,7 @@ public class GameManager : MonoBehaviour {
             }
             levels[levelIndex] = new Level(levelParameters);
         }
+        
     }
 
     public void StartGame()
