@@ -8,19 +8,19 @@ public class SpawnParameters
 {
     public string spawnType;
     public float spawnTime;
+    public float stopTime;
     public float spawnAngle;
     public string spawnColor;
     public int railIndex;
-    public float railLength;
 
-    public SpawnParameters(string type, float time, int index, float length, float angle, string color)
+    public SpawnParameters(string type, float startTime, float endTime, int index, float angle, string color)
     {
         spawnType = type;
-        spawnTime = time;
+        spawnTime = startTime;
+        stopTime = endTime;
         spawnAngle = angle;
         spawnColor = color;
         railIndex = index;
-        railLength = length;
     }
 }
 
@@ -104,9 +104,9 @@ public class GameManager : MonoBehaviour {
                 if (spawnParameters.Length >= 5)
                 {
                     string type = spawnParameters[0];
-                    float spawnTime = float.Parse(spawnParameters[1]);
+                    float startTime = float.Parse(spawnParameters[1]);
                     int railIndex = int.Parse(spawnParameters[2]);
-                    float railLength = 0f;
+                    float endTime = 0f;
                     float angle = 0f;
 
                     if (type.Contains("C"))
@@ -115,14 +115,14 @@ public class GameManager : MonoBehaviour {
                     }
                     else
                     {
-                        railLength = float.Parse(spawnParameters[3]);
+                        endTime = float.Parse(spawnParameters[3]);
                     }
                     string color = spawnParameters[4];
-                    levelParameters[lineIndex] = new SpawnParameters(type, spawnTime, railIndex, railLength, angle, color);
+                    levelParameters[lineIndex] = new SpawnParameters(type, startTime, endTime, railIndex, angle, color);
                 }
                 else
                 {
-                    levelParameters[lineIndex] = new SpawnParameters("O", 0f, 2, 0f, 0f, "B");
+                    levelParameters[lineIndex] = new SpawnParameters("O", 0f, 0f, 2, 0f, "B");
                 }
             }
             levels[levelIndex] = new Level(levelParameters);

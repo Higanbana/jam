@@ -40,7 +40,7 @@ public class SpawnerController : MonoBehaviour {
 
 	void FixedUpdate ()
     {
-        time += Time.fixedDeltaTime;// Time.deltaTime;
+        time += Time.fixedDeltaTime;
         while (spawnIndex < spawns.Length && spawns[spawnIndex].spawnTime <= time)
         {
             if (spawns[spawnIndex].spawnType.Contains("O"))
@@ -67,8 +67,10 @@ public class SpawnerController : MonoBehaviour {
     {
         int railIndex = spawns[spawnIndex].railIndex;
         float height;
+        float length = speed * (spawns[spawnIndex].stopTime - spawns[spawnIndex].spawnTime);
         Vector3 offset = Vector3.zero;
-        offset.x = spawns[spawnIndex].railLength * 0.5f + speed * (spawns[spawnIndex].spawnTime - time);
+        float deltaTime = spawns[spawnIndex].spawnTime - time;
+        offset.x = 0.5f * length + speed * deltaTime;
         if (railIndex == 0)
         {
             height = Mathf.Abs(rails[1].position.y - rails[0].position.y);
@@ -95,7 +97,7 @@ public class SpawnerController : MonoBehaviour {
             obstacleColor = Color.black;
         }
         ObstacleController obstacle = (ObstacleController)Instantiate(obstaclePrefab, obstaclePosition, Quaternion.identity);
-        obstacle.Setup(height, spawns[spawnIndex].railLength, speed, obstacleColor);
+        obstacle.Setup(height, length, speed, obstacleColor);
         return obstacle.gameObject;
     }
 
