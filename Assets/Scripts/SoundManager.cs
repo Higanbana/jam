@@ -23,21 +23,20 @@ public class SoundManager : MonoBehaviour {
 	
 	}
 
-    public void PlaySound(AudioClip clip)
+    public void PlaySound (AudioClip clip)
     {
         soundSource.clip = clip;
         soundSource.Play();
     }
 
-    public void ChangeBackgroundMusic(int musicIndex)
+    public void ChangeBackgroundMusic (int musicIndex)
     {
         musicSource.clip = musicClips[musicIndex];
         musicSource.Play();
     }
 
-    public void setMusicAtTime(float time)
+    public void SetMusicAtTime (float time)
     {
-        //musicSource.PlayScheduled(time);
         musicSource.time = time;
     }
 	

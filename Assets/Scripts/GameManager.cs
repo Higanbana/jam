@@ -4,6 +4,45 @@ using UnityEngine.UI;
 
 public enum GameState { GameOn, GamePaused, GameOff };
 
+public class SpawnParameters
+{
+    public string spawnType;
+    public float spawnTime;
+    public float spawnAngle;
+    public string spawnColor;
+    public int railIndex;
+    public float railLength;
+
+    public SpawnParameters(string type, float time, int index, float length, float angle, string color)
+    {
+        spawnType = type;
+        spawnTime = time;
+        spawnAngle = angle;
+        spawnColor = color;
+        railIndex = index;
+        railLength = length;
+    }
+}
+
+public class Level
+{
+    public SpawnParameters[] spawns;
+    public int maxScore;
+
+    public Level(SpawnParameters[] spawnParameters)
+    {
+        spawns = spawnParameters;
+        maxScore = 0;
+        foreach (SpawnParameters spawn in spawns)
+        {
+            if (spawn.spawnType.Contains("C"))
+            {
+                maxScore++;
+            }
+        }
+    }
+}
+
 public class GameManager : MonoBehaviour {
 
     public GameObject player;
@@ -15,8 +54,18 @@ public class GameManager : MonoBehaviour {
 
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
+    public GameObject gameCanvas;
+    public GameObject levelClearCanvas;
+    public GameObject gameWinCanvas;
+
+    private Level[] levels;
+    [HideInInspector]
+    public int levelIndex = 0;
+
+    private char lineSeparator = '\n';
+    private char fieldSeparator = ',';
+
     public float startTime;
-	public GameObject gameCanvas;
     public int blackCollected;
     public int whiteCollected;
 
@@ -33,9 +82,54 @@ public class GameManager : MonoBehaviour {
 		{
 			Destroy (gameObject);
 		}
+
+        LoadLevels();
 	}
 
-	public void StartGame()
+    void LoadLevels()
+    {
+        TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
+
+        levels = new Level[levelAssets.Length];
+
+        for (int levelIndex = 0; levelIndex < levelAssets.Length; levelIndex++)
+        {
+            string[] spawns = levelAssets[levelIndex].text.Split(lineSeparator);
+
+            SpawnParameters[] levelParameters = new SpawnParameters[spawns.Length];
+
+            for (int lineIndex = 0; lineIndex < spawns.Length; lineIndex++)
+            {
+                string[] spawnParameters = spawns[lineIndex].Split(fieldSeparator);
+                if (spawnParameters.Length >= 5)
+                {
+                    string type = spawnParameters[0];
+                    float spawnTime = float.Parse(spawnParameters[1]);
+                    int railIndex = int.Parse(spawnParameters[2]);
+                    float railLength = 0f;
+                    float angle = 0f;
+
+                    if (type.Contains("C"))
+                    {
+                        angle = float.Parse(spawnParameters[3]);
+                    }
+                    else
+                    {
+                        railLength = float.Parse(spawnParameters[3]);
+                    }
+                    string color = spawnParameters[4];
+                    levelParameters[lineIndex] = new SpawnParameters(type, spawnTime, railIndex, railLength, angle, color);
+                }
+                else
+                {
+                    levelParameters[lineIndex] = new SpawnParameters("O", 0f, 2, 0f, 0f, "B");
+                }
+            }
+            levels[levelIndex] = new Level(levelParameters);
+        }
+    }
+
+    public void StartGame()
 	{
         player.SetActive(true);
         player.GetComponent<PlayerController>().touchTrigger = false;
@@ -50,26 +144,10 @@ public class GameManager : MonoBehaviour {
         blackCollected = 0;
         whiteCollected = 0;
 
-        SoundManager.instance.setMusicAtTime(startTime);
+        SoundManager.instance.SetMusicAtTime(startTime);
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
+        controller.SetSpawns(levels[levelIndex].spawns);
         controller.SetTime(startTime);
-    }
-
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
-
-    public void GameOver()
-    {
-        EndGame();
-        gameOverCanvas.SetActive(true);
-    }
-
-    public void RestartGame()
-    {
-        EndGame();
-        StartGame();
     }
 
     void EndGame()
@@ -97,6 +175,49 @@ public class GameManager : MonoBehaviour {
         {
             Destroy(item);
         }
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void GameOver()
+    {
+        EndGame();
+        gameOverCanvas.SetActive(true);
+    }
+
+
+    public IEnumerator EndLevel()
+    {
+        yield return new WaitForSeconds(8f);
+
+        EndGame();
+
+        UpdateLevelClearText();
+        levelIndex++;
+
+        if (levelIndex < levels.Length)
+        {
+            levelClearCanvas.SetActive(true);
+        }
+        else
+        {
+            gameWinCanvas.SetActive(true);
+        }
+    }
+
+    public void WinGame ()
+    {
+        EndGame();
+        gameWinCanvas.SetActive(true);
+    }
+
+    public void RestartGame()
+    {
+        EndGame();
+        StartGame();
     }
 
     void Update()
@@ -158,10 +279,28 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    int GetScore ()
+    {
+        return blackCollected + whiteCollected;
+    }
+
     void UpdateScoreText()
     {
-        scoreText.text = "Score : " + (blackCollected + whiteCollected);
+        scoreText.text = "Score : " + GetScore();
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
         timeText.text = "Time : " + string.Format("{0:0.00}", controller.time);
+    }
+
+    void UpdateLevelClearText()
+    {
+        if (levelIndex < levels.Length)
+        {
+            Text title = levelClearCanvas.gameObject.transform.Find("Title").GetComponent<Text>();
+            Text score = levelClearCanvas.gameObject.transform.Find("Score").GetComponent<Text>();
+
+            int index = levelIndex + 1;
+            title.text = "Level " + index.ToString() + " Clear !";
+            score.text = "Score : " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
+        }
     }
 }
