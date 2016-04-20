@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour {
 		{
 			Destroy (gameObject);
 		}
+        
 	}
 
 	public void StartGame()
@@ -55,7 +56,7 @@ public class GameManager : MonoBehaviour {
         {
             StartGameAtTime(testStartTime);
         }
-		
+        AchievementManager.instance.EarnAchievement();
     }
 
     public void StartGameAtTime(float time)
