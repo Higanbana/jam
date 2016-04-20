@@ -134,6 +134,7 @@ public class PlayerController : MonoBehaviour {
 
 	void PlayerDie()
 	{
+        return;
 		gameObject.SetActive(false);
 		SoundManager.instance.PlaySound(dieSound);
 		GameManager.instance.GameOver();

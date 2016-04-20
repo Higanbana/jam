@@ -4293,7 +4293,7 @@ MonoBehaviour:
   levelClearCanvas: {fileID: 1666654687}
   gameWinCanvas: {fileID: 1304714083}
   levelIndex: 0
-  startTime: 0
+  startTime: 20
 --- !u!4 &2082912470
 Transform:
   m_ObjectHideFlags: 0
