@@ -133,9 +133,9 @@ public class PlayerController : MonoBehaviour {
 
 	void PlayerDie()
 	{
-		gameObject.SetActive(false);
+		/*gameObject.SetActive(false);
 		SoundManager.instance.PlaySound(dieSound);
-		GameManager.instance.GameOver();
+		GameManager.instance.GameOver();*/
 	}
 
 	void DrawCircle()

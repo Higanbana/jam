@@ -1732,6 +1732,7 @@ GameObject:
   - 124: {fileID: 985347363}
   - 81: {fileID: 985347362}
   - 114: {fileID: 985347367}
+  - 114: {fileID: 985347368}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1818,6 +1819,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rails: {fileID: 1701643029}
+--- !u!114 &985347368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 985347361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b8cb22fa1db2764fb27d98fedb91d28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualizer: {fileID: 108562, guid: 1a7a5b5fdd8ca5c40a61fdb2d4fd04c7, type: 2}
+  numberOfVisualizers: 26
+  distance: 0.5
+  visualizers: []
+  scale: 400
+  init: 0
 --- !u!1 &1011122825
 GameObject:
   m_ObjectHideFlags: 0
