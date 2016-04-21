@@ -5,6 +5,11 @@ using System.Collections;
 public class AchievementManager : MonoBehaviour {
     public static AchievementManager instance;
     public GameObject achievementPopup;
+    public GameObject lockedItemPrefab;
+    public GameObject itemPrefab;
+    public GameObject achievementsPanel;
+    public RectTransform contentPanel;
+    public Text statsText;
 
     Achievement[] achievements;
     private float height;
@@ -35,10 +40,10 @@ public class AchievementManager : MonoBehaviour {
 
         //Deaths
         achievements[0] = new Achievement(1f, "Try again !", "1st death");
-        achievements[1] = new Achievement(5f, "Everyone make mistakes", "5 deaths");
+        achievements[1] = new Achievement(5f, "Everyone makes mistakes", "5 deaths");
         achievements[2] = new Achievement(25f, "The revenant", "25 deaths");
-        achievements[3] = new Achievement(100f, "Zombie style", "100 deaths");
-        achievements[4] = new Achievement(500f, "Death, sweet death", "500 deaths");
+        achievements[3] = new Achievement(100f, "Death, sweet death", "100 deaths");
+        achievements[4] = new Achievement(500f, "Braiiins...?", "500 deaths");
 
         //Color changes
         achievements[5] = new Achievement(5f, "Color swapper", "5 color changes");
@@ -58,21 +63,21 @@ public class AchievementManager : MonoBehaviour {
         achievements[15] = new Achievement(5f, "Beginner", "5 levels cleared");
         achievements[16] = new Achievement(20f, "Intermediate", "20 levels cleared");
         achievements[17] = new Achievement(50f, "Expert", "50 levels cleared");
-        achievements[18] = new Achievement(100f, "Virtuoso", "100 levels cleared");
+        achievements[18] = new Achievement(100f, "Master", "100 levels cleared");
 
         //perfect plays
-        achievements[19] = new Achievement(1f, "", "1 level perfectly cleared");
-        achievements[20] = new Achievement(5f, "", "5 levels perfectly cleared");
-        achievements[21] = new Achievement(20f, "", "20 levels perfectly cleared");
-        achievements[22] = new Achievement(50f, "", "50 levels perfectly cleared");
-        achievements[23] = new Achievement(100f, "", "100 levels perfectly cleared");
+        achievements[19] = new Achievement(1f, "Perfect !", "1 level perfectly cleared");
+        achievements[20] = new Achievement(5f, "Virtuoso", "5 levels perfectly cleared");
+        achievements[21] = new Achievement(20f, "Clean freak", "20 levels perfectly cleared");
+        achievements[22] = new Achievement(50f, "Certified maniac", "50 levels perfectly cleared");
+        achievements[23] = new Achievement(100f, "OCD", "100 levels perfectly cleared");
 
         //score
-        achievements[24] = new Achievement(1f, "Insert Coin", "1 point collected");
-        achievements[25] = new Achievement(10f, "", "20 points collected");
-        achievements[26] = new Achievement(50f, "", "20 points collected");
-        achievements[27] = new Achievement(100f, "", "50 points collected");
-        achievements[28] = new Achievement(500f, "", "100 points collected");
+        achievements[24] = new Achievement(5f, "Insert Coin", "5 point collected");
+        achievements[25] = new Achievement(100f, "Every beat helps", "100 points collected");
+        achievements[26] = new Achievement(500f, "Money ! Money ! Money !", "500 points collected");
+        achievements[27] = new Achievement(3500f, "I'm rich !", "3500 points collected");
+        achievements[28] = new Achievement(10000f, "...", "10000 points collected !");
 
     }
 
@@ -144,6 +149,32 @@ public class AchievementManager : MonoBehaviour {
         }
     }
 
+    public void ShowAchievements()
+    {
+        achievementsPanel.SetActive(true);
+        statsText.text = GameManager.instance.stats.getString();
+
+        for (int i = 0; i < achievements.Length; i++)
+        {
+            if (!achievements[i].isHidden)
+            {
+                GameObject newItem;
+                if (achievements[i].isActive)
+                {
+                    newItem = (GameObject)Instantiate(itemPrefab);
+                }
+                else
+                {
+                    newItem = (GameObject)Instantiate(lockedItemPrefab);
+                }
+                newItem.transform.SetParent(contentPanel);
+                newItem.GetComponentsInChildren<Text>()[0].text = achievements[i].name;
+                newItem.GetComponentsInChildren<Text>()[1].text = achievements[i].description;
+            }
+        }
+
+    }
+
 }
 
 public class Achievement
@@ -152,15 +183,17 @@ public class Achievement
     public enum Compare { GreaterThan, Equal, LowerThan};
     public string name = "";
     public string description = "";
+    public bool isHidden;
     float threshold = 0;
     Compare compareMethod;
 
-    public Achievement(float threshold, string name, string description, Compare compareMethod = Compare.GreaterThan)
+    public Achievement(float threshold, string name, string description, bool isHidden = false, Compare compareMethod = Compare.GreaterThan)
     {
         this.name = name;
         this.description = description;
         this.threshold = threshold;
         this.compareMethod = compareMethod;
+        this.isHidden = isHidden;
     }
 
     public bool CheckActivation(float value)
@@ -215,15 +248,29 @@ public class PlayerStatistics
         perfectPlays = new Property("Perfect Plays", 0, new int[] { 19, 20, 21, 22, 23 });
         totalScore = new Property("Total Score", 0, new int[] { 24, 25, 26, 27, 28 });
     }
-    
-    //public bool[] levelsClear;
-    //public bool[] achievementUnlock ; 
+
+    public string getString(Property p)
+    {
+        return p.name + " : " + p.value + "\n";
+    }
+
+    public string getString()
+    {
+        return
+            getString(totalScore) +
+            getString(death) +
+            getString(colorChange) +
+            getString(plays) +
+            getString(succesPlays) +
+            getString(perfectPlays);   
+    }
+
 }
 
 public class Property
 {
-    private string name = "";
-    private float value = 0;
+    public string name = "";
+    public float value = 0;
     private int[] achievementIndex;
 
     public Property(string name, float value, int[] achievements)
