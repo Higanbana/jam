@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class AchievementManager : MonoBehaviour {
     public static AchievementManager instance;
@@ -11,7 +12,7 @@ public class AchievementManager : MonoBehaviour {
     public RectTransform contentPanel;
     public Text statsText;
 
-    Achievement[] achievements;
+    private Achievement[] achievements;
     private float height;
     private bool popingAchievement = false;
 
@@ -34,7 +35,7 @@ public class AchievementManager : MonoBehaviour {
         achievementPopup.transform.position = temp;
     }
 
-    void InitAchievements()
+    void InitAchievements ()
     {
         achievements = new Achievement[29];
 
@@ -81,7 +82,7 @@ public class AchievementManager : MonoBehaviour {
 
     }
 
-    IEnumerator WaitForRealSeconds(float time)
+    IEnumerator WaitForRealSeconds (float time)
     {
         //popup wait
         float start = Time.realtimeSinceStartup;
@@ -92,7 +93,7 @@ public class AchievementManager : MonoBehaviour {
     }
 	
     //Coroutine for achievement popup
-    IEnumerator PopAchievement(Achievement achievement)
+    IEnumerator PopAchievement (Achievement achievement)
     {
         while (popingAchievement)
         {
@@ -127,32 +128,31 @@ public class AchievementManager : MonoBehaviour {
             yield return null;
         }
         popingAchievement = false;
-
     }
 
 
-    public void EarnAchievement(Achievement achievement)
+    void EarnAchievement (Achievement achievement)
     {
         StartCoroutine(PopAchievement(achievement));
     }
 
-    public void EarnAchievement(int achievementIndex)
+    void EarnAchievement (int achievementIndex)
     {
         StartCoroutine(PopAchievement(achievements[achievementIndex]));
     }
 
-    public void CheckAchievement(int index, float value)
+    public void CheckAchievement (int index, float value, bool silent = false)
     {
-        if (achievements[index].CheckActivation(value))
+        if (achievements[index].CheckActivation(value) && !silent)
         {
             EarnAchievement(index);
         }
     }
 
-    public void ShowAchievements()
+    public void ShowAchievements ()
     {
         achievementsPanel.SetActive(true);
-        statsText.text = GameManager.instance.stats.getString();
+        statsText.text = GameManager.instance.stats.GetString();
 
         for (int i = 0; i < achievements.Length; i++)
         {
@@ -161,11 +161,11 @@ public class AchievementManager : MonoBehaviour {
                 GameObject newItem;
                 if (achievements[i].isActive)
                 {
-                    newItem = (GameObject)Instantiate(itemPrefab);
+                    newItem = Instantiate(itemPrefab);
                 }
                 else
                 {
-                    newItem = (GameObject)Instantiate(lockedItemPrefab);
+                    newItem = Instantiate(lockedItemPrefab);
                 }
                 newItem.transform.SetParent(contentPanel);
                 newItem.GetComponentsInChildren<Text>()[0].text = achievements[i].name;
@@ -184,8 +184,8 @@ public class Achievement
     public string name = "";
     public string description = "";
     public bool isHidden;
-    float threshold = 0;
-    Compare compareMethod;
+    private float threshold = 0;
+    private Compare compareMethod;
 
     public Achievement(float threshold, string name, string description, bool isHidden = false, Compare compareMethod = Compare.GreaterThan)
     {
@@ -230,6 +230,7 @@ public class Achievement
     }
 }
 
+[Serializable]
 public class PlayerStatistics
 {
     public Property death;
@@ -239,7 +240,7 @@ public class PlayerStatistics
     public Property perfectPlays;
     public Property totalScore;
 
-    public PlayerStatistics()
+    public PlayerStatistics ()
     {
         death = new Property("Deaths", 0, new int[] { 0, 1, 2, 3, 4 });
         colorChange = new Property("Color Changes", 0, new int[] { 5, 6, 7, 8 });
@@ -249,24 +250,30 @@ public class PlayerStatistics
         totalScore = new Property("Total Score", 0, new int[] { 24, 25, 26, 27, 28 });
     }
 
-    public string getString(Property p)
-    {
-        return p.name + " : " + p.value + "\n";
-    }
-
-    public string getString()
+    public string GetString ()
     {
         return
-            getString(totalScore) +
-            getString(death) +
-            getString(colorChange) +
-            getString(plays) +
-            getString(succesPlays) +
-            getString(perfectPlays);   
+            totalScore.GetString() +
+            death.GetString() +
+            colorChange.GetString() +
+            plays.GetString() +
+            succesPlays.GetString() +
+            perfectPlays.GetString();   
+    }
+
+    public void CheckAchievements ()
+    {
+        totalScore.CheckAchievements(true);
+        death.CheckAchievements(true);
+        colorChange.CheckAchievements(true);
+        plays.CheckAchievements(true);
+        succesPlays.CheckAchievements(true);
+        perfectPlays.CheckAchievements(true);
     }
 
 }
 
+[Serializable]
 public class Property
 {
     public string name = "";
@@ -280,12 +287,25 @@ public class Property
         this.achievementIndex = achievements;
     }
 
+    public string GetString()
+    {
+        return name + " : " + value + "\n";
+    }
+
+    public void CheckAchievements (bool silent = false)
+    {
+        for (int i = 0; i < achievementIndex.Length; i++)
+        {
+            if(AchievementManager.instance)
+            {
+                AchievementManager.instance.CheckAchievement(achievementIndex[i], value, silent);
+            }
+        }
+    }
+
     public void Increment()
     {
         value += 1;
-        for (int i = 0; i < achievementIndex.Length; i++)
-        {
-            AchievementManager.instance.CheckAchievement(achievementIndex[i], value);
-        }
+        CheckAchievements();
     }
 }
