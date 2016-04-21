@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.SocialPlatforms;
 using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 using UnityEngine.UI;
 
 public enum GameState { GameOn, GamePaused, GameOff };
@@ -46,8 +47,7 @@ public class GameManager : MonoBehaviour {
 
 	public static GameManager instance = null;
 
-	// Use this for initialization
-	void Start ()
+    void Start ()
 	{
 		if (instance == null)
         {
@@ -57,10 +57,14 @@ public class GameManager : MonoBehaviour {
 		{
 			Destroy (gameObject);
 		}
-        //Social.ShowAchievementsUI();
         stats = new PlayerStatistics();
-        LoadLevels();
+        Load();
 	}
+
+    void OnDestroy ()
+    {
+        Save();
+    }
 
     public void ResetProgress()
     {
@@ -81,8 +85,25 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void LoadLevels()
+    public void Save()
     {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Create(Application.persistentDataPath + "/achievements.dat");
+        bf.Serialize(file, stats);
+        file.Close();
+    }
+
+    void Load()
+    {
+        if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/achievements.dat", FileMode.Open);
+            stats = (PlayerStatistics)bf.Deserialize(file);
+            stats.CheckAchievements();
+            file.Close();
+        }
+
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
 
         levels = new Level[levelAssets.Length];
