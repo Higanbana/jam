@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour {
         GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
 
         SetPauseState(GameState.GameOn);
-        SoundManager.instance.ChangeBackgroundMusic(2);
+        SoundManager.instance.ChangeBackgroundMusic(2, false);
 
         blackCollected = 0;
         whiteCollected = 0;

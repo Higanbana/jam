@@ -35,9 +35,10 @@ public class SoundManager : MonoBehaviour {
         soundSource.Play();
     }
 
-    public void ChangeBackgroundMusic (int musicIndex)
+    public void ChangeBackgroundMusic (int musicIndex, bool forceloop)
     {
         musicSource.clip = musicClips[musicIndex];
+        musicSource.loop = forceloop;
         musicSource.Play();
     }
 
