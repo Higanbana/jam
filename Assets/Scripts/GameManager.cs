@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SocialPlatforms;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -34,12 +35,14 @@ public class GameManager : MonoBehaviour {
     [HideInInspector]
     public int levelIndex = 0;
 
+    public PlayerStatistics stats;
+
     private char lineSeparator = '\n';
     private char fieldSeparator = ',';
 
     public float startTime;
-    public int blackCollected;
-    public int whiteCollected;
+    private int blackCollected;
+    private int whiteCollected;
 
 	public static GameManager instance = null;
 
@@ -54,7 +57,8 @@ public class GameManager : MonoBehaviour {
 		{
 			Destroy (gameObject);
 		}
-
+        //Social.ShowAchievementsUI();
+        stats = new PlayerStatistics();
         LoadLevels();
 	}
 
@@ -132,6 +136,10 @@ public class GameManager : MonoBehaviour {
 
     public void StartGame()
 	{
+        //modify global player stats
+        stats.plays.Increment();
+
+        //start new game
         player.SetActive(true);
         player.GetComponent<PlayerController>().touchTrigger = false;
 
@@ -140,7 +148,7 @@ public class GameManager : MonoBehaviour {
         GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
 
         SetPauseState(GameState.GameOn);
-        SoundManager.instance.ChangeBackgroundMusic(2);
+        SoundManager.instance.ChangeBackgroundMusic(2, false);
 
         blackCollected = 0;
         whiteCollected = 0;
@@ -151,7 +159,8 @@ public class GameManager : MonoBehaviour {
         controller.SetTime(startTime);
     }
 
-    void EndGame()
+    // Stop Game
+    void EndGame() 
     {
         SetPauseState(GameState.GameOff);
         spawner.SetActive(false);
@@ -185,6 +194,7 @@ public class GameManager : MonoBehaviour {
 
     public void GameOver()
     {
+        stats.death.Increment();
         EndGame();
         gameOverCanvas.SetActive(true);
     }
@@ -199,20 +209,25 @@ public class GameManager : MonoBehaviour {
         UpdateLevelClearText();
         levelIndex++;
 
+        //modify global player stats
+        stats.succesPlays.Increment();
+
+        // test if the level is the last level
         if (levelIndex < levels.Length)
         {
             levelClearCanvas.SetActive(true);
+
+            //modify global player stats
+            if (GetScore() == levels[levelIndex].maxScore) 
+            {
+                stats.perfectPlays.Increment();
+            } 
+
         }
         else
         {
             gameWinCanvas.SetActive(true);
         }
-    }
-
-    public void WinGame ()
-    {
-        EndGame();
-        gameWinCanvas.SetActive(true);
     }
 
     public void RestartGame()
@@ -304,4 +319,18 @@ public class GameManager : MonoBehaviour {
             score.text = "Score : " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
         }
     }
+
+    public void BlackCollected()
+    {
+        blackCollected++;
+        stats.totalScore.Increment();
+    }
+
+    public void WhiteCollected()
+    {
+        whiteCollected++;
+        stats.totalScore.Increment();
+    }
 }
+
+

@@ -126,6 +126,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void SwapColor ()
 	{
+        GameManager.instance.stats.colorChange.Increment();
         spriteRenderer.color = GetOppositeColor(spriteRenderer.color);
 
         if (touchTrigger)

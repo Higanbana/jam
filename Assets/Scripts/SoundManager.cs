@@ -6,6 +6,7 @@ public class SoundManager : MonoBehaviour {
     public static SoundManager instance = null;
     public AudioSource soundSource;
     public AudioSource musicSource;
+    public AudioSource achievementSource;
     public AudioClip[] musicClips;
 
 	void Awake () {
@@ -22,15 +23,21 @@ public class SoundManager : MonoBehaviour {
 	
 	}
 
+    public void PlayAchievementSound()
+    {
+        achievementSource.Play();
+    }
+
     public void PlaySound (AudioClip clip)
     {
         soundSource.clip = clip;
         soundSource.Play();
     }
 
-    public void ChangeBackgroundMusic (int musicIndex)
+    public void ChangeBackgroundMusic (int musicIndex, bool forceloop)
     {
         musicSource.clip = musicClips[musicIndex];
+        musicSource.loop = forceloop;
         musicSource.Play();
     }
 
