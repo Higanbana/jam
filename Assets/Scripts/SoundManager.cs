@@ -8,7 +8,6 @@ public class SoundManager : MonoBehaviour {
     public AudioSource musicSource;
     public AudioClip[] musicClips;
 
-	// Use this for initialization
 	void Awake () {
         if (instance == null)
         {

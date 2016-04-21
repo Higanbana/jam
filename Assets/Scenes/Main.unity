@@ -842,6 +842,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 11408318, guid: 5f8607846f7b69d44a00bf043f3814e2, type: 2}
   collectiblePrefab: {fileID: 11458434, guid: a319e8e95ecc45247990374c5dc4ae93, type: 2}
+  wavePrefab: {fileID: 11463408, guid: ef6432e86874c4846a5c352e0f0677a8, type: 2}
   rails:
   - {fileID: 1197067175}
   - {fileID: 1775818181}
@@ -861,7 +862,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
 --- !u!1 &624954910
 GameObject:
   m_ObjectHideFlags: 0
@@ -1833,9 +1834,7 @@ MonoBehaviour:
   visualizer: {fileID: 108562, guid: 1a7a5b5fdd8ca5c40a61fdb2d4fd04c7, type: 2}
   numberOfVisualizers: 26
   distance: 0.65
-  visualizers: []
   scale: 400
-  init: 0
 --- !u!1 &1011122825
 GameObject:
   m_ObjectHideFlags: 0
@@ -2073,9 +2072,10 @@ GameObject:
   m_Component:
   - 4: {fileID: 1090049519}
   - 212: {fileID: 1090049518}
+  - 50: {fileID: 1090049521}
   - 58: {fileID: 1090049517}
-  - 114: {fileID: 1090049516}
   - 120: {fileID: 1090049520}
+  - 114: {fileID: 1090049516}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2118,7 +2118,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
@@ -2165,7 +2165,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 13
 --- !u!120 &1090049520
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -2200,11 +2200,28 @@ LineRenderer:
     endWidth: 0.1
     m_StartColor:
       serializedVersion: 2
-      rgba: 4290427578
+      rgba: 4278190080
     m_EndColor:
       serializedVersion: 2
       rgba: 4278190080
   m_UseWorldSpace: 0
+--- !u!50 &1090049521
+Rigidbody2D:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1090049515}
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &1176692050
 GameObject:
   m_ObjectHideFlags: 0

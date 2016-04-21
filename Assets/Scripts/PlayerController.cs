@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
 
@@ -14,7 +15,7 @@ public class PlayerController : MonoBehaviour {
 
     [HideInInspector]
     public bool touchTrigger = false;
-    private bool touchObstacle = false;
+    private List<GameObject> colliders;
 
     private bool goUp = false;
     private bool goDown = false;
@@ -36,14 +37,66 @@ public class PlayerController : MonoBehaviour {
 		circleCollider = GetComponent<CircleCollider2D> ();
 		spriteRenderer.color = Color.black;
 
+        colliders = new List<GameObject>();
+
         line = GetComponent<LineRenderer>();
 		line.SetVertexCount (segments + 1);
 		line.useWorldSpace = false;
+        line.sortingLayerName = "Player";
 		DrawCircle ();
 	}
 	
-	void FixedUpdate () {
-	    if(!touchObstacle && spriteRenderer.color == mainCamera.backgroundColor)
+    GameObject FindTopCollider ()
+    {
+        colliders.RemoveAll(item => item == null);
+
+        if (colliders.Count == 0)
+        {
+            return null;
+        }
+        else
+        {
+            GameObject topCollider = colliders[0];
+            for (int colliderIndex = 0; colliderIndex < colliders.Count; colliderIndex++)
+            {
+                SpriteRenderer topRenderer = topCollider.GetComponent<SpriteRenderer>();
+                SpriteRenderer newRenderer = colliders[colliderIndex].GetComponent<SpriteRenderer>();
+                int newSortingValue = SortingLayer.GetLayerValueFromID(newRenderer.sortingLayerID);
+                int topSortingValue = SortingLayer.GetLayerValueFromID(topRenderer.sortingLayerID);
+                if (newSortingValue > topSortingValue)
+                {
+                    topCollider = colliders[colliderIndex];
+                }
+                else
+                {
+                    int newOrderInLayer = newRenderer.sortingOrder;
+                    int topOrderInLayer = topRenderer.sortingOrder;
+                    if (newOrderInLayer > topOrderInLayer)
+                    {
+                        topCollider = colliders[colliderIndex];
+                    }
+                }
+            }
+            return topCollider;
+        }
+    }
+
+	void FixedUpdate ()
+    {
+        GameObject topCollider = FindTopCollider();
+        if (topCollider && spriteRenderer.color == topCollider.gameObject.GetComponent<SpriteRenderer>().color)
+        {
+            Collider2D collider2D = topCollider.gameObject.GetComponent<Collider2D>();
+            Vector3 direction = (transform.position - topCollider.gameObject.transform.position).normalized;
+            Vector2 far = transform.position + circleCollider.radius * direction;
+            Vector2 near = transform.position - circleCollider.radius * direction;
+            if (collider2D.OverlapPoint(far) && collider2D.OverlapPoint(near))
+            {
+                PlayerDie();
+            }
+        }
+
+        if (!topCollider && spriteRenderer.color == mainCamera.backgroundColor)
         {
             PlayerDie();
         }
@@ -56,10 +109,6 @@ public class PlayerController : MonoBehaviour {
         {
             SetRail(currentRail + 1);
             goDown = false;
-        }
-        else
-        {
-            touchObstacle = false;
         }
     }
 
@@ -113,25 +162,23 @@ public class PlayerController : MonoBehaviour {
         currentRail = targetRail;
     }
 
-    void OnTriggerStay2D(Collider2D collider)
+    void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.CompareTag("Obstacle"))
         {
-            touchObstacle = true;
-            if (spriteRenderer.color == collider.gameObject.GetComponent<SpriteRenderer>().color)
-            {
-                BoxCollider2D box = collider.gameObject.GetComponent<BoxCollider2D>();
-                Vector2 left = transform.position + circleCollider.radius * Vector3.left;
-                Vector2 right = transform.position + circleCollider.radius * Vector3.right;
-                if (box.OverlapPoint(left) && box.OverlapPoint(right))
-                {
-                    PlayerDie();
-                }
-            }
+            colliders.Add(collider.gameObject);
         }
     }
 
-	void PlayerDie()
+    void OnTriggerExit2D(Collider2D collider)
+    {
+        if (collider.gameObject.CompareTag("Obstacle"))
+        {
+            colliders.Remove(collider.gameObject);
+        }
+    }
+
+    void PlayerDie()
 	{
 		gameObject.SetActive(false);
 		SoundManager.instance.PlaySound(dieSound);
@@ -151,9 +198,9 @@ public class PlayerController : MonoBehaviour {
 
 		for (int i = 0; i < (segments + 1); i++)
 		{
-			x = Mathf.Sin (Mathf.Deg2Rad * angle);
-			y = Mathf.Cos (Mathf.Deg2Rad * angle);
-			line.SetPosition (i,new Vector3(x,y,z) * radius);
+			x = Mathf.Sin (Mathf.Deg2Rad * angle) * radius;
+			y = Mathf.Cos (Mathf.Deg2Rad * angle) * radius;
+			line.SetPosition (i,new Vector3(x,y,z));
 			c.a = alpha;
 			line.SetColors (c, c);
 			angle += (360.25f / segments);

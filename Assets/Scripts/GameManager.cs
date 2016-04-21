@@ -4,26 +4,6 @@ using UnityEngine.UI;
 
 public enum GameState { GameOn, GamePaused, GameOff };
 
-public class SpawnParameters
-{
-    public string spawnType;
-    public float spawnTime;
-    public float stopTime;
-    public float spawnAngle;
-    public string spawnColor;
-    public int railIndex;
-
-    public SpawnParameters(string type, float startTime, float endTime, int index, float angle, string color)
-    {
-        spawnType = type;
-        spawnTime = startTime;
-        stopTime = endTime;
-        spawnAngle = angle;
-        spawnColor = color;
-        railIndex = index;
-    }
-}
-
 public class Level
 {
     public SpawnParameters[] spawns;
@@ -32,14 +12,6 @@ public class Level
     public Level(SpawnParameters[] spawnParameters)
     {
         spawns = spawnParameters;
-        maxScore = 0;
-        foreach (SpawnParameters spawn in spawns)
-        {
-            if (spawn.spawnType.Contains("C"))
-            {
-                maxScore++;
-            }
-        }
     }
 }
 
@@ -86,6 +58,18 @@ public class GameManager : MonoBehaviour {
         LoadLevels();
 	}
 
+    Color GetColor(string colorName)
+    {
+        if (colorName.Contains("W"))
+        {
+            return Color.white;
+        }
+        else
+        {
+            return Color.black;
+        }
+    }
+
     void LoadLevels()
     {
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
@@ -105,24 +89,40 @@ public class GameManager : MonoBehaviour {
                 {
                     string type = spawnParameters[0];
                     float startTime = float.Parse(spawnParameters[1]);
-                    int railIndex = int.Parse(spawnParameters[2]);
-                    float endTime = 0f;
-                    float angle = 0f;
 
                     if (type.Contains("C"))
                     {
-                        angle = float.Parse(spawnParameters[3]);
+                        int railIndex = int.Parse(spawnParameters[2]);
+                        float angle = float.Parse(spawnParameters[3]);
+                        levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle);
+                    }
+                    else if (type.Contains("W"))
+                    {
+                        float X = float.Parse(spawnParameters[2]);
+                        float Y = float.Parse(spawnParameters[3]);
+                        Vector2 position = new Vector2(X, Y);
+                        Color color = GetColor(spawnParameters[4]);
+                        float speed = float.Parse(spawnParameters[5]);
+                        levelParameters[lineIndex] = new WaveParameters(startTime, position, speed, color);
+                    }
+                    else if (type.Contains("S"))
+                    {
+                        int railIndex = int.Parse(spawnParameters[2]);
+                        float endTime = float.Parse(spawnParameters[3]);
+                        Color color = GetColor(spawnParameters[4]);
+                        levelParameters[lineIndex] = new TriggerParameters(startTime, endTime, railIndex, color);
                     }
                     else
                     {
-                        endTime = float.Parse(spawnParameters[3]);
+                        int railIndex = int.Parse(spawnParameters[2]);
+                        float endTime = float.Parse(spawnParameters[3]);
+                        Color color = GetColor(spawnParameters[4]);
+                        levelParameters[lineIndex] = new ObstacleParameters(startTime, endTime, railIndex, color);
                     }
-                    string color = spawnParameters[4];
-                    levelParameters[lineIndex] = new SpawnParameters(type, startTime, endTime, railIndex, angle, color);
                 }
                 else
                 {
-                    levelParameters[lineIndex] = new SpawnParameters("O", 0f, 0f, 2, 0f, "B");
+                    levelParameters[lineIndex] = new ObstacleParameters(0f, 0f, 2, Color.black);
                 }
             }
             levels[levelIndex] = new Level(levelParameters);
