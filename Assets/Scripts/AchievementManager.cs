@@ -81,6 +81,14 @@ public class AchievementManager : MonoBehaviour {
 
     }
 
+    public void Reset()
+    {
+        foreach(Achievement a in achievements)
+        {
+            a.isActive = false;
+        }
+    }
+
     IEnumerator WaitForRealSeconds(float time)
     {
         //popup wait
@@ -276,6 +284,16 @@ public class PlayerStatistics
             getString(perfectPlays);   
     }
 
+    public void Reset()
+    {
+        death.SetValue(0f);
+        colorChange.SetValue(0f);
+        plays.SetValue(0f);
+        succesPlays.SetValue(0f);
+        perfectPlays.SetValue(0f);
+        totalScore.SetValue(0f);
+    }
+
 }
 
 public class Property
@@ -298,5 +316,10 @@ public class Property
         {
             AchievementManager.instance.CheckAchievement(achievementIndex[i], value);
         }
+    }
+
+    public void SetValue(float value)
+    {
+        this.value = value;
     }
 }

@@ -62,6 +62,13 @@ public class GameManager : MonoBehaviour {
         LoadLevels();
 	}
 
+    public void ResetProgress()
+    {
+        stats.Reset();
+        AchievementManager.instance.Reset();
+
+    }
+
     Color GetColor(string colorName)
     {
         if (colorName.Contains("W"))

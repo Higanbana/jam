@@ -46,4 +46,14 @@ public class SoundManager : MonoBehaviour {
         musicSource.time = time;
     }
 	
+    public void SetMusicVolume(float volume)
+    {
+        musicSource.volume = volume;
+    }
+
+    public void SetSoundVolume(float volume)
+    {
+        soundSource.volume = volume;
+        achievementSource.volume = volume;
+    }
 }
