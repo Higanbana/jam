@@ -14,7 +14,6 @@ public class CollectibleController : MonoBehaviour {
 
     IEnumerator DeathAnimation ()
     {
-        
         while (spriteRenderer.color.a > 0)
         {
             Color color = spriteRenderer.color ;
@@ -27,10 +26,11 @@ public class CollectibleController : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    public void Setup(float angle, float speed)
+    public void Setup(float angle, float speed, int orderInLayer)
     {
         transform.RotateAround(transform.position, Vector3.forward, angle - 90.0f);
         rigidBody.velocity = Vector3.left * speed;
+        spriteRenderer.sortingOrder = orderInLayer;
     }
 
     void Update ()

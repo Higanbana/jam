@@ -11,7 +11,7 @@ public class ObstacleController : MonoBehaviour {
         spriteRenderer = GetComponent<SpriteRenderer> ();
     }
 
-    public void Setup(float height, float length, float speed, Color color)
+    public void Setup(float height, float length, float speed, Color color, int orderInLayer)
     {
         Vector3 scale = transform.localScale;
         scale.x = length;
@@ -19,6 +19,7 @@ public class ObstacleController : MonoBehaviour {
         transform.localScale = scale;
         rigidBody.velocity = Vector3.left * speed;
         spriteRenderer.color = color;
+        spriteRenderer.sortingOrder = orderInLayer;
     }
 
     void OnTriggerExit2D(Collider2D other)

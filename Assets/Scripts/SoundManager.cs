@@ -9,7 +9,6 @@ public class SoundManager : MonoBehaviour {
     public AudioSource achievementSource;
     public AudioClip[] musicClips;
 
-	// Use this for initialization
 	void Awake () {
         if (instance == null)
         {
@@ -35,9 +34,10 @@ public class SoundManager : MonoBehaviour {
         soundSource.Play();
     }
 
-    public void ChangeBackgroundMusic (int musicIndex)
+    public void ChangeBackgroundMusic (int musicIndex, bool forceloop)
     {
         musicSource.clip = musicClips[musicIndex];
+        musicSource.loop = forceloop;
         musicSource.Play();
     }
 
