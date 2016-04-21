@@ -2698,7 +2698,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1011122826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4802,7 +4802,7 @@ MonoBehaviour:
   musicClips:
   - {fileID: 8300000, guid: ae14a37811cf0dd47ad00e8311370979, type: 3}
   - {fileID: 8300000, guid: d3379c4170dd3d44289d7ab965e71e27, type: 3}
-  - {fileID: 8300000, guid: 1950674c308a93c4788c4efce0149164, type: 3}
+  - {fileID: 8300000, guid: f92cae91d77a8754da5d4864b2bb849a, type: 3}
 --- !u!82 &1829872175
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5741,7 +5741,7 @@ MonoBehaviour:
   levelClearCanvas: {fileID: 1666654687}
   gameWinCanvas: {fileID: 1304714083}
   levelIndex: 0
-  startTime: 20
+  startTime: 0
 --- !u!4 &2082912470
 Transform:
   m_ObjectHideFlags: 0
