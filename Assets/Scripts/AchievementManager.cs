@@ -115,10 +115,7 @@ public class AchievementManager : MonoBehaviour {
 
         //popup wait
         float start = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup < start + 1.5)
-        {
-            yield return WaitForRealSeconds(1.5f);
-        }
+        yield return WaitForRealSeconds(1.5f);
 
         //popup down
         while (achievementPopup.transform.position.y > -height )
@@ -170,7 +167,7 @@ public class AchievementManager : MonoBehaviour {
         //Add new achievement item in the list
         for (int i = 0; i < achievements.Length; i++)
         {
-            if (!achievements[i].isHidden)
+            if (!achievements[i].isHidden || achievements[i].isActive)
             {
                 GameObject newItem;
                 if (achievements[i].isActive)
