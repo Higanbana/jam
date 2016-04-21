@@ -165,7 +165,7 @@ public class AchievementManager : MonoBehaviour {
         contentPanel.parent.gameObject.GetComponent<ScrollRect>().verticalNormalizedPosition = 0.5f;
 
         //setup game statistics panel with string
-        statsText.text = GameManager.instance.stats.getString();
+        statsText.text = GameManager.instance.stats.GetString();
 
         //Add new achievement item in the list
         for (int i = 0; i < achievements.Length; i++)
