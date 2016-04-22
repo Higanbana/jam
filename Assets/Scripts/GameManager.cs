@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
     public GameObject spawner;
     public Text scoreText;
     public Text timeText;
+    public Text tutorialText;
 
     public GameState gameState = GameState.GameOff;
 
@@ -185,6 +186,8 @@ public class GameManager : MonoBehaviour {
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
         controller.SetSpawns(levels[levelIndex].spawns);
         controller.SetTime(startTime);
+
+        StartCoroutine(TutorialText());
     }
 
     // Stop Game
@@ -258,6 +261,19 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    IEnumerator TutorialText()
+    {
+        tutorialText.gameObject.SetActive(true);
+        Color tutoColor = tutorialText.color;
+        while (tutoColor.a > 0f)
+        {
+            tutoColor.a -= 0.0025f;
+            tutorialText.color = tutoColor;
+            yield return null;
+        }
+        tutorialText.gameObject.SetActive(false);
+    }
+
     public void RestartGame()
     {
         EndGame();
@@ -280,7 +296,7 @@ public class GameManager : MonoBehaviour {
         }
 
         //update score display
-        UpdateScoreText();
+        UpdateUI();
     }
 
     public bool IsPaused()
@@ -328,7 +344,7 @@ public class GameManager : MonoBehaviour {
         return blackCollected + whiteCollected;
     }
 
-    void UpdateScoreText()
+    void UpdateUI()
     {
         scoreText.text = "Score : " + GetScore();
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
