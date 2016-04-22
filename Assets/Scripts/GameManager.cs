@@ -8,12 +8,14 @@ public enum GameState { GameOn, GamePaused, GameOff };
 
 public class Level
 {
+    public string name;
     public SpawnParameters[] spawns;
     public int maxScore;
     public float duration;
 
-    public Level(SpawnParameters[] spawnParameters, int score, float length)
+    public Level(string levelName, SpawnParameters[] spawnParameters, int score, float length)
     {
+        name = levelName;
         spawns = spawnParameters;
         maxScore = score;
         duration = length;
@@ -38,8 +40,7 @@ public class GameManager : MonoBehaviour {
     public GameObject gameWinCanvas;
 
     private Level[] levels;
-    [HideInInspector]
-    public int levelIndex = 0;
+    private int levelIndex = 0;
 
     public PlayerStatistics stats;
 
@@ -63,7 +64,9 @@ public class GameManager : MonoBehaviour {
 		{
 			Destroy (gameObject);
 		}
+
         Load();
+        SetLevel("ComeAndFindMe");
 	}
 
     void OnDestroy ()
@@ -174,9 +177,22 @@ public class GameManager : MonoBehaviour {
                     levelParameters[lineIndex] = new ObstacleParameters(0f, 0f, 2, Color.black);
                 }
             }
-            levels[levelIndex] = new Level(levelParameters, maxScore, duration + endLevelDelay);
+            levels[levelIndex] = new Level(levelAssets[levelIndex].name, levelParameters, maxScore, duration + endLevelDelay);
         }
         
+    }
+
+    public void SetLevel(string name)
+    {
+        levelIndex = 0;
+        while(levelIndex < levels.Length && !levels[levelIndex].name.Equals(name))
+        {
+            levelIndex++;
+        }
+        if(levelIndex == levels.Length)
+        {
+            levelIndex = 0;
+        }
     }
 
     public void StartGame()
@@ -258,7 +274,6 @@ public class GameManager : MonoBehaviour {
         EndGame();
 
         UpdateLevelClearText();
-        levelIndex++;
 
         // Modify global player stats
         stats.succesPlays.Increment();
