@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour {
     public GameObject gameCanvas;
     public GameObject levelClearCanvas;
     public GameObject gameWinCanvas;
+    public GameObject achievementListPanel;
 
     private Level[] levels;
     [HideInInspector]
@@ -289,7 +290,7 @@ public class GameManager : MonoBehaviour {
             {
                 SetPauseState(GameState.GamePaused);
             }
-            else if (gameState == GameState.GamePaused)
+            else if (gameState == GameState.GamePaused && achievementListPanel.activeSelf == false)
             {
                 SetPauseState(GameState.GameOn);
             }           
