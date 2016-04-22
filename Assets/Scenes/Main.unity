@@ -9449,6 +9449,7 @@ MonoBehaviour:
   gameCanvas: {fileID: 1407696679}
   levelClearCanvas: {fileID: 1666654687}
   gameWinCanvas: {fileID: 1304714083}
+  achievementListPanel: {fileID: 1163179356}
   levelIndex: 0
   stats:
     death:
