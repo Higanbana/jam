@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour {
     public GameObject gameCanvas;
     public GameObject levelClearCanvas;
     public GameObject gameWinCanvas;
+    public GameObject achievementListPanel;
 
     private Level[] levels;
     private int levelIndex = 0;
@@ -103,6 +104,7 @@ public class GameManager : MonoBehaviour {
 
     void Load()
     {
+        //load achievements
         if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -116,6 +118,7 @@ public class GameManager : MonoBehaviour {
             stats = new PlayerStatistics();
         }
 
+        //Load levels
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
 
         levels = new Level[levelAssets.Length];
@@ -131,6 +134,8 @@ public class GameManager : MonoBehaviour {
             for (int lineIndex = 0; lineIndex < spawns.Length; lineIndex++)
             {
                 string[] spawnParameters = spawns[lineIndex].Split(fieldSeparator);
+                
+                // If the line has normal data, create game objects
                 if (spawnParameters.Length >= 5)
                 {
                     string type = spawnParameters[0];
@@ -141,13 +146,16 @@ public class GameManager : MonoBehaviour {
                         duration = startTime;
                     }
 
+                    // Collectibles
                     if (type.Contains("C"))
                     {
                         int railIndex = int.Parse(spawnParameters[2]);
                         float angle = float.Parse(spawnParameters[3]);
-                        levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle);
+                        string shape = spawnParameters[4];
+                        levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle, shape);
                         maxScore++;
                     }
+                    // Wave
                     else if (type.Contains("W"))
                     {
                         float X = float.Parse(spawnParameters[2]);
@@ -157,6 +165,7 @@ public class GameManager : MonoBehaviour {
                         float speed = float.Parse(spawnParameters[5]);
                         levelParameters[lineIndex] = new WaveParameters(startTime, position, speed, color);
                     }
+                    // Triggers
                     else if (type.Contains("S"))
                     {
                         int railIndex = int.Parse(spawnParameters[2]);
@@ -164,6 +173,7 @@ public class GameManager : MonoBehaviour {
                         Color color = GetColor(spawnParameters[4]);
                         levelParameters[lineIndex] = new TriggerParameters(startTime, endTime, railIndex, color);
                     }
+                    // Obstacles
                     else
                     {
                         int railIndex = int.Parse(spawnParameters[2]);
@@ -172,6 +182,7 @@ public class GameManager : MonoBehaviour {
                         levelParameters[lineIndex] = new ObstacleParameters(startTime, endTime, railIndex, color);
                     }
                 }
+                // Default obstacle
                 else
                 {
                     levelParameters[lineIndex] = new ObstacleParameters(0f, 0f, 2, Color.black);
@@ -278,23 +289,15 @@ public class GameManager : MonoBehaviour {
         // Modify global player stats
         stats.succesPlays.Increment();
 
-        // Test if the level is the last level
-        if (levelIndex < levels.Length)
-        {
             levelClearCanvas.SetActive(true);
 
             // Modify global player stats
-            if (GetScore() == levels[levelIndex].maxScore) 
+            if (GetScore() >= levels[levelIndex].maxScore) 
             {
                 stats.perfectPlays.Increment();
             } 
+        }
 
-        }
-        else
-        {
-            gameWinCanvas.SetActive(true);
-        }
-    }
 
     IEnumerator TutorialText()
     {
@@ -324,7 +327,7 @@ public class GameManager : MonoBehaviour {
             {
                 SetPauseState(GameState.GamePaused);
             }
-            else if (gameState == GameState.GamePaused)
+            else if (gameState == GameState.GamePaused && achievementListPanel.activeSelf == false)
             {
                 SetPauseState(GameState.GameOn);
             }           

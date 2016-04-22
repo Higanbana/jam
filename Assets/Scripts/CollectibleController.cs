@@ -55,6 +55,7 @@ public class CollectibleController : MonoBehaviour {
             {
                 GameManager.instance.WhiteCollected();
             }
+            GetComponent<Collider2D>().enabled = false;
             StartCoroutine(DeathAnimation());
         }
     }
