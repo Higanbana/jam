@@ -19,6 +19,12 @@ public class PlayerController : MonoBehaviour {
 
     private bool goUp = false;
     private bool goDown = false;
+
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+    public float swipeSensitivity = 0.2f;
+    private Vector2 touchOrigin = -Vector2.one;
+#endif
+
     public AudioClip dieSound;
 
 	public int segments;
@@ -139,6 +145,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (!GameManager.instance.IsPaused())
         {
+#if UNITY_STANDALONE || UNITY_WEBPLAYER
             if (Input.GetButtonDown("Up"))
             {
                 goUp = true;
@@ -151,9 +158,39 @@ public class PlayerController : MonoBehaviour {
             {
                 SwapColor();
             }
+#elif UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+            if (Input.touchCount > 0)
+            {
+                Touch touch = Input.touches[0];
+                if (touch.phase == TouchPhase.Began)
+                {
+                    touchOrigin = touch.position;
+                }
+                else if (touch.phase == TouchPhase.Ended)
+                {
+                    Vector2 touchEnd = touch.position;
+                    Vector2 swipe = touchEnd - touchOrigin;
+                    if (swipe.magnitude < mainCamera.orthographicSize * swipeSensitivity)
+                    {
+                        SwapColor();
+                    }
+                    else
+                    {
+                        if(swipe.x > 0f)
+                        {
+                            goUp = true;
+                        }
+                        else
+                        {
+                            goDown = true;
+                        }
+                    }
+                }
+            }
+#endif
         }
-        
-		DrawCircle ();
+
+        DrawCircle ();
     }
 
     void SetRail (int railIndex)
