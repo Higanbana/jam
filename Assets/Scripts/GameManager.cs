@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour {
     public GameObject gameOverCanvas;
     public GameObject gameCanvas;
     public GameObject levelClearCanvas;
-    public GameObject gameWinCanvas;
     public GameObject achievementListPanel;
 
     private Level[] levels;
@@ -383,7 +382,6 @@ public class GameManager : MonoBehaviour {
             Text score = levelClearCanvas.gameObject.transform.Find("Score").GetComponent<Text>();
 
             int index = levelIndex + 1;
-            title.text = "Level " + index.ToString() + " Clear !";
             score.text = "Score : " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
         }
     }
