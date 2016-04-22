@@ -132,7 +132,7 @@ public class GameManager : MonoBehaviour {
                     {
                         int railIndex = int.Parse(spawnParameters[2]);
                         float angle = float.Parse(spawnParameters[3]);
-                        string shape = "LP";// spawnParameters[4];
+                        string shape = spawnParameters[4];
                         levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle, shape);
                     }
                     // Wave
