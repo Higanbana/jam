@@ -5,6 +5,7 @@ public class SpawnerController : MonoBehaviour {
 
     public ObstacleController obstaclePrefab;
     public CollectibleController collectiblePrefab;
+    public CollectibleTextController collectibleTextPrefab;
     public WaveController wavePrefab;
 
     public Transform[] rails;

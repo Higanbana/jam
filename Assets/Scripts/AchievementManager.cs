@@ -123,7 +123,6 @@ public class AchievementManager : MonoBehaviour {
         }
 
         //popup wait
-        float start = Time.realtimeSinceStartup;
         yield return WaitForRealSeconds(1.5f);
 
         //popup down
@@ -170,7 +169,16 @@ public class AchievementManager : MonoBehaviour {
         contentPanel.parent.gameObject.GetComponent<ScrollRect>().verticalNormalizedPosition = 0.5f;
 
         //setup game statistics panel with string
-        statsText.text = GameManager.instance.stats.GetString();
+		statsText.text = GameManager.instance.stats.GetString();
+		GameObject firstItem = Instantiate(itemPrefab);
+		firstItem.transform.SetParent(contentPanel);
+		firstItem.GetComponentsInChildren<Text>()[0].text = "ACHIEVEMENTS";
+		firstItem.GetComponentsInChildren<Text>()[1].text = "";
+		firstItem.GetComponentsInChildren<Text>()[0].fontSize = 20;
+		firstItem.GetComponent<VerticalLayoutGroup> ().padding.bottom = 5;
+		firstItem.GetComponent<VerticalLayoutGroup> ().childAlignment = TextAnchor.LowerLeft;
+
+
 
         //Add new achievement item in the list
         for (int i = 0; i < achievements.Length; i++)
