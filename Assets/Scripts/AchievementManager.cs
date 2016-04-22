@@ -5,7 +5,7 @@ using System;
 
 public class AchievementManager : MonoBehaviour {
     public static AchievementManager instance;
-    public GameObject achievementPopup;
+    public RectTransform achievementPopup;
     public GameObject lockedItemPrefab;
     public GameObject itemPrefab;
     public GameObject achievementsPanel;
@@ -29,10 +29,10 @@ public class AchievementManager : MonoBehaviour {
 
         InitAchievements();
 
-        height = achievementPopup.GetComponent<RectTransform>().rect.height/2;
-        Vector3 temp = achievementPopup.transform.position;
-        temp.y = - height;
-        achievementPopup.transform.position = temp;
+        height = achievementPopup.rect.height/2;
+        Vector3 temp = achievementPopup.anchoredPosition;
+        temp.y = height;
+        achievementPopup.anchoredPosition = temp;
     }
 
     void InitAchievements ()
@@ -116,9 +116,9 @@ public class AchievementManager : MonoBehaviour {
         SoundManager.instance.PlayAchievementSound();
 
         //popup up
-        while (achievementPopup.transform.position.y < height - 1 )
+        while (achievementPopup.anchoredPosition.y > - height )
         {
-            achievementPopup.transform.position = achievementPopup.transform.position + Vector3.up * 3;
+            achievementPopup.anchoredPosition = achievementPopup.anchoredPosition - Vector2.up * 3;
             yield return null;
         }
 
@@ -127,9 +127,9 @@ public class AchievementManager : MonoBehaviour {
         yield return WaitForRealSeconds(1.5f);
 
         //popup down
-        while (achievementPopup.transform.position.y > -height )
+        while (achievementPopup.anchoredPosition.y < height )
         {
-            achievementPopup.transform.position = achievementPopup.transform.position - Vector3.up * 3;
+            achievementPopup.anchoredPosition = achievementPopup.anchoredPosition + Vector2.up * 3;
             yield return null;
         }
         popingAchievement = false;
@@ -208,7 +208,7 @@ public class Achievement
 
     public Achievement(float threshold, string name, string description, bool isHidden = false, Compare compareMethod = Compare.GreaterThan)
     {
-        this.name = name;
+        this.name = name.ToUpper();
         this.description = description;
         this.threshold = threshold;
         this.compareMethod = compareMethod;
