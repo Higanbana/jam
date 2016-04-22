@@ -96,6 +96,7 @@ public class GameManager : MonoBehaviour {
 
     void Load()
     {
+        //load achievements
         if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -105,6 +106,7 @@ public class GameManager : MonoBehaviour {
             file.Close();
         }
 
+        //Load levels
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
 
         levels = new Level[levelAssets.Length];
@@ -118,17 +120,22 @@ public class GameManager : MonoBehaviour {
             for (int lineIndex = 0; lineIndex < spawns.Length; lineIndex++)
             {
                 string[] spawnParameters = spawns[lineIndex].Split(fieldSeparator);
+                
+                // If the line has normal data, create game objects
                 if (spawnParameters.Length >= 5)
                 {
                     string type = spawnParameters[0];
                     float startTime = float.Parse(spawnParameters[1]);
 
+                    // Collectibles
                     if (type.Contains("C"))
                     {
                         int railIndex = int.Parse(spawnParameters[2]);
                         float angle = float.Parse(spawnParameters[3]);
-                        levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle);
+                        string shape = "LP";// spawnParameters[4];
+                        levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle, shape);
                     }
+                    // Wave
                     else if (type.Contains("W"))
                     {
                         float X = float.Parse(spawnParameters[2]);
@@ -138,6 +145,7 @@ public class GameManager : MonoBehaviour {
                         float speed = float.Parse(spawnParameters[5]);
                         levelParameters[lineIndex] = new WaveParameters(startTime, position, speed, color);
                     }
+                    // Triggers
                     else if (type.Contains("S"))
                     {
                         int railIndex = int.Parse(spawnParameters[2]);
@@ -145,6 +153,7 @@ public class GameManager : MonoBehaviour {
                         Color color = GetColor(spawnParameters[4]);
                         levelParameters[lineIndex] = new TriggerParameters(startTime, endTime, railIndex, color);
                     }
+                    // Obstacles
                     else
                     {
                         int railIndex = int.Parse(spawnParameters[2]);
@@ -153,6 +162,7 @@ public class GameManager : MonoBehaviour {
                         levelParameters[lineIndex] = new ObstacleParameters(startTime, endTime, railIndex, color);
                     }
                 }
+                // Default obstacle
                 else
                 {
                     levelParameters[lineIndex] = new ObstacleParameters(0f, 0f, 2, Color.black);

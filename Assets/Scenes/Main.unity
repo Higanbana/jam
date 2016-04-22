@@ -1443,6 +1443,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclePrefab: {fileID: 11408318, guid: 5f8607846f7b69d44a00bf043f3814e2, type: 2}
   collectiblePrefab: {fileID: 11458434, guid: a319e8e95ecc45247990374c5dc4ae93, type: 2}
+  collectibleTextPrefab: {fileID: 11444952, guid: 81d2e0c1fe4b279458e144bca28de2b5,
+    type: 2}
   wavePrefab: {fileID: 11463408, guid: ef6432e86874c4846a5c352e0f0677a8, type: 2}
   rails:
   - {fileID: 1197067175}
@@ -2878,8 +2880,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 77.34535, y: -39}
-  m_SizeDelta: {x: 154.6907, y: 16}
+  m_AnchoredPosition: {x: 80.0227, y: -39}
+  m_SizeDelta: {x: 160.0454, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &851362059
 MonoBehaviour:
@@ -8037,8 +8039,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 77.34535, y: -10.5}
-  m_SizeDelta: {x: 154.6907, y: 21}
+  m_AnchoredPosition: {x: 80.0227, y: -10.5}
+  m_SizeDelta: {x: 160.0454, y: 21}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1963333578
 MonoBehaviour:
