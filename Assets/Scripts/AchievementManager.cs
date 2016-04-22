@@ -123,7 +123,6 @@ public class AchievementManager : MonoBehaviour {
         }
 
         //popup wait
-        float start = Time.realtimeSinceStartup;
         yield return WaitForRealSeconds(1.5f);
 
         //popup down

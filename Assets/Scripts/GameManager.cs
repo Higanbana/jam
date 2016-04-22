@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System.IO;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using UnityEngine.UI;
 
 public enum GameState { GameOn, GamePaused, GameOff };
 
@@ -10,10 +10,13 @@ public class Level
 {
     public SpawnParameters[] spawns;
     public int maxScore;
+    public float duration;
 
-    public Level(SpawnParameters[] spawnParameters)
+    public Level(SpawnParameters[] spawnParameters, int score, float length)
     {
         spawns = spawnParameters;
+        maxScore = score;
+        duration = length;
     }
 }
 
@@ -24,6 +27,7 @@ public class GameManager : MonoBehaviour {
     public Text scoreText;
     public Text timeText;
     public Text tutorialText;
+    public Slider timeSlider;
 
     public GameState gameState = GameState.GameOff;
 
@@ -43,6 +47,7 @@ public class GameManager : MonoBehaviour {
     private char fieldSeparator = ',';
 
     public float startTime;
+    public float endLevelDelay;
     private int blackCollected;
     private int whiteCollected;
 
@@ -58,7 +63,6 @@ public class GameManager : MonoBehaviour {
 		{
 			Destroy (gameObject);
 		}
-        stats = new PlayerStatistics();
         Load();
 	}
 
@@ -105,6 +109,10 @@ public class GameManager : MonoBehaviour {
             stats.CheckAchievements();
             file.Close();
         }
+        else
+        {
+            stats = new PlayerStatistics();
+        }
 
         //Load levels
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
@@ -116,6 +124,8 @@ public class GameManager : MonoBehaviour {
             string[] spawns = levelAssets[levelIndex].text.Split(lineSeparator);
 
             SpawnParameters[] levelParameters = new SpawnParameters[spawns.Length];
+            int maxScore = 0;
+            float duration = 0f;
 
             for (int lineIndex = 0; lineIndex < spawns.Length; lineIndex++)
             {
@@ -127,6 +137,11 @@ public class GameManager : MonoBehaviour {
                     string type = spawnParameters[0];
                     float startTime = float.Parse(spawnParameters[1]);
 
+                    if(startTime > duration)
+                    {
+                        duration = startTime;
+                    }
+
                     // Collectibles
                     if (type.Contains("C"))
                     {
@@ -134,6 +149,7 @@ public class GameManager : MonoBehaviour {
                         float angle = float.Parse(spawnParameters[3]);
                         string shape = spawnParameters[4];
                         levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle, shape);
+                        maxScore++;
                     }
                     // Wave
                     else if (type.Contains("W"))
@@ -168,17 +184,17 @@ public class GameManager : MonoBehaviour {
                     levelParameters[lineIndex] = new ObstacleParameters(0f, 0f, 2, Color.black);
                 }
             }
-            levels[levelIndex] = new Level(levelParameters);
+            levels[levelIndex] = new Level(levelParameters, maxScore, duration + endLevelDelay);
         }
         
     }
 
     public void StartGame()
 	{
-        //modify global player stats
+        // Modify global player stats
         stats.plays.Increment();
 
-        //start new game
+        // Start new game
         player.SetActive(true);
         player.GetComponent<PlayerController>().touchTrigger = false;
 
@@ -189,10 +205,14 @@ public class GameManager : MonoBehaviour {
         SetPauseState(GameState.GameOn);
         SoundManager.instance.ChangeBackgroundMusic(2, false);
 
+        timeSlider.maxValue = levels[levelIndex].duration;
+        timeSlider.value = 0f;
+
         blackCollected = 0;
         whiteCollected = 0;
 
         SoundManager.instance.SetMusicAtTime(startTime);
+
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
         controller.SetSpawns(levels[levelIndex].spawns);
         controller.SetTime(startTime);
@@ -206,21 +226,21 @@ public class GameManager : MonoBehaviour {
         SetPauseState(GameState.GameOff);
         spawner.SetActive(false);
 
-        //Hide Player
+        // Hide Player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             player.SetActive(false);
         }
 
-        //Destroy every obstacle
+        // Destroy every obstacle
         GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
         foreach (GameObject item in obstacles)
         {
             Destroy(item);
         }
 
-        //Destroy every collectible
+        // Destroy every collectible
         GameObject[] collectibles = GameObject.FindGameObjectsWithTag("Collectible");
         foreach (GameObject item in collectibles)
         {
@@ -243,22 +263,22 @@ public class GameManager : MonoBehaviour {
 
     public IEnumerator EndLevel()
     {
-        yield return new WaitForSeconds(8f);
+        yield return new WaitForSeconds(endLevelDelay);
 
         EndGame();
 
         UpdateLevelClearText();
         levelIndex++;
 
-        //modify global player stats
+        // Modify global player stats
         stats.succesPlays.Increment();
 
-        // test if the level is the last level
+        // Test if the level is the last level
         if (levelIndex < levels.Length)
         {
             levelClearCanvas.SetActive(true);
 
-            //modify global player stats
+            // Modify global player stats
             if (GetScore() == levels[levelIndex].maxScore) 
             {
                 stats.perfectPlays.Increment();
@@ -305,7 +325,7 @@ public class GameManager : MonoBehaviour {
             }           
         }
 
-        //update score display
+        // Update score display
         UpdateUI();
     }
 
@@ -356,9 +376,10 @@ public class GameManager : MonoBehaviour {
 
     void UpdateUI()
     {
-        scoreText.text = "Score : " + GetScore();
+        scoreText.text = GetScore().ToString();
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
-        timeText.text = "Time : " + string.Format("{0:0.00}", controller.time);
+        timeText.text = string.Format("{0:0.00}", controller.time);
+        timeSlider.value = controller.time;
     }
 
     void UpdateLevelClearText()
