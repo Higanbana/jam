@@ -269,28 +269,20 @@ public class GameManager : MonoBehaviour {
         EndGame();
 
         UpdateLevelClearText();
-        levelIndex++;
+        
 
         // Modify global player stats
         stats.succesPlays.Increment();
 
-        // Test if the level is the last level
-        if (levelIndex < levels.Length)
-        {
             levelClearCanvas.SetActive(true);
 
             // Modify global player stats
-            if (GetScore() == levels[levelIndex].maxScore) 
+            if (GetScore() >= levels[levelIndex].maxScore) 
             {
                 stats.perfectPlays.Increment();
             } 
+        }
 
-        }
-        else
-        {
-            gameWinCanvas.SetActive(true);
-        }
-    }
 
     IEnumerator TutorialText()
     {
