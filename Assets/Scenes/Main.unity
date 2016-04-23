@@ -1484,8 +1484,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 112.47983, y: -24}
-  m_SizeDelta: {x: 224.95966, y: 48}
+  m_AnchoredPosition: {x: 146.76799, y: -24}
+  m_SizeDelta: {x: 293.53598, y: 48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &257090309
 MonoBehaviour:
@@ -5755,9 +5755,9 @@ RectTransform:
   m_Father: {fileID: 1163179357}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 329, y: 0}
-  m_SizeDelta: {x: 797, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1389730689
 MonoBehaviour:
@@ -6894,8 +6894,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 112.47983, y: -66.5}
-  m_SizeDelta: {x: 224.95966, y: 17}
+  m_AnchoredPosition: {x: 146.76799, y: -66.5}
+  m_SizeDelta: {x: 293.53598, y: 17}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1592831300
 MonoBehaviour:
@@ -8233,7 +8233,7 @@ MonoBehaviour:
   achievementSource: {fileID: 1829872177}
   musicClips:
   - {fileID: 8300000, guid: ae14a37811cf0dd47ad00e8311370979, type: 3}
-  - {fileID: 8300000, guid: d3379c4170dd3d44289d7ab965e71e27, type: 3}
+  - {fileID: 8300000, guid: 366403f3be00f9d4eaef0421c6624dd6, type: 3}
   - {fileID: 8300000, guid: f92cae91d77a8754da5d4864b2bb849a, type: 3}
 --- !u!82 &1829872175
 AudioSource:
