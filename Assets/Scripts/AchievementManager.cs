@@ -155,20 +155,20 @@ public class AchievementManager : MonoBehaviour {
 
     public void ShowAchievements ()
     {
-        //Show achievement panel
+        // Show achievement panel
         achievementsPanel.SetActive(true);
 
-        //destroy items in list
+        // Destroy items in list
         for ( int i = contentPanel.gameObject.transform.childCount -1; i >= 0; i--)
         {
             GameObject o = contentPanel.transform.GetChild(i).gameObject;
             Destroy(o);
         }
 
-        //scroll to the beginning of the list
+        // Scroll to the beginning of the list
         contentPanel.parent.gameObject.GetComponent<ScrollRect>().verticalNormalizedPosition = 0.5f;
 
-        //setup game statistics panel with string
+        // Setup game statistics panel with string
 		statsText.text = GameManager.instance.stats.GetString();
 		GameObject firstItem = Instantiate(itemPrefab);
 		firstItem.transform.SetParent(contentPanel);
@@ -180,7 +180,7 @@ public class AchievementManager : MonoBehaviour {
 
 
 
-        //Add new achievement item in the list
+        // Add new achievement item in the list
         for (int i = 0; i < achievements.Length; i++)
         {
             if (!achievements[i].isHidden || achievements[i].isActive)

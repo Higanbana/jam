@@ -20,11 +20,6 @@ public class PlayerController : MonoBehaviour {
     private bool goUp = false;
     private bool goDown = false;
 
-#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
-    public float swipeSensitivity = 0.2f;
-    private Vector2 touchOrigin = -Vector2.one;
-#endif
-
     public AudioClip dieSound;
 
 	public int segments;
@@ -164,26 +159,21 @@ public class PlayerController : MonoBehaviour {
                 Touch touch = Input.touches[0];
                 if (touch.phase == TouchPhase.Began)
                 {
-                    touchOrigin = touch.position;
-                }
-                else if (touch.phase == TouchPhase.Ended)
-                {
-                    Vector2 touchEnd = touch.position;
-                    Vector2 swipe = touchEnd - touchOrigin;
-                    if (swipe.magnitude < mainCamera.orthographicSize * swipeSensitivity)
+                    Vector2 position = touch.position;
+                    if(position.x < 0.5f * mainCamera.pixelWidth)
                     {
-                        SwapColor();
-                    }
-                    else
-                    {
-                        if(swipe.x > 0f)
-                        {
-                            goUp = true;
-                        }
-                        else
+                        if(position.y < 0.5f * mainCamera.pixelHeight)
                         {
                             goDown = true;
                         }
+                        else
+                        {
+                            goUp = true;
+                        }
+                    }
+                    else
+                    {
+                        SwapColor();
                     }
                 }
             }

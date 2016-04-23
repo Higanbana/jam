@@ -37,8 +37,11 @@ public class GameManager : MonoBehaviour {
     public GameObject gameOverCanvas;
     public GameObject gameCanvas;
     public GameObject levelClearCanvas;
+    public GameObject levelSelectCanvas;
     public GameObject achievementListPanel;
 
+    public RectTransform levelSelector;
+    public LevelScreenController levelScreenPrefab;
     private Level[] levels;
     private int levelIndex = 0;
 
@@ -66,7 +69,7 @@ public class GameManager : MonoBehaviour {
 		}
 
         Load();
-        SetLevel("ComeAndFindMe");
+        SetLevel("Come And Find Me");
 	}
 
     void OnDestroy ()
@@ -188,6 +191,14 @@ public class GameManager : MonoBehaviour {
                 }
             }
             levels[levelIndex] = new Level(levelAssets[levelIndex].name, levelParameters, maxScore, duration + endLevelDelay);
+
+            if(!levelAssets[levelIndex].name.Equals("Credits"))
+            {
+                LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
+                levelScreen.levelSelectCanvas = levelSelectCanvas;
+                levelScreen.Init(levelAssets[levelIndex].name, 0, maxScore, 2);
+                levelScreen.gameObject.transform.SetParent(levelSelector, false);
+            }
         }
         
     }
@@ -235,6 +246,12 @@ public class GameManager : MonoBehaviour {
         controller.SetTime(startTime);
 
         StartCoroutine(TutorialText());
+    }
+
+    public void StartGame(string levelName)
+    {
+        SetLevel(levelName);
+        StartGame();
     }
 
     // Stop Game
@@ -401,11 +418,9 @@ public class GameManager : MonoBehaviour {
 
     void UpdateLevelClearText(bool newHighScore)
     {
-        Text title = levelClearCanvas.gameObject.transform.Find("Title").GetComponent<Text>();
         Text score = levelClearCanvas.gameObject.transform.Find("Score").GetComponent<Text>();
         Text highScore = levelClearCanvas.gameObject.transform.Find("High Score").GetComponent<Text>();
 
-        int index = levelIndex + 1;
         score.text = "SCORE " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
         highScore.text = "HIGH SCORE " + stats.highScore.value;
         if (newHighScore)
