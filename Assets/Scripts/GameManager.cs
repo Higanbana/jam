@@ -8,12 +8,14 @@ public enum GameState { GameOn, GamePaused, GameOff };
 
 public class Level
 {
+    public string name;
     public SpawnParameters[] spawns;
     public int maxScore;
     public float duration;
 
-    public Level(SpawnParameters[] spawnParameters, int score, float length)
+    public Level(string levelName, SpawnParameters[] spawnParameters, int score, float length)
     {
+        name = levelName;
         spawns = spawnParameters;
         maxScore = score;
         duration = length;
@@ -35,11 +37,10 @@ public class GameManager : MonoBehaviour {
     public GameObject gameOverCanvas;
     public GameObject gameCanvas;
     public GameObject levelClearCanvas;
-    public GameObject gameWinCanvas;
+    public GameObject achievementListPanel;
 
     private Level[] levels;
-    [HideInInspector]
-    public int levelIndex = 0;
+    private int levelIndex = 0;
 
     public PlayerStatistics stats;
 
@@ -63,7 +64,9 @@ public class GameManager : MonoBehaviour {
 		{
 			Destroy (gameObject);
 		}
+
         Load();
+        SetLevel("ComeAndFindMe");
 	}
 
     void OnDestroy ()
@@ -118,7 +121,7 @@ public class GameManager : MonoBehaviour {
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
 
         levels = new Level[levelAssets.Length];
-
+        
         for (int levelIndex = 0; levelIndex < levelAssets.Length; levelIndex++)
         {
             string[] spawns = levelAssets[levelIndex].text.Split(lineSeparator);
@@ -184,9 +187,23 @@ public class GameManager : MonoBehaviour {
                     levelParameters[lineIndex] = new ObstacleParameters(0f, 0f, 2, Color.black);
                 }
             }
-            levels[levelIndex] = new Level(levelParameters, maxScore, duration + endLevelDelay);
+            levels[levelIndex] = new Level(levelAssets[levelIndex].name, levelParameters, maxScore, duration + endLevelDelay);
         }
         
+    }
+    
+
+    public void SetLevel(string name)
+    {
+        levelIndex = 0;
+        while(levelIndex < levels.Length && !levels[levelIndex].name.Equals(name))
+        {
+            levelIndex++;
+        }
+        if(levelIndex == levels.Length)
+        {
+            levelIndex = 0;
+        }
     }
 
     public void StartGame()
@@ -267,29 +284,29 @@ public class GameManager : MonoBehaviour {
 
         EndGame();
 
-        UpdateLevelClearText();
-        levelIndex++;
+        // Update high score
+        if (GetScore() > stats.highScore.value)
+        {
+            stats.highScore.value = GetScore();
+            UpdateLevelClearText(true);
+        }
+        else
+        {
+            UpdateLevelClearText(false);
+        }
 
         // Modify global player stats
         stats.succesPlays.Increment();
 
-        // Test if the level is the last level
-        if (levelIndex < levels.Length)
-        {
-            levelClearCanvas.SetActive(true);
+        levelClearCanvas.SetActive(true);
 
-            // Modify global player stats
-            if (GetScore() == levels[levelIndex].maxScore) 
-            {
-                stats.perfectPlays.Increment();
-            } 
-
-        }
-        else
+        // Modify global player stats
+        if (GetScore() >= levels[levelIndex].maxScore) 
         {
-            gameWinCanvas.SetActive(true);
-        }
+            stats.perfectPlays.Increment();
+        } 
     }
+
 
     IEnumerator TutorialText()
     {
@@ -319,7 +336,7 @@ public class GameManager : MonoBehaviour {
             {
                 SetPauseState(GameState.GamePaused);
             }
-            else if (gameState == GameState.GamePaused)
+            else if (gameState == GameState.GamePaused && achievementListPanel.activeSelf == false)
             {
                 SetPauseState(GameState.GameOn);
             }           
@@ -382,16 +399,18 @@ public class GameManager : MonoBehaviour {
         timeSlider.value = controller.time;
     }
 
-    void UpdateLevelClearText()
+    void UpdateLevelClearText(bool newHighScore)
     {
-        if (levelIndex < levels.Length)
-        {
-            Text title = levelClearCanvas.gameObject.transform.Find("Title").GetComponent<Text>();
-            Text score = levelClearCanvas.gameObject.transform.Find("Score").GetComponent<Text>();
+        Text title = levelClearCanvas.gameObject.transform.Find("Title").GetComponent<Text>();
+        Text score = levelClearCanvas.gameObject.transform.Find("Score").GetComponent<Text>();
+        Text highScore = levelClearCanvas.gameObject.transform.Find("High Score").GetComponent<Text>();
 
-            int index = levelIndex + 1;
-            title.text = "Level " + index.ToString() + " Clear !";
-            score.text = "Score : " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
+        int index = levelIndex + 1;
+        score.text = "SCORE " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
+        highScore.text = "HIGH SCORE " + stats.highScore.value;
+        if (newHighScore)
+        {
+            highScore.text = "NEW " + highScore.text;
         }
     }
 
