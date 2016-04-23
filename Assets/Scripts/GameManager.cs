@@ -231,7 +231,17 @@ public class GameManager : MonoBehaviour {
         GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
 
         SetPauseState(GameState.GameOn);
-        SoundManager.instance.ChangeBackgroundMusic(2, false);
+        SoundManager.instance.ChangeBackgroundMusic(levelIndex+1, false);
+
+        // TODO : Clean this !!!!
+        if (levelIndex == 0)
+        {
+            spawner.GetComponent<SpawnerController>().speed = 6;
+        }
+        else
+        {
+            spawner.GetComponent<SpawnerController>().speed = 4;
+        }
 
         timeSlider.maxValue = levels[levelIndex].duration;
         timeSlider.value = 0f;
