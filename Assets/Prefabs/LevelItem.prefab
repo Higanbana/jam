@@ -27,6 +27,7 @@ GameObject:
   - 224: {fileID: 22489706}
   - 222: {fileID: 22267996}
   - 114: {fileID: 11462158}
+  - 114: {fileID: 11463134}
   m_Layer: 5
   m_Name: LevelItem
   m_TagString: Untagged
@@ -102,6 +103,20 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
+--- !u!114 &11463134
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 169540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fdd4a1ddaf32724980e6325569d6243, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  title: {fileID: 0}
+  score: {fileID: 0}
+  difficultyPrefab: {fileID: 0}
 --- !u!114 &11473292
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -123,7 +138,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: e811684fb2cb2214794e1da8550edfb4, type: 3}
-    m_FontSize: 26
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
