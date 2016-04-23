@@ -266,6 +266,7 @@ public class PlayerStatistics
     public Property succesPlays;
     public Property perfectPlays;
     public Property totalScore;
+    public Property highScore;
 
     public PlayerStatistics ()
     {
@@ -275,6 +276,7 @@ public class PlayerStatistics
         succesPlays = new Property("Succesful Plays", 0, new int[] { 14, 15, 16, 17, 18 });
         perfectPlays = new Property("Perfect Plays", 0, new int[] { 19, 20, 21, 22, 23 });
         totalScore = new Property("Total Score", 0, new int[] { 24, 25, 26, 27, 28 });
+        highScore = new Property("High Score", 0, new int[] { });
     }
 
     public string GetString ()
@@ -285,7 +287,8 @@ public class PlayerStatistics
             colorChange.GetString() +
             plays.GetString() +
             succesPlays.GetString() +
-            perfectPlays.GetString();   
+            perfectPlays.GetString() +
+            highScore.GetString();
     }
 
     public void CheckAchievements ()
@@ -306,6 +309,7 @@ public class PlayerStatistics
         succesPlays.SetValue(0f);
         perfectPlays.SetValue(0f);
         totalScore.SetValue(0f);
+        highScore.SetValue(0f);
     }
 
 }
