@@ -265,7 +265,7 @@ public class GameManager : MonoBehaviour {
     }
 
     // Stop Game
-    void EndGame() 
+    public void EndGame() 
     {
         SetPauseState(GameState.GameOff);
         spawner.SetActive(false);
