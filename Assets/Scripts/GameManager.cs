@@ -265,7 +265,7 @@ public class GameManager : MonoBehaviour {
     }
 
     // Stop Game
-    void EndGame() 
+    public void EndGame() 
     {
         SetPauseState(GameState.GameOff);
         spawner.SetActive(false);
@@ -310,6 +310,7 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(endLevelDelay);
 
         EndGame();
+		stats.totalScore.value += GetScore();
 
         // Update high score
         if (GetScore() > stats.highScore.value)
@@ -442,13 +443,11 @@ public class GameManager : MonoBehaviour {
     public void BlackCollected()
     {
         blackCollected++;
-        stats.totalScore.Increment();
     }
 
     public void WhiteCollected()
     {
         whiteCollected++;
-        stats.totalScore.Increment();
     }
 }
 
