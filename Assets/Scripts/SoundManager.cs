@@ -41,6 +41,11 @@ public class SoundManager : MonoBehaviour {
         musicSource.Play();
     }
 
+	public void ResetBackgroundMusic ()
+	{
+		ChangeBackgroundMusic (0, true);
+	}
+
     public void SetMusicAtTime (float time)
     {
         musicSource.time = time;
