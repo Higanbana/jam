@@ -116,14 +116,14 @@ public class AchievementManager : MonoBehaviour {
         SoundManager.instance.PlayAchievementSound();
 
         //popup up
-        while (achievementPopup.anchoredPosition.y > - height )
+        while (achievementPopup.anchoredPosition.y > - height - 10 )
         {
             achievementPopup.anchoredPosition = achievementPopup.anchoredPosition - Vector2.up * 3;
             yield return null;
         }
 
         //popup wait
-        yield return WaitForRealSeconds(1.5f);
+        yield return WaitForRealSeconds(2.5f);
 
         //popup down
         while (achievementPopup.anchoredPosition.y < height )
