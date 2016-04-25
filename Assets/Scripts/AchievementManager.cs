@@ -40,7 +40,7 @@ public class AchievementManager : MonoBehaviour {
         achievements = new Achievement[29];
 
         //Deaths
-        achievements[0] = new Achievement(1f, "Try again !", "1st death");
+        achievements[0] = new Achievement(1f, "Try again!", "1st death");
         achievements[1] = new Achievement(5f, "Everyone makes mistakes", "5 deaths");
         achievements[2] = new Achievement(25f, "The revenant", "25 deaths");
         achievements[3] = new Achievement(100f, "Death, sweet death", "100 deaths");
@@ -53,10 +53,10 @@ public class AchievementManager : MonoBehaviour {
         achievements[8] = new Achievement(500f, "Zenitude", "500 color changes");
 
         //plays
-        achievements[9] = new Achievement(1f, "Hello world !", "1st game !");
-        achievements[10] = new Achievement(5f, "Try again !", "5 levels played");
-        achievements[11] = new Achievement(20f, "Still here ?", "20 levels played");
-        achievements[12] = new Achievement(50f, "Again !", "50 levels played");
+        achievements[9] = new Achievement(1f, "Hello world!", "1st game !");
+        achievements[10] = new Achievement(5f, "Try again!", "5 levels played");
+        achievements[11] = new Achievement(20f, "Still here?", "20 levels played");
+        achievements[12] = new Achievement(50f, "Again!", "50 levels played");
         achievements[13] = new Achievement(100f, "We're glad you like this :D", "100 levels played");
 
         //succesful plays
@@ -67,7 +67,7 @@ public class AchievementManager : MonoBehaviour {
         achievements[18] = new Achievement(100f, "Master", "100 levels cleared");
 
         //perfect plays
-        achievements[19] = new Achievement(1f, "Perfect !", "1 level perfectly cleared");
+        achievements[19] = new Achievement(1f, "Perfect!", "1 level perfectly cleared");
         achievements[20] = new Achievement(5f, "Virtuoso", "5 levels perfectly cleared");
         achievements[21] = new Achievement(20f, "Clean freak", "20 levels perfectly cleared");
         achievements[22] = new Achievement(50f, "Certified maniac", "50 levels perfectly cleared");
@@ -76,9 +76,9 @@ public class AchievementManager : MonoBehaviour {
         //score
         achievements[24] = new Achievement(5f, "Insert Coin", "5 point collected");
         achievements[25] = new Achievement(100f, "Every beat helps", "100 points collected");
-        achievements[26] = new Achievement(500f, "Money ! Money ! Money !", "500 points collected");
-        achievements[27] = new Achievement(3500f, "I'm rich !", "3500 points collected");
-        achievements[28] = new Achievement(10000f, "...", "10000 points collected !");
+        achievements[26] = new Achievement(500f, "Money! Money! Money!", "500 points collected");
+        achievements[27] = new Achievement(3500f, "I'm rich!", "3500 points collected");
+        achievements[28] = new Achievement(10000f, "...O.O", "10000 points collected!");
 
     }
 
@@ -330,7 +330,7 @@ public class Property
 
     public string GetString()
     {
-        return name + " : " + value + "\n";
+        return name + ": " + value + "\n";
     }
 
     public void CheckAchievements (bool silent = false)
