@@ -11,17 +11,23 @@ public class SpawnerController : MonoBehaviour {
     public Transform[] rails;
     public SpawnParameters[] spawns;
 
-    public float speed;
-
-    private int spawnIndex = 0;
+    [HideInInspector]
+    public float speed = 1f;
 
     [HideInInspector]
-    public float time = 0.0f;
+    public float time = 0f;
+
+    private int spawnIndex = 0;
 
     void OnEnable ()
     {
         spawnIndex = 0;
         time = 0f;
+    }
+
+    public int GetOrderInLayer ()
+    {
+        return spawnIndex;
     }
 
     public void SetSpawns(SpawnParameters[] newSpawns)
@@ -38,11 +44,6 @@ public class SpawnerController : MonoBehaviour {
             newIndex++;
         }
         spawnIndex = newIndex;
-    }	
-
-    public int GetOrderInLayer ()
-    {
-        return spawnIndex;
     }
 
 	void FixedUpdate ()

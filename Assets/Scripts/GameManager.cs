@@ -2,23 +2,108 @@
 using UnityEngine.UI;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public enum GameState { GameOn, GamePaused, GameOff };
 
 public class Level
 {
-    public string name;
-    public SpawnParameters[] spawns;
-    public int maxScore;
-    public float duration;
+    public string name = "";
+    public string music = "";
+    public int difficulty = 0;
+    public int maxScore = 0;
+    public float duration = 0f;
+    public float speed = 0f;
+    public float beat = 0f;
+    public List<SpawnParameters> spawns = new List<SpawnParameters>();
 
-    public Level(string levelName, SpawnParameters[] spawnParameters, int score, float length)
+    static Color GetColor (string colorName)
     {
-        name = levelName;
-        spawns = spawnParameters;
-        maxScore = score;
-        duration = length;
+        if (colorName.Contains("W"))
+        {
+            return Color.white;
+        }
+        else
+        {
+            return Color.black;
+        }
+    }
+
+    public void LoadSpawn (string[] spawnParameters)
+    {
+        if (spawnParameters.Length >= 5)
+        {
+            string type = spawnParameters[0];
+            float startTime;
+            if (float.TryParse(spawnParameters[1], out startTime))
+            {
+                if (startTime > duration)
+                {
+                    duration = startTime;
+                }
+
+                bool ok = true;
+
+                // Collectibles
+                if (type.Contains("C"))
+                {
+                    int railIndex;
+                    float angle;
+                    ok &= int.TryParse(spawnParameters[2], out railIndex);
+                    ok &= float.TryParse(spawnParameters[3], out angle);
+                    string shape = spawnParameters[4];
+                    if (ok)
+                    {
+                        spawns.Add(new CollectibleParameters(startTime, railIndex, angle, shape));
+                        maxScore++;
+                    }
+                }
+                // Wave
+                else if (type.Contains("W") && spawnParameters.Length >= 6)
+                {
+                    float X;
+                    float Y;
+                    float speed;
+                    ok &= float.TryParse(spawnParameters[2], out X);
+                    ok &= float.TryParse(spawnParameters[3], out Y);
+                    Color color = GetColor(spawnParameters[4]);
+                    ok &= float.TryParse(spawnParameters[5], out speed);
+                    if (ok)
+                    {
+                        Vector2 position = new Vector2(X, Y);
+                        spawns.Add(new WaveParameters(startTime, position, speed, color));
+                    }
+
+                }
+                // Triggers
+                else if (type.Contains("S"))
+                {
+                    int railIndex;
+                    float endTime;
+                    ok &= int.TryParse(spawnParameters[2], out railIndex);
+                    ok &= float.TryParse(spawnParameters[3], out endTime);
+                    Color color = GetColor(spawnParameters[4]);
+                    if (ok)
+                    {
+                        spawns.Add(new TriggerParameters(startTime, endTime, railIndex, color));
+                    }
+                }
+                // Obstacles
+                else
+                {
+                    int railIndex;
+                    float endTime;
+                    ok &= int.TryParse(spawnParameters[2], out railIndex);
+                    ok &= float.TryParse(spawnParameters[3], out endTime);
+                    Color color = GetColor(spawnParameters[4]);
+                    if (ok)
+                    {
+                        spawns.Add(new ObstacleParameters(startTime, endTime, railIndex, color));
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -42,13 +127,13 @@ public class GameManager : MonoBehaviour {
 
     public RectTransform levelSelector;
     public LevelScreenController levelScreenPrefab;
-    private Level[] levels;
+    private List<Level> levels;
     private int levelIndex = 0;
 
     public PlayerStatistics stats;
 
-    private char lineSeparator = '\n';
-    private char fieldSeparator = ',';
+    private const char lineSeparator = '\n';
+    private const char fieldSeparator = ',';
 
     public float startTime;
     public float endLevelDelay;
@@ -68,6 +153,7 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 
+        levels = new List<Level>();
         Load();
         SetLevel("Come And Find Me");
 	}
@@ -84,18 +170,6 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    Color GetColor(string colorName)
-    {
-        if (colorName.Contains("W"))
-        {
-            return Color.white;
-        }
-        else
-        {
-            return Color.black;
-        }
-    }
-
     public void Save()
     {
         BinaryFormatter bf = new BinaryFormatter();
@@ -104,9 +178,47 @@ public class GameManager : MonoBehaviour {
         file.Close();
     }
 
+    void LoadLevel(TextAsset levelAsset)
+    {
+        string[] spawns = levelAsset.text.Split(lineSeparator);
+        if(spawns.Length >= 1)
+        {
+            Level level = new Level();
+            level.name = levelAsset.name;
+
+            string[] spawnParameters = spawns[0].Split(fieldSeparator);
+
+            if(spawnParameters.Length >= 4)
+            {
+                level.music = spawnParameters[0];
+                bool ok = true;
+                ok &= int.TryParse(spawnParameters[1], out level.difficulty);
+                ok &= float.TryParse(spawnParameters[2], out level.speed);
+                ok &= float.TryParse(spawnParameters[3], out level.beat);
+                if (ok)
+                {
+                    for (int lineIndex = 1; lineIndex < spawns.Length; lineIndex++)
+                    {
+                        level.LoadSpawn(spawns[lineIndex].Split(fieldSeparator));
+                    }
+
+                    levels.Add(level);
+
+                    if (!level.name.Equals("Credits"))
+                    {
+                        LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
+                        levelScreen.levelSelectCanvas = levelSelectCanvas;
+                        levelScreen.Init(level.name, 0, level.maxScore, level.difficulty);
+                        levelScreen.gameObject.transform.SetParent(levelSelector, false);
+                    }
+                }
+            }
+        }
+    }
+
     void Load()
     {
-        //load achievements
+        // Load achievements
         if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -120,98 +232,23 @@ public class GameManager : MonoBehaviour {
             stats = new PlayerStatistics();
         }
 
-        //Load levels
+        // Load levels
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
-
-        levels = new Level[levelAssets.Length];
-        
-        for (int levelIndex = 0; levelIndex < levelAssets.Length; levelIndex++)
+        foreach (TextAsset levelAsset in levelAssets)
         {
-            string[] spawns = levelAssets[levelIndex].text.Split(lineSeparator);
-
-            SpawnParameters[] levelParameters = new SpawnParameters[spawns.Length];
-            int maxScore = 0;
-            float duration = 0f;
-
-            for (int lineIndex = 0; lineIndex < spawns.Length; lineIndex++)
-            {
-                string[] spawnParameters = spawns[lineIndex].Split(fieldSeparator);
-                
-                // If the line has normal data, create game objects
-                if (spawnParameters.Length >= 5)
-                {
-                    string type = spawnParameters[0];
-                    float startTime = float.Parse(spawnParameters[1]);
-
-                    if(startTime > duration)
-                    {
-                        duration = startTime;
-                    }
-
-                    // Collectibles
-                    if (type.Contains("C"))
-                    {
-                        int railIndex = int.Parse(spawnParameters[2]);
-                        float angle = float.Parse(spawnParameters[3]);
-                        string shape = spawnParameters[4];
-                        levelParameters[lineIndex] = new CollectibleParameters(startTime, railIndex, angle, shape);
-                        maxScore++;
-                    }
-                    // Wave
-                    else if (type.Contains("W"))
-                    {
-                        float X = float.Parse(spawnParameters[2]);
-                        float Y = float.Parse(spawnParameters[3]);
-                        Vector2 position = new Vector2(X, Y);
-                        Color color = GetColor(spawnParameters[4]);
-                        float speed = float.Parse(spawnParameters[5]);
-                        levelParameters[lineIndex] = new WaveParameters(startTime, position, speed, color);
-                    }
-                    // Triggers
-                    else if (type.Contains("S"))
-                    {
-                        int railIndex = int.Parse(spawnParameters[2]);
-                        float endTime = float.Parse(spawnParameters[3]);
-                        Color color = GetColor(spawnParameters[4]);
-                        levelParameters[lineIndex] = new TriggerParameters(startTime, endTime, railIndex, color);
-                    }
-                    // Obstacles
-                    else
-                    {
-                        int railIndex = int.Parse(spawnParameters[2]);
-                        float endTime = float.Parse(spawnParameters[3]);
-                        Color color = GetColor(spawnParameters[4]);
-                        levelParameters[lineIndex] = new ObstacleParameters(startTime, endTime, railIndex, color);
-                    }
-                }
-                // Default obstacle
-                else
-                {
-                    levelParameters[lineIndex] = new ObstacleParameters(0f, 0f, 2, Color.black);
-                }
-            }
-            levels[levelIndex] = new Level(levelAssets[levelIndex].name, levelParameters, maxScore, duration + endLevelDelay);
-
-            if(!levelAssets[levelIndex].name.Equals("Credits"))
-            {
-                LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
-                levelScreen.levelSelectCanvas = levelSelectCanvas;
-                levelScreen.Init(levelAssets[levelIndex].name, 0, maxScore, 2);
-                levelScreen.gameObject.transform.SetParent(levelSelector, false);
-            }
-        }
-        
+            LoadLevel(levelAsset);
+        }     
     }
     
 
     public void SetLevel(string name)
     {
-        levelIndex = 0;
-        while(levelIndex < levels.Length && !levels[levelIndex].name.Equals(name))
+        levelIndex = 0;     
+        while(levelIndex < levels.Count && !levels[levelIndex].name.Equals(name))
         {
             levelIndex++;
         }
-        if(levelIndex == levels.Length)
+        if(levelIndex == levels.Count)
         {
             levelIndex = 0;
         }
@@ -225,23 +262,11 @@ public class GameManager : MonoBehaviour {
         // Start new game
         player.SetActive(true);
         player.GetComponent<PlayerController>().touchTrigger = false;
-
-        spawner.SetActive(true);
+        player.GetComponent<PlayerController>().pulseInterval = levels[levelIndex].beat;
 
         GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
 
         SetPauseState(GameState.GameOn);
-        SoundManager.instance.ChangeBackgroundMusic(levelIndex+1, false);
-
-        // TODO : Clean this !!!!
-        if (levelIndex == 0)
-        {
-            spawner.GetComponent<SpawnerController>().speed = 6;
-        }
-        else
-        {
-            spawner.GetComponent<SpawnerController>().speed = 4;
-        }
 
         timeSlider.maxValue = levels[levelIndex].duration;
         timeSlider.value = 0f;
@@ -249,11 +274,14 @@ public class GameManager : MonoBehaviour {
         blackCollected = 0;
         whiteCollected = 0;
 
+        SoundManager.instance.ChangeBackgroundMusic(levelIndex + 1, false);
         SoundManager.instance.SetMusicAtTime(startTime);
 
+        spawner.SetActive(true);
         SpawnerController controller = spawner.GetComponent<SpawnerController>();
-        controller.SetSpawns(levels[levelIndex].spawns);
-        controller.SetTime(startTime);
+        controller.SetSpawns(levels[levelIndex].spawns.ToArray());
+        controller.speed = levels[levelIndex].speed;
+        controller.time = startTime;
 
         StartCoroutine(TutorialText());
     }
