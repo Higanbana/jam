@@ -110,7 +110,7 @@ public class Level
 public class GameManager : MonoBehaviour {
 
     public GameObject player;
-    public GameObject spawner;
+    public SpawnerController spawner;
     public Text scoreText;
     public Text timeText;
     public Text tutorialText;
@@ -261,7 +261,6 @@ public class GameManager : MonoBehaviour {
 
         // Start new game
         player.SetActive(true);
-        player.GetComponent<PlayerController>().touchTrigger = false;
         player.GetComponent<PlayerController>().pulseInterval = levels[levelIndex].beat;
 
         GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
@@ -274,14 +273,10 @@ public class GameManager : MonoBehaviour {
         blackCollected = 0;
         whiteCollected = 0;
 
-        SoundManager.instance.ChangeBackgroundMusic(levelIndex + 1, false);
+        SoundManager.instance.ChangeBackgroundMusic(levels[levelIndex].music, false);
         SoundManager.instance.SetMusicAtTime(startTime);
 
-        spawner.SetActive(true);
-        SpawnerController controller = spawner.GetComponent<SpawnerController>();
-        controller.SetSpawns(levels[levelIndex].spawns.ToArray());
-        controller.speed = levels[levelIndex].speed;
-        controller.time = startTime;
+        spawner.StartLevel(levels[levelIndex], startTime);
 
         StartCoroutine(TutorialText());
     }
@@ -296,7 +291,7 @@ public class GameManager : MonoBehaviour {
     public void EndGame() 
     {
         SetPauseState(GameState.GameOff);
-        spawner.SetActive(false);
+        spawner.gameObject.SetActive(false);
 
         // Hide Player
         player.SetActive(false);
@@ -446,9 +441,8 @@ public class GameManager : MonoBehaviour {
     void UpdateUI()
     {
         scoreText.text = GetScore().ToString();
-        SpawnerController controller = spawner.GetComponent<SpawnerController>();
-        timeText.text = string.Format("{0:0.00}", controller.time);
-        timeSlider.value = controller.time;
+        timeText.text = string.Format("{0:0.00}", spawner.time);
+        timeSlider.value = spawner.time;
     }
 
     void UpdateLevelClearText(bool newHighScore)

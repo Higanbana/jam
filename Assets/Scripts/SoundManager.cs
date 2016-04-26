@@ -41,7 +41,20 @@ public class SoundManager : MonoBehaviour {
         musicSource.Play();
     }
 
-	public void ResetBackgroundMusic ()
+    public void ChangeBackgroundMusic(string musicName, bool forceloop)
+    {
+        int musicIndex = 0;
+        while (musicIndex < musicClips.Length && !musicClips[musicIndex].name.Equals(musicName))
+        {
+            musicIndex++;
+        }
+        if(musicIndex < musicClips.Length)
+        {
+            ChangeBackgroundMusic(musicIndex, forceloop);
+        }
+    }
+
+    public void ResetBackgroundMusic ()
 	{
 		ChangeBackgroundMusic (0, true);
 	}

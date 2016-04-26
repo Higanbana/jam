@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour {
 		spriteRenderer.color = Color.black;
 
         colliders = new List<GameObject>();
+        touchTrigger = false;
 
         line = GetComponent<LineRenderer>();
 		line.SetVertexCount (segments + 1);

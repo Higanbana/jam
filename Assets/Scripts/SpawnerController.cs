@@ -30,20 +30,17 @@ public class SpawnerController : MonoBehaviour {
         return spawnIndex;
     }
 
-    public void SetSpawns(SpawnParameters[] newSpawns)
+    public void StartLevel(Level level, float startTime)
     {
-        spawns = newSpawns;
-    }
-
-    public void SetTime (float newTime)
-    {
-        time = newTime;
-        int newIndex = 0;
-        while (newIndex < spawns.Length && spawns[newIndex].spawnTime <= time)
+        transform.gameObject.SetActive(true);
+        spawns = level.spawns.ToArray();
+        speed = level.speed;
+        time = startTime;
+        spawnIndex = 0;
+        while (spawnIndex < spawns.Length && spawns[spawnIndex].spawnTime <= time)
         {
-            newIndex++;
+            spawnIndex++;
         }
-        spawnIndex = newIndex;
     }
 
 	void FixedUpdate ()

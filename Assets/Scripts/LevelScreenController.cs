@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class LevelScreenController : MonoBehaviour {
@@ -8,11 +9,13 @@ public class LevelScreenController : MonoBehaviour {
     private Camera mainCamera;
     private LayoutElement layout;
     public Button startButton;
+    public EventTrigger trigger;
     public Text title;
     public Text score;
     public RectTransform difficultyMode;
     public RectTransform difficultyPrefab;
     public AudioClip selectionSound;
+    public AudioClip mouseOverSound;
     public GameObject levelSelectCanvas;
 
 	void Awake () {
@@ -31,6 +34,10 @@ public class LevelScreenController : MonoBehaviour {
         startButton.onClick.AddListener(() => levelSelectCanvas.SetActive(false));
         startButton.onClick.AddListener(() => SoundManager.instance.PlaySound(selectionSound));
         startButton.onClick.AddListener(() => GameManager.instance.StartGame(name));
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerEnter;
+        entry.callback.AddListener((eventData) => SoundManager.instance.PlaySound(mouseOverSound));
+        trigger.triggers.Add(entry);
 
         for (int index = 0; index < difficulty; index++)
         {
@@ -39,5 +46,4 @@ public class LevelScreenController : MonoBehaviour {
             difficultyInstance.SetParent(difficultyMode, false);
         }
     }
-
 }
