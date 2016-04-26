@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class SpawnerController : MonoBehaviour {
 
     public ObstacleController obstaclePrefab;
@@ -19,10 +20,15 @@ public class SpawnerController : MonoBehaviour {
 
     private int spawnIndex = 0;
 
+    public float invFrequency;
+    private AudioSource audio;
+    
     void OnEnable ()
     {
         spawnIndex = 0;
         time = 0f;
+        audio = SoundManager.instance.musicSource;
+        invFrequency = 1f/SoundManager.instance.musicSource.clip.frequency;
     }
 
     public int GetOrderInLayer ()
@@ -45,7 +51,10 @@ public class SpawnerController : MonoBehaviour {
 
 	void FixedUpdate ()
     {
-        time += Time.fixedDeltaTime;
+        //time += Time.fixedDeltaTime; //old method of calculating time
+        time = audio.timeSamples*invFrequency;
+        //Debug.Log(time+" "+1f/invFrequency+" audio.timesamples is "+audio.timeSamples);
+        
         while (spawnIndex < spawns.Length && spawns[spawnIndex].spawnTime <= time)
         {
             spawns[spawnIndex].Spawn(this);
