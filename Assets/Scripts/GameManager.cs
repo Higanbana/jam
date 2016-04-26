@@ -299,11 +299,7 @@ public class GameManager : MonoBehaviour {
         spawner.SetActive(false);
 
         // Hide Player
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            player.SetActive(false);
-        }
+        player.SetActive(false);
 
         // Destroy every obstacle
         GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");

@@ -6402,6 +6402,7 @@ GameObject:
   - 222: {fileID: 1401964049}
   - 114: {fileID: 1401964048}
   - 114: {fileID: 1401964047}
+  - 114: {fileID: 1401964050}
   m_Layer: 0
   m_Name: Levels
   m_TagString: Untagged
@@ -6458,7 +6459,7 @@ MonoBehaviour:
   m_Inertia: 1
   m_DecelerationRate: 0.135
   m_ScrollSensitivity: 1
-  m_Viewport: {fileID: 0}
+  m_Viewport: {fileID: 241488274}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
   m_HorizontalScrollbarVisibility: 0
@@ -6476,6 +6477,20 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1401964045}
+--- !u!114 &1401964050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1401964045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ace5489303867724ebc3693547c93e45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 1764281143}
+  fallbackIntensity: 0.1
+  snapThreshold: 0.05
 --- !u!1 &1407189501
 GameObject:
   m_ObjectHideFlags: 0
@@ -6965,7 +6980,6 @@ GameObject:
   - 222: {fileID: 1536775482}
   - 114: {fileID: 1536775481}
   - 114: {fileID: 1536775480}
-  - 114: {fileID: 1536775483}
   m_Layer: 5
   m_Name: LeftButton
   m_TagString: Untagged
@@ -7061,7 +7075,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1536775483}
+      - m_Target: {fileID: 1401964050}
         m_MethodName: Decrement
         m_Mode: 1
         m_Arguments:
@@ -7092,18 +7106,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1536775478}
---- !u!114 &1536775483
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1536775478}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ace5489303867724ebc3693547c93e45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 1764281143}
 --- !u!1 &1539298287
 GameObject:
   m_ObjectHideFlags: 0
@@ -7221,7 +7223,6 @@ GameObject:
   - 222: {fileID: 1555020888}
   - 114: {fileID: 1555020887}
   - 114: {fileID: 1555020886}
-  - 114: {fileID: 1555020889}
   m_Layer: 5
   m_Name: RightButton
   m_TagString: Untagged
@@ -7317,7 +7318,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1555020889}
+      - m_Target: {fileID: 1401964050}
         m_MethodName: Increment
         m_Mode: 1
         m_Arguments:
@@ -7348,18 +7349,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1555020884}
---- !u!114 &1555020889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1555020884}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ace5489303867724ebc3693547c93e45, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 1764281143}
 --- !u!1 &1565363196
 GameObject:
   m_ObjectHideFlags: 0
