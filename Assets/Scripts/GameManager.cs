@@ -366,6 +366,8 @@ public class GameManager : MonoBehaviour {
             yield return null;
         }
         tutorialText.gameObject.SetActive(false);
+        tutoColor.a = 1f;
+        tutorialText.color = tutoColor;
     }
 
     public void RestartGame()
