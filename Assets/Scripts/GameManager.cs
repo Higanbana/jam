@@ -111,12 +111,14 @@ public class GameManager : MonoBehaviour {
 
     public GameObject player;
     public SpawnerController spawner;
+    public Camera mainCamera;
+
+    public GameState gameState = GameState.GameOff;
+
     public Text scoreText;
     public Text timeText;
     public Text tutorialText;
     public Slider timeSlider;
-
-    public GameState gameState = GameState.GameOff;
 
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
@@ -263,7 +265,8 @@ public class GameManager : MonoBehaviour {
         player.SetActive(true);
         player.GetComponent<PlayerController>().pulseInterval = levels[levelIndex].beat;
 
-        GameObject.Find("Main Camera").GetComponent<Camera>().backgroundColor = Color.white;
+        // Put Camera to White
+        mainCamera.backgroundColor = Color.white;
 
         SetPauseState(GameState.GameOn);
 
@@ -295,6 +298,9 @@ public class GameManager : MonoBehaviour {
 
         // Hide Player
         player.SetActive(false);
+
+        // Put Back Camera to White
+        mainCamera.backgroundColor = Color.white;
 
         // Destroy every obstacle
         GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");

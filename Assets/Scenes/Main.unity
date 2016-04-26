@@ -10806,11 +10806,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1090049515}
   spawner: {fileID: 420866085}
+  mainCamera: {fileID: 985347365}
+  gameState: 2
   scoreText: {fileID: 948724005}
   timeText: {fileID: 1533910480}
   tutorialText: {fileID: 760947986}
   timeSlider: {fileID: 1677459491}
-  gameState: 2
   pauseCanvas: {fileID: 1011122825}
   gameOverCanvas: {fileID: 1886352094}
   gameCanvas: {fileID: 1407696679}
