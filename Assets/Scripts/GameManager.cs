@@ -126,6 +126,8 @@ public class GameManager : MonoBehaviour {
     public GameObject levelClearCanvas;
     public GameObject levelSelectCanvas;
     public GameObject achievementListPanel;
+	public GameObject pauseButton;
+
 
     public RectTransform levelSelector;
     public LevelScreenController levelScreenPrefab;
@@ -387,19 +389,25 @@ public class GameManager : MonoBehaviour {
         // Pause game with esc button
         if (Input.GetButtonDown("Cancel"))
         {
-            if (gameState == GameState.GameOn)
-            {
-                SetPauseState(GameState.GamePaused);
-            }
-            else if (gameState == GameState.GamePaused && achievementListPanel.activeSelf == false)
-            {
-                SetPauseState(GameState.GameOn);
-            }           
+			TogglePause ();
         }
 
         // Update score display
         UpdateUI();
     }
+
+	public void TogglePause()
+	{
+		if (gameState == GameState.GameOn)
+		{
+			SetPauseState(GameState.GamePaused);
+
+		}
+		else if (gameState == GameState.GamePaused && achievementListPanel.activeSelf == false)
+		{
+			SetPauseState(GameState.GameOn);
+		} 
+	}
 
     public bool IsPaused()
     {
@@ -421,7 +429,7 @@ public class GameManager : MonoBehaviour {
             gameState = GameState.GamePaused;
             pauseCanvas.SetActive(true);
             SoundManager.instance.musicSource.Pause();
-
+			pauseButton.SetActive (false);
         }
         else if (pauseState == GameState.GameOn)
         {
@@ -429,6 +437,7 @@ public class GameManager : MonoBehaviour {
             gameState = GameState.GameOn;
             pauseCanvas.SetActive(false);
             SoundManager.instance.musicSource.Play();
+			pauseButton.SetActive (true);
             gameCanvas.SetActive(true);
         }
         else // Game off !
@@ -437,6 +446,7 @@ public class GameManager : MonoBehaviour {
             gameState = GameState.GameOff;
             pauseCanvas.SetActive(false);
             SoundManager.instance.musicSource.Pause();
+			pauseButton.SetActive (false);
             gameCanvas.SetActive(false);
         }
     }
