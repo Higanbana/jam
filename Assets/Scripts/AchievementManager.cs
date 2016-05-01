@@ -53,7 +53,7 @@ public class AchievementManager : MonoBehaviour {
         achievements[8] = new Achievement(500f, "Zenitude", "500 color changes");
 
         //plays
-        achievements[9] = new Achievement(1f, "Hello world!", "1st game !");
+        achievements[9] = new Achievement(1f, "Hello world!", "1st game!");
         achievements[10] = new Achievement(5f, "Try again!", "5 levels played");
         achievements[11] = new Achievement(20f, "Still here?", "20 levels played");
         achievements[12] = new Achievement(50f, "Again!", "50 levels played");
