@@ -132,7 +132,9 @@ public class GameManager : MonoBehaviour {
     public RectTransform levelSelector;
     public LevelScreenController levelScreenPrefab;
     private List<Level> levels;
+
     private int levelIndex = 0;
+    private string levelName = "";
 
     public PlayerStatistics stats;
 
@@ -184,22 +186,26 @@ public class GameManager : MonoBehaviour {
 
     void LoadLevel(TextAsset levelAsset)
     {
+        //init colored blocks
         string[] spawns = levelAsset.text.Split(lineSeparator);
         if(spawns.Length >= 1)
         {
-            Level level = new Level();
-            level.name = levelAsset.name;
+            Level level = new Level
+            {
+                name = levelAsset.name
+            };
 
             string[] spawnParameters = spawns[0].Split(fieldSeparator);
 
+            // Init level metadata
             if(spawnParameters.Length >= 4)
             {
                 level.music = spawnParameters[0];
-                bool ok = true;
-                ok &= int.TryParse(spawnParameters[1], out level.difficulty);
-                ok &= float.TryParse(spawnParameters[2], out level.speed);
-                ok &= float.TryParse(spawnParameters[3], out level.beat);
-                if (ok)
+                bool initOk = true;
+                initOk &= int.TryParse(spawnParameters[1], out level.difficulty);
+                initOk &= float.TryParse(spawnParameters[2], out level.speed);
+                initOk &= float.TryParse(spawnParameters[3], out level.beat);
+                if (initOk)
                 {
                     for (int lineIndex = 1; lineIndex < spawns.Length; lineIndex++)
                     {
@@ -222,6 +228,14 @@ public class GameManager : MonoBehaviour {
 
     void Load()
     {
+
+        // Load levels
+        TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
+        foreach (TextAsset levelAsset in levelAssets)
+        {
+            LoadLevel(levelAsset);
+        }
+
         // Load achievements
         if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
         {
@@ -229,6 +243,7 @@ public class GameManager : MonoBehaviour {
             FileStream file = File.Open(Application.persistentDataPath + "/achievements.dat", FileMode.Open);
             stats = (PlayerStatistics)bf.Deserialize(file);
             stats.CheckAchievements();
+            stats.InitHighScores(levels);
             file.Close();
         }
         else
@@ -236,17 +251,13 @@ public class GameManager : MonoBehaviour {
             stats = new PlayerStatistics();
         }
 
-        // Load levels
-        TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
-        foreach (TextAsset levelAsset in levelAssets)
-        {
-            LoadLevel(levelAsset);
-        }     
+  
     }
     
 
     public void SetLevel(string name)
     {
+        levelName = name;
         levelIndex = 0;     
         while(levelIndex < levels.Count && !levels[levelIndex].name.Equals(name))
         {
@@ -327,10 +338,10 @@ public class GameManager : MonoBehaviour {
     public void GameOver()
     {
         stats.death.Increment();
+        UpdateGameOverText();
         EndGame();
         gameOverCanvas.SetActive(true);
     }
-
 
     public IEnumerator EndLevel()
     {
@@ -338,21 +349,9 @@ public class GameManager : MonoBehaviour {
 
         EndGame();
 		stats.totalScore.value += GetScore();
+        stats.successPlays.Increment();
 
-        // Update high score
-        if (GetScore() > stats.highScore.value)
-        {
-            stats.highScore.value = GetScore();
-            UpdateLevelClearText(true);
-        }
-        else
-        {
-            UpdateLevelClearText(false);
-        }
-
-        // Modify global player stats
-        stats.succesPlays.Increment();
-
+        UpdateLevelClearText();
         levelClearCanvas.SetActive(true);
 
         // Modify global player stats
@@ -463,13 +462,35 @@ public class GameManager : MonoBehaviour {
         timeSlider.value = spawner.time;
     }
 
-    void UpdateLevelClearText(bool newHighScore)
+    void UpdateLevelClearText()
     {
         Text score = levelClearCanvas.gameObject.transform.Find("Score").GetComponent<Text>();
         Text highScore = levelClearCanvas.gameObject.transform.Find("High Score").GetComponent<Text>();
+   
+        UpdateHighScoreText(score, highScore);
+    }
 
+    void UpdateGameOverText()
+    {
+        Text score = gameOverCanvas.gameObject.transform.Find("Score").GetComponent<Text>();
+        Text highScore = gameOverCanvas.gameObject.transform.Find("High Score").GetComponent<Text>();
+
+        UpdateHighScoreText(score, highScore);
+    }
+
+    void UpdateHighScoreText(Text score, Text highScore)
+    {
+        // Update high score
+        bool newHighScore = false;
+        if (GetScore() > stats.highScores.GetValue(levelName).value)
+        {
+            stats.highScores.GetValue(levelName).value = GetScore();
+            newHighScore = true;
+        }
+
+        // Display high score text
         score.text = "SCORE " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
-        highScore.text = "HIGH SCORE " + stats.highScore.value;
+        highScore.text = "HIGH SCORE " + stats.highScores.GetValue(levelName).value;
         if (newHighScore)
         {
             highScore.text = "NEW " + highScore.text;
