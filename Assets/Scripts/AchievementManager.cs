@@ -346,12 +346,12 @@ public class PlayerStatistics
 
     public void CheckAchievements ()
     {
-        totalScore.notifyAchievements(true);
-        death.notifyAchievements(true);
-        colorChange.notifyAchievements(true);
-        plays.notifyAchievements(true);
-        successPlays.notifyAchievements(true);
-        perfectPlays.notifyAchievements(true);
+        totalScore.NotifyAchievements(true);
+        death.NotifyAchievements(true);
+        colorChange.NotifyAchievements(true);
+        plays.NotifyAchievements(true);
+        successPlays.NotifyAchievements(true);
+        perfectPlays.NotifyAchievements(true);
     }
 
     public void Reset()
@@ -374,7 +374,7 @@ public abstract class Property
     private float value = 0;
     protected int[] achievementIndex;
    
-    public void notifyAchievements (bool silent = false)
+    public void NotifyAchievements (bool silent = false)
     {
         for (int i = 0; i < achievementIndex.Length; i++)
         {
@@ -410,7 +410,7 @@ public class NumericProperty : Property {
     public void Increment()
     {
         value += 1;
-        notifyAchievements();
+        NotifyAchievements();
     }
 
     public void SetValue(float value)

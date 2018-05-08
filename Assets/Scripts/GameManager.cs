@@ -134,7 +134,6 @@ public class GameManager : MonoBehaviour {
     private List<Level> levels;
 
     private int levelIndex = 0;
-    private string levelName = "";
 
     public PlayerStatistics stats;
 
@@ -257,7 +256,6 @@ public class GameManager : MonoBehaviour {
 
     public void SetLevel(string name)
     {
-        levelName = name;
         levelIndex = 0;     
         while(levelIndex < levels.Count && !levels[levelIndex].name.Equals(name))
         {
@@ -482,15 +480,16 @@ public class GameManager : MonoBehaviour {
     {
         // Update high score
         bool newHighScore = false;
-        if (GetScore() > stats.highScores.GetValue(levelName).value)
+        string name = levels[levelIndex].name;
+        if (GetScore() > stats.highScores.GetValue(name).value)
         {
-            stats.highScores.GetValue(levelName).value = GetScore();
+            stats.highScores.GetValue(name).value = GetScore();
             newHighScore = true;
         }
 
         // Display high score text
         score.text = "SCORE " + GetScore().ToString() + " / " + levels[levelIndex].maxScore.ToString();
-        highScore.text = "HIGH SCORE " + stats.highScores.GetValue(levelName).value;
+        highScore.text = "HIGH SCORE " + stats.highScores.GetValue(name).value;
         if (newHighScore)
         {
             highScore.text = "NEW " + highScore.text;
