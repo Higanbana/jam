@@ -20,13 +20,11 @@ public class SpawnerController : MonoBehaviour {
     private int spawnIndex = 0;
 
     public float invFrequency;
-    private AudioSource audio;
     
     void OnEnable ()
     {
         spawnIndex = 0;
         time = 0f;
-        audio = SoundManager.instance.musicSource;
         invFrequency = 1f/SoundManager.instance.musicSource.clip.frequency;
     }
 
@@ -49,7 +47,6 @@ public class SpawnerController : MonoBehaviour {
 
 	void FixedUpdate ()
     {
-        //time += Time.fixedDeltaTime; //old method of calculating time
         time += Time.deltaTime;
 
         while (spawnIndex < level.spawns.Count && level.spawns[spawnIndex].spawnTime <= time)
