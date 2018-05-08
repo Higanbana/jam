@@ -327,9 +327,9 @@ public class PlayerStatistics
         highScores = new NumericProperties("High Scores", new Dictionary<string, NumericProperty>(), new int[] { });
     }
 
-    public void InitHighScores(List<Level> levels)
+    public void InitHighScore(string id)
     {
-        highScores.InitValues(levels);
+        highScores.InitValue(id);
     }
 
     public string GetString ()
@@ -473,13 +473,13 @@ public class NumericProperties : Property
         value[id].Increment();
     }
 
-    internal void InitValues(List<Level> levels)
+    internal void InitValue(String id)
     {
-        foreach (Level level in levels)
+        if (!value.ContainsKey(id))
         {
-            if (!value.ContainsKey(level.name)) {
-                value.Add(level.name, new NumericProperty("High Score - " + level.name, 0, new int[] { }));
-            }
+            // TODO : Handle this with a expandable list and without hard coded "High Score" here
+            value.Add(id, new NumericProperty("High Score - " + id , 0, new int[] { }));
         }
     }
+
 }

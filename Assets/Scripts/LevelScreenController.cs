@@ -12,6 +12,9 @@ public class LevelScreenController : MonoBehaviour {
     public EventTrigger trigger;
     public Text title;
     public Text score;
+    public int maxScore;
+    public int highScore;
+    public string levelID;
     public RectTransform difficultyMode;
     public RectTransform difficultyPrefab;
     public AudioClip selectionSound;
@@ -25,12 +28,16 @@ public class LevelScreenController : MonoBehaviour {
 
 	void Update () {
         layout.minWidth = mainCamera.pixelWidth;
+        SetScore((int) GameManager.instance.stats.highScores.GetValue(levelID).value);
 	}
 
     public void Init(string name, int highScore, int maxScore, int difficulty)
     {
         title.text = name.ToUpper();
-        score.text = highScore + " / " + maxScore;
+        this.levelID = name;
+        this.maxScore = maxScore;
+        this.highScore = highScore;
+        SetScore(highScore);
         startButton.onClick.AddListener(() => levelSelectCanvas.SetActive(false));
         startButton.onClick.AddListener(() => SoundManager.instance.PlaySound(selectionSound));
         startButton.onClick.AddListener(() => GameManager.instance.StartGame(name));
@@ -45,5 +52,10 @@ public class LevelScreenController : MonoBehaviour {
             RectTransform difficultyInstance = (RectTransform)Instantiate(difficultyPrefab, position, Quaternion.identity);
             difficultyInstance.SetParent(difficultyMode, false);
         }
+    }
+
+    private void SetScore(int highScore)
+    {
+        score.text = highScore + " / " + maxScore;
     }
 }

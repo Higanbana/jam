@@ -207,6 +207,7 @@ public class GameManager : MonoBehaviour {
                 initOk &= float.TryParse(spawnParameters[3], out level.beat);
                 if (initOk)
                 {
+                    stats.InitHighScore(level.name);
                     for (int lineIndex = 1; lineIndex < spawns.Length; lineIndex++)
                     {
                         level.LoadSpawn(spawns[lineIndex].Split(fieldSeparator));
@@ -218,12 +219,13 @@ public class GameManager : MonoBehaviour {
                     {
                         LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
                         levelScreen.levelSelectCanvas = levelSelectCanvas;
-                        levelScreen.Init(level.name, 0, level.maxScore, level.difficulty);
+                        levelScreen.Init(level.name, (int) stats.highScores.GetValue(level.name).value, level.maxScore, level.difficulty);
                         levelScreen.gameObject.transform.SetParent(levelSelector, false);
                     } else
                     {
                         level.deathEnabled = false;
                     }
+                    
                 }
             }
         }
@@ -231,14 +233,6 @@ public class GameManager : MonoBehaviour {
 
     void Load()
     {
-
-        // Load levels
-        TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
-        foreach (TextAsset levelAsset in levelAssets)
-        {
-            LoadLevel(levelAsset);
-        }
-
         // Load achievements
         if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
         {
@@ -252,8 +246,13 @@ public class GameManager : MonoBehaviour {
         {
             stats = new PlayerStatistics();
         }
-        stats.InitHighScores(levels);
 
+        // Load levels
+        TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
+        foreach (TextAsset levelAsset in levelAssets)
+        {
+            LoadLevel(levelAsset);
+        }
 
     }
     
