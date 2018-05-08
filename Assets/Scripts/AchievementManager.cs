@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using System.Collections.Generic;
 
 public class AchievementManager : MonoBehaviour {
     public static AchievementManager instance;
@@ -40,45 +41,45 @@ public class AchievementManager : MonoBehaviour {
         achievements = new Achievement[29];
 
         //Deaths
-        achievements[0] = new Achievement(1f, "Try again!", "1st death");
-        achievements[1] = new Achievement(5f, "Everyone makes mistakes", "5 deaths");
-        achievements[2] = new Achievement(25f, "The revenant", "25 deaths");
-        achievements[3] = new Achievement(100f, "Death, sweet death", "100 deaths");
-        achievements[4] = new Achievement(500f, "Braiiins...?", "500 deaths");
+        achievements[0] = new NumericAchievement(1f, "Try again!", "1st death");
+        achievements[1] = new NumericAchievement(5f, "Everyone makes mistakes", "5 deaths");
+        achievements[2] = new NumericAchievement(25f, "The revenant", "25 deaths");
+        achievements[3] = new NumericAchievement(100f, "Death, sweet death", "100 deaths");
+        achievements[4] = new NumericAchievement(500f, "Braiiins...?", "500 deaths");
 
         //Color changes
-        achievements[5] = new Achievement(5f, "Color swapper", "5 color changes");
-        achievements[6] = new Achievement(25f, "Color curiosity", "25 color changes");
-        achievements[7] = new Achievement(100f, "World in black and white", "100 color changes");
-        achievements[8] = new Achievement(500f, "Zenitude", "500 color changes");
+        achievements[5] = new NumericAchievement(5f, "Color swapper", "5 color changes");
+        achievements[6] = new NumericAchievement(25f, "Color curiosity", "25 color changes");
+        achievements[7] = new NumericAchievement(100f, "World in black and white", "100 color changes");
+        achievements[8] = new NumericAchievement(500f, "Zenitude", "500 color changes");
 
         //plays
-        achievements[9] = new Achievement(1f, "Hello world!", "1st game !");
-        achievements[10] = new Achievement(5f, "Try again!", "5 levels played");
-        achievements[11] = new Achievement(20f, "Still here?", "20 levels played");
-        achievements[12] = new Achievement(50f, "Again!", "50 levels played");
-        achievements[13] = new Achievement(100f, "We're glad you like this :D", "100 levels played");
+        achievements[9] = new NumericAchievement(1f, "Hello world!", "1st game!");
+        achievements[10] = new NumericAchievement(5f, "Try again!", "5 levels played");
+        achievements[11] = new NumericAchievement(20f, "Still here?", "20 levels played");
+        achievements[12] = new NumericAchievement(50f, "Again!", "50 levels played");
+        achievements[13] = new NumericAchievement(100f, "We're glad you like this :D", "100 levels played");
 
         //succesful plays
-        achievements[14] = new Achievement(1f, "First steps", "1 level cleared");
-        achievements[15] = new Achievement(5f, "Beginner", "5 levels cleared");
-        achievements[16] = new Achievement(20f, "Intermediate", "20 levels cleared");
-        achievements[17] = new Achievement(50f, "Expert", "50 levels cleared");
-        achievements[18] = new Achievement(100f, "Master", "100 levels cleared");
+        achievements[14] = new NumericAchievement(1f, "First steps", "1 level cleared");
+        achievements[15] = new NumericAchievement(5f, "Beginner", "5 levels cleared");
+        achievements[16] = new NumericAchievement(20f, "Intermediate", "20 levels cleared");
+        achievements[17] = new NumericAchievement(50f, "Expert", "50 levels cleared");
+        achievements[18] = new NumericAchievement(100f, "Master", "100 levels cleared");
 
         //perfect plays
-        achievements[19] = new Achievement(1f, "Perfect!", "1 level perfectly cleared");
-        achievements[20] = new Achievement(5f, "Virtuoso", "5 levels perfectly cleared");
-        achievements[21] = new Achievement(20f, "Clean freak", "20 levels perfectly cleared");
-        achievements[22] = new Achievement(50f, "Certified maniac", "50 levels perfectly cleared");
-        achievements[23] = new Achievement(100f, "OCD", "100 levels perfectly cleared");
+        achievements[19] = new NumericAchievement(1f, "Perfect!", "1 level perfectly cleared");
+        achievements[20] = new NumericAchievement(5f, "Virtuoso", "5 levels perfectly cleared");
+        achievements[21] = new NumericAchievement(20f, "Clean freak", "20 levels perfectly cleared");
+        achievements[22] = new NumericAchievement(50f, "Certified maniac", "50 levels perfectly cleared");
+        achievements[23] = new NumericAchievement(100f, "OCD", "100 levels perfectly cleared");
 
         //score
-        achievements[24] = new Achievement(5f, "Insert Coin", "5 point collected");
-        achievements[25] = new Achievement(100f, "Every beat helps", "100 points collected");
-        achievements[26] = new Achievement(500f, "Money! Money! Money!", "500 points collected");
-        achievements[27] = new Achievement(3500f, "I'm rich!", "3500 points collected");
-        achievements[28] = new Achievement(10000f, "...O.O", "10000 points collected!");
+        achievements[24] = new NumericAchievement(5f, "Insert Coin", "5 point collected");
+        achievements[25] = new NumericAchievement(100f, "Every beat helps", "100 points collected");
+        achievements[26] = new NumericAchievement(500f, "Money! Money! Money!", "500 points collected");
+        achievements[27] = new NumericAchievement(3500f, "I'm rich!", "3500 points collected");
+        achievements[28] = new NumericAchievement(10000f, "...O.O", "10000 points collected!");
 
     }
 
@@ -145,9 +146,9 @@ public class AchievementManager : MonoBehaviour {
         StartCoroutine(PopAchievement(achievements[achievementIndex]));
     }
 
-    public void CheckAchievement (int index, float value, bool silent = false)
+    public void CheckAchievement (int index, bool silent = false)
     {
-        if (achievements[index].CheckActivation(value) && !silent)
+        if (achievements[index].CheckActivation() && !silent)
         {
             EarnAchievement(index);
         }
@@ -202,28 +203,74 @@ public class AchievementManager : MonoBehaviour {
 
     }
 
+    internal void RegisterProperty(int index, Property numericProperty)
+    {
+        achievements[index].RegisterProperty(numericProperty);
+    }
 }
 
-public class Achievement
+public abstract class Achievement
 {
     public bool isActive = false;
-    public enum Compare { GreaterThan, Equal, LowerThan};
     public string name = "";
     public string description = "";
     public bool isHidden;
-    private float threshold = 0;
-    private Compare compareMethod;
 
-    public Achievement(float threshold, string name, string description, bool isHidden = false, Compare compareMethod = Compare.GreaterThan)
+
+    public Achievement(string name, string description, bool isHidden = false)
     {
         this.name = name.ToUpper();
         this.description = description;
-        this.threshold = threshold;
-        this.compareMethod = compareMethod;
         this.isHidden = isHidden;
     }
 
-    public bool CheckActivation(float value)
+    public abstract bool CheckActivation();
+
+    public abstract void RegisterProperty(Property property);
+
+}
+
+public class NumericAchievement : Achievement
+{
+    List<NumericProperty> properties = new List<NumericProperty>();
+    public enum Compare { GreaterThan, Equal, LowerThan };
+    protected float threshold = 0;
+    protected Compare compareMethod;
+
+    public NumericAchievement(float threshold, string name, string description, bool isHidden = false, Compare compareMethod = Compare.GreaterThan) : base(name, description, isHidden)
+    {
+        this.threshold = threshold;
+        this.compareMethod = compareMethod;
+    }
+
+    // TODO : Simplify with templates ?
+    public override void RegisterProperty(Property property)
+    {
+        if (property is NumericProperty)
+        {
+            properties.Add(property as NumericProperty);
+        } else
+        {
+            throw new InvalidOperationException("Numeric Achievement must have numeric property");
+        }
+    }
+
+    public override bool CheckActivation()
+    {
+        return CheckActivation(GetValue());
+    }
+
+    protected float GetValue()
+    {
+        float result = 0;
+        foreach ( NumericProperty prop in properties)
+        {
+            result += prop.value;
+        }
+        return result;
+    }
+
+    protected bool CheckActivation(float value)
     {
         if (!isActive)
         {
@@ -255,28 +302,34 @@ public class Achievement
         }
         return false;
     }
+
 }
 
 [Serializable]
 public class PlayerStatistics
 {
-    public Property death;
-    public Property colorChange;
-    public Property plays;
-    public Property succesPlays;
-    public Property perfectPlays;
-    public Property totalScore;
-    public Property highScore;
+    public NumericProperty death;
+    public NumericProperty colorChange;
+    public NumericProperty plays;
+    public NumericProperty successPlays;
+    public NumericProperty perfectPlays;
+    public NumericProperty totalScore;
+    public NumericProperties highScores;
 
     public PlayerStatistics ()
     {
-        death = new Property("Deaths", 0, new int[] { 0, 1, 2, 3, 4 });
-        colorChange = new Property("Color Changes", 0, new int[] { 5, 6, 7, 8 });
-        plays = new Property("Levels Played", 0, new int[] { 9, 10, 11, 12 ,13 });
-        succesPlays = new Property("Succesful Plays", 0, new int[] { 14, 15, 16, 17, 18 });
-        perfectPlays = new Property("Perfect Plays", 0, new int[] { 19, 20, 21, 22, 23 });
-        totalScore = new Property("Total Score", 0, new int[] { 24, 25, 26, 27, 28 });
-        highScore = new Property("High Score", 0, new int[] { });
+        death = new NumericProperty("Deaths", 0, new int[] { 0, 1, 2, 3, 4 });
+        colorChange = new NumericProperty("Color Changes", 0, new int[] { 5, 6, 7, 8 });
+        plays = new NumericProperty("Levels Played", 0, new int[] { 9, 10, 11, 12 ,13 });
+        successPlays = new NumericProperty("Successful Plays", 0, new int[] { 14, 15, 16, 17, 18 });
+        perfectPlays = new NumericProperty("Perfect Plays", 0, new int[] { 19, 20, 21, 22, 23 });
+        totalScore = new NumericProperty("Total Score", 0, new int[] { 24, 25, 26, 27, 28 });
+        highScores = new NumericProperties("High Scores", new Dictionary<string, NumericProperty>(), new int[] { });
+    }
+
+    public void InitHighScores(List<Level> levels)
+    {
+        highScores.InitValues(levels);
     }
 
     public string GetString ()
@@ -286,19 +339,19 @@ public class PlayerStatistics
             death.GetString() +
             colorChange.GetString() +
             plays.GetString() +
-            succesPlays.GetString() +
+            successPlays.GetString() +
             perfectPlays.GetString() +
-            highScore.GetString();
+            highScores.GetString();
     }
 
     public void CheckAchievements ()
     {
-        totalScore.CheckAchievements(true);
-        death.CheckAchievements(true);
-        colorChange.CheckAchievements(true);
-        plays.CheckAchievements(true);
-        succesPlays.CheckAchievements(true);
-        perfectPlays.CheckAchievements(true);
+        totalScore.NotifyAchievements(true);
+        death.NotifyAchievements(true);
+        colorChange.NotifyAchievements(true);
+        plays.NotifyAchievements(true);
+        successPlays.NotifyAchievements(true);
+        perfectPlays.NotifyAchievements(true);
     }
 
     public void Reset()
@@ -306,40 +359,50 @@ public class PlayerStatistics
         death.SetValue(0f);
         colorChange.SetValue(0f);
         plays.SetValue(0f);
-        succesPlays.SetValue(0f);
+        successPlays.SetValue(0f);
         perfectPlays.SetValue(0f);
         totalScore.SetValue(0f);
-        highScore.SetValue(0f);
+        highScores.SetValue(0f);
     }
 
 }
 
 [Serializable]
-public class Property
+public abstract class Property
 {
     public string name = "";
-    public float value = 0;
-    private int[] achievementIndex;
-
-    public Property(string name, float value, int[] achievements)
-    {
-        this.name = name;
-        this.value = value;
-        this.achievementIndex = achievements;
-    }
-
-    public string GetString()
-    {
-        return name + ": " + value + "\n";
-    }
-
-    public void CheckAchievements (bool silent = false)
+    private float value = 0;
+    protected int[] achievementIndex;
+   
+    public void NotifyAchievements (bool silent = false)
     {
         for (int i = 0; i < achievementIndex.Length; i++)
         {
             if(AchievementManager.instance)
             {
-                AchievementManager.instance.CheckAchievement(achievementIndex[i], value, silent);
+                AchievementManager.instance.CheckAchievement(achievementIndex[i], silent);
+            }
+        }
+    }
+
+    public abstract string GetString();
+
+}
+
+[Serializable]
+public class NumericProperty : Property {
+    public float value;
+
+    public NumericProperty(string name, int value, int[] achievements)
+    {
+        this.value = value;
+        this.name = name;
+        this.achievementIndex = achievements;
+        foreach (int index in achievements)
+        {
+            if (AchievementManager.instance)
+            {
+                AchievementManager.instance.RegisterProperty(index, this);
             }
         }
     }
@@ -347,11 +410,75 @@ public class Property
     public void Increment()
     {
         value += 1;
-        CheckAchievements();
+        NotifyAchievements();
     }
 
     public void SetValue(float value)
     {
         this.value = value;
+    }
+
+    public override string GetString()
+    {
+        return name + ": " + value + "\n";
+    }
+}
+
+[Serializable]
+public class NumericProperties : Property
+{
+    private Dictionary<string, NumericProperty> value;
+
+    public NumericProperties(string name, Dictionary<string, NumericProperty> properties, int[] achievements)
+    {
+        this.name = name;
+        this.achievementIndex = achievements;
+        this.value = properties;
+    }
+
+    public override string GetString()
+    {
+        string result = "";
+        foreach (String prop in value.Keys)
+        {
+            result += value[prop].GetString();
+        }
+        return result;
+    }
+
+    public void SetValue(string id, float newValue)
+    {
+        value[id].SetValue(newValue);
+    }
+
+    public void SetValue(float newValue)
+    {
+        foreach(string id in value.Keys)
+        {
+            SetValue(id, newValue);
+        }
+    }
+
+    public void SetValues(Dictionary<string, NumericProperty> values)
+    {
+        value = values;
+    }
+
+    public NumericProperty GetValue(string id)
+    {
+        return value[id];
+    }
+
+    public void Increment(string id)
+    {
+        value[id].Increment();
+    }
+
+    internal void InitValues(List<Level> levels)
+    {
+        foreach (Level level in levels)
+        {
+            value.Add(level.name, new NumericProperty("High Score - " + level.name, 0, new int[] { }));
+        }
     }
 }

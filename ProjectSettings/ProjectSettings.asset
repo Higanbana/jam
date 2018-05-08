@@ -553,6 +553,10 @@ PlayerSettings:
   scriptingBackend:
     Android: 0
     Standalone: 0
+<<<<<<< HEAD
+=======
+    WebGL: 1
+>>>>>>> 096c595b062aa50494974ae075abe5abd9cd6c86
     WebPlayer: 0
   il2cppCompilerConfiguration: {}
   incrementalIl2cppBuild: {}
