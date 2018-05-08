@@ -16,6 +16,7 @@ public class Level
     public float duration = 0f;
     public float speed = 0f;
     public float beat = 0f;
+    public bool deathEnabled = true;
     public List<SpawnParameters> spawns = new List<SpawnParameters>();
 
     public void LoadSpawn (string[] spawnParameters)
@@ -147,6 +148,7 @@ public class GameManager : MonoBehaviour {
                 initOk &= float.TryParse(spawnParameters[3], out level.beat);
                 if (initOk)
                 {
+                    stats.InitHighScore(level.name);
                     for (int lineIndex = 1; lineIndex < spawns.Length; lineIndex++)
                     {
                         level.LoadSpawn(spawns[lineIndex].Split(fieldSeparator));
@@ -158,8 +160,19 @@ public class GameManager : MonoBehaviour {
 
                     if (!level.name.Equals("Credits"))
                     {
+<<<<<<< HEAD
                         levelSelector.AddLevel(level);
+=======
+                        LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
+                        levelScreen.levelSelectCanvas = levelSelectCanvas;
+                        levelScreen.Init(level.name, (int) stats.highScores.GetValue(level.name).value, level.maxScore, level.difficulty);
+                        levelScreen.gameObject.transform.SetParent(levelSelector, false);
+                    } else
+                    {
+                        level.deathEnabled = false;
+>>>>>>> bf2c803bd7d6f84e9a6c7d5369e3c84f8e9752ac
                     }
+                    
                 }
             }
         }
@@ -167,6 +180,19 @@ public class GameManager : MonoBehaviour {
 
     void Load()
     {
+        // Load achievements
+        if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/achievements.dat", FileMode.Open);
+            stats = (PlayerStatistics)bf.Deserialize(file);
+            stats.CheckAchievements();
+            file.Close();
+        }
+        else
+        {
+            stats = new PlayerStatistics();
+        }
 
         // Load levels
         TextAsset[] levelAssets = Resources.LoadAll<TextAsset>("Levels");
@@ -175,22 +201,6 @@ public class GameManager : MonoBehaviour {
             LoadLevel(levelAsset);
         }
 
-        // Load achievements
-        if (File.Exists(Application.persistentDataPath + "/achievements.dat"))
-        {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream file = File.Open(Application.persistentDataPath + "/achievements.dat", FileMode.Open);
-            stats = (PlayerStatistics)bf.Deserialize(file);
-            stats.CheckAchievements();
-            stats.InitHighScores(levels);
-            file.Close();
-        }
-        else
-        {
-            stats = new PlayerStatistics();
-        }
-
-  
     }
     
 
@@ -215,6 +225,7 @@ public class GameManager : MonoBehaviour {
         // Start new game
         player.SetActive(true);
         player.GetComponent<PlayerController>().pulseInterval = levels[levelIndex].beat;
+        player.GetComponent<PlayerController>().EnableDeath(levels[levelIndex].deathEnabled);
 
         // Put Camera to White
         mainCamera.backgroundColor = Color.white;
