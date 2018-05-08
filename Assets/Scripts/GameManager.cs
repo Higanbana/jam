@@ -18,90 +18,33 @@ public class Level
     public float beat = 0f;
     public List<SpawnParameters> spawns = new List<SpawnParameters>();
 
-    static Color GetColor (string colorName)
-    {
-        if (colorName.Contains("W"))
-        {
-            return Color.white;
-        }
-        else
-        {
-            return Color.black;
-        }
-    }
-
     public void LoadSpawn (string[] spawnParameters)
     {
-        if (spawnParameters.Length >= 5)
+        if (spawnParameters.Length > 0 && spawnParameters[0].Length > 0)
         {
-            string type = spawnParameters[0];
-            float startTime;
-            if (float.TryParse(spawnParameters[1], out startTime))
+            char type = spawnParameters[0][0];
+            SpawnParameters spawn = null;
+            switch (type)
             {
-                if (startTime > duration)
-                {
-                    duration = startTime;
-                }
-
-                bool ok = true;
-
-                // Collectibles
-                if (type.Contains("C"))
-                {
-                    int railIndex;
-                    float angle;
-                    ok &= int.TryParse(spawnParameters[2], out railIndex);
-                    ok &= float.TryParse(spawnParameters[3], out angle);
-                    string shape = spawnParameters[4];
-                    if (ok)
-                    {
-                        spawns.Add(new CollectibleParameters(startTime, railIndex, angle, shape));
-                        maxScore++;
-                    }
-                }
-                // Wave
-                else if (type.Contains("W") && spawnParameters.Length >= 6)
-                {
-                    float X;
-                    float Y;
-                    float speed;
-                    ok &= float.TryParse(spawnParameters[2], out X);
-                    ok &= float.TryParse(spawnParameters[3], out Y);
-                    Color color = GetColor(spawnParameters[4]);
-                    ok &= float.TryParse(spawnParameters[5], out speed);
-                    if (ok)
-                    {
-                        Vector2 position = new Vector2(X, Y);
-                        spawns.Add(new WaveParameters(startTime, position, speed, color));
-                    }
-
-                }
-                // Triggers
-                else if (type.Contains("S"))
-                {
-                    int railIndex;
-                    float endTime;
-                    ok &= int.TryParse(spawnParameters[2], out railIndex);
-                    ok &= float.TryParse(spawnParameters[3], out endTime);
-                    Color color = GetColor(spawnParameters[4]);
-                    if (ok)
-                    {
-                        spawns.Add(new TriggerParameters(startTime, endTime, railIndex, color));
-                    }
-                }
-                // Obstacles
-                else
-                {
-                    int railIndex;
-                    float endTime;
-                    ok &= int.TryParse(spawnParameters[2], out railIndex);
-                    ok &= float.TryParse(spawnParameters[3], out endTime);
-                    Color color = GetColor(spawnParameters[4]);
-                    if (ok)
-                    {
-                        spawns.Add(new ObstacleParameters(startTime, endTime, railIndex, color));
-                    }
-                }
+                case 'C':
+                    spawn = CollectibleParameters.UnstreamCollectible(this, spawnParameters);
+                    break;
+                case 'O':
+                    spawn = ObstacleParameters.UnstreamObstacle(this, spawnParameters);
+                    break;
+                case 'W':
+                    spawn = WaveParameters.UnstreamWave(this, spawnParameters);
+                    break;
+                case 'S':
+                    spawn = TriggerParameters.UnstreamTrigger(this, spawnParameters);
+                    break;
+                case 'T':
+                    spawn = TextParameters.UnstreamText(this, spawnParameters);
+                    break;
+            }
+            if (spawn != null)
+            {
+                spawns.Add(spawn);
             }
         }
     }
@@ -111,13 +54,14 @@ public class GameManager : MonoBehaviour {
 
     public GameObject player;
     public SpawnerController spawner;
+    public Transform rails;
     public Camera mainCamera;
 
     public GameState gameState = GameState.GameOff;
 
     public Text scoreText;
     public Text timeText;
-    public Text tutorialText;
+    public Text msgText;
     public Slider timeSlider;
 
     public GameObject pauseCanvas;
@@ -204,6 +148,8 @@ public class GameManager : MonoBehaviour {
                         level.LoadSpawn(spawns[lineIndex].Split(fieldSeparator));
                     }
 
+                    level.duration += (spawner.gameObject.transform.position.x - rails.position.x) / level.speed;
+
                     levels.Add(level);
 
                     if (!level.name.Equals("Credits"))
@@ -280,8 +226,6 @@ public class GameManager : MonoBehaviour {
         SoundManager.instance.SetMusicAtTime(startTime);
 
         spawner.StartLevel(levels[levelIndex], startTime);
-
-        StartCoroutine(TutorialText());
     }
 
     public void StartGame(string levelName)
@@ -360,20 +304,29 @@ public class GameManager : MonoBehaviour {
         } 
     }
 
-
-    IEnumerator TutorialText()
+    public void ShowText(string text, float time)
     {
-        tutorialText.gameObject.SetActive(true);
-        Color tutoColor = tutorialText.color;
-        while (tutoColor.a > 0f)
+        StartCoroutine(PrintText(text, time));
+    }
+
+    IEnumerator PrintText(string text, float time)
+    {
+        if (!msgText.gameObject.activeSelf)
         {
-            tutoColor.a -= 0.0025f;
-            tutorialText.color = tutoColor;
-            yield return null;
+            msgText.text = text;
+            msgText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(time);
+            Color msgColor = msgText.color;
+            while (msgColor.a > 0f)
+            {
+                msgColor.a -= 0.0025f;
+                msgText.color = msgColor;
+                yield return null;
+            }
+            msgText.gameObject.SetActive(false);
+            msgColor.a = 1f;
+            msgText.color = msgColor;
         }
-        tutorialText.gameObject.SetActive(false);
-        tutoColor.a = 1f;
-        tutorialText.color = tutoColor;
     }
 
     public void RestartGame()

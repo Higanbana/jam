@@ -20,7 +20,7 @@ public class SoundManager : MonoBehaviour {
         }
 
         DontDestroyOnLoad(gameObject);
-	
+        musicSource.velocityUpdateMode = AudioVelocityUpdateMode.Fixed;
 	}
 
     public void PlayAchievementSound()

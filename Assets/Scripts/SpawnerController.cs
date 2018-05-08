@@ -10,10 +10,9 @@ public class SpawnerController : MonoBehaviour {
     public WaveController wavePrefab;
 
     public Transform[] rails;
-    public SpawnParameters[] spawns;
 
     [HideInInspector]
-    public float speed = 1f;
+    public Level level;
 
     [HideInInspector]
     public float time = 0f;
@@ -36,14 +35,13 @@ public class SpawnerController : MonoBehaviour {
         return spawnIndex;
     }
 
-    public void StartLevel(Level level, float startTime)
+    public void StartLevel(Level newLevel, float startTime)
     {
         transform.gameObject.SetActive(true);
-        spawns = level.spawns.ToArray();
-        speed = level.speed;
+        level = newLevel;
         time = startTime;
         spawnIndex = 0;
-        while (spawnIndex < spawns.Length && spawns[spawnIndex].spawnTime <= time)
+        while (spawnIndex < level.spawns.Count && level.spawns[spawnIndex].spawnTime <= time)
         {
             spawnIndex++;
         }
@@ -52,17 +50,16 @@ public class SpawnerController : MonoBehaviour {
 	void FixedUpdate ()
     {
         //time += Time.fixedDeltaTime; //old method of calculating time
-        time = audio.timeSamples*invFrequency;
-        //Debug.Log(time+" "+1f/invFrequency+" audio.timesamples is "+audio.timeSamples);
-        
-        while (spawnIndex < spawns.Length && spawns[spawnIndex].spawnTime <= time)
+        time += Time.deltaTime;
+
+        while (spawnIndex < level.spawns.Count && level.spawns[spawnIndex].spawnTime <= time)
         {
-            spawns[spawnIndex].Spawn(this);
+            level.spawns[spawnIndex].Spawn(this);
             spawnIndex++;
         }
-        if(spawnIndex == spawns.Length)
+        if (time >= level.duration)
         {
             StartCoroutine(GameManager.instance.EndLevel());
         }
-	}
+    }
 }
