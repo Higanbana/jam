@@ -1,6 +1,32 @@
-﻿Tutorial, 1, 3, 1
+﻿Tutorial, 1, 4, 1
 
-T, 0.2, 5, Use ↑ and ↓ to move and gather points
+T, 0.2, 4, Use ↑ and ↓ to move and gather points
+C,0.4,2,0,P,0
 C,0.8,2,0,P,0
 C,1.2,2,0,P,0
-C,1.6,2,0,P,0
+C,1.6,3,0,P,0
+C,2.0,3,0,P,0
+C,2.4,3,0,P,0
+C,2.8,1,0,P,0
+C,3.2,1,0,P,0
+C,3.6,1,0,P,0
+C,4.0,2,0,P,0
+C,4.4,2,0,P,0
+C,4.8,2,0,P,0
+O, 6, 1, 8, B
+O, 6, 3, 8, B
+C,6.5,2,0,P,0
+C,7.0,2,0,P,0
+C,7.5,2,0,P,0
+T, 8.0, 11.0, Disappear and you will die
+O, 8.5, 2, 9.5, B
+O, 10.5, 1, 12.5, B
+O, 10.5, 3, 12.5, B
+C,11,2,0,P,0
+C,11.5,2,0,P,0
+C,12,2,0,P,0
+O, 15, 1, 17, B
+O, 15, 2, 17, B
+O, 15, 3, 17, B
+T, 16, 18, Use SPACE to swap color at the right time
+T, 20, 24, This is it ! Try to maxmize your score to unlock achievements

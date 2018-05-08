@@ -315,17 +315,17 @@ public class GameManager : MonoBehaviour {
         {
             msgText.text = text;
             msgText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(time);
             Color msgColor = msgText.color;
+            msgColor.a = 1f;
+            msgText.color = msgColor;
+            yield return new WaitForSeconds(time);
             while (msgColor.a > 0f)
             {
-                msgColor.a -= 0.0025f;
+                msgColor.a -= 0.01f;
                 msgText.color = msgColor;
                 yield return null;
             }
             msgText.gameObject.SetActive(false);
-            msgColor.a = 1f;
-            msgText.color = msgColor;
         }
     }
 
