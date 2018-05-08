@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -29,7 +30,8 @@ public class PlayerController : MonoBehaviour {
 	public float pulseInterval;
 	private float pulseCooldown = 0f;
     private bool deathEnabled = false;
-	LineRenderer line;
+	private LineRenderer line;
+    public LineRenderer swapSafeIndicator;
 
     public void EnableDeath(bool enable)
     {
@@ -49,10 +51,12 @@ public class PlayerController : MonoBehaviour {
 
         line = GetComponent<LineRenderer>();
 		line.SetVertexCount (segments + 1);
-		line.useWorldSpace = false;
-        line.sortingLayerName = "Player";
-		DrawCircle ();
-	}
+		DrawPulseCircle ();
+
+        swapSafeIndicator.SetVertexCount(segments + 1);
+        DrawCircle(circleCollider.radius, 1f, -1f, Color.red, segments, swapSafeIndicator);
+
+    }
 	
     GameObject FindTopCollider ()
     {
@@ -96,12 +100,22 @@ public class PlayerController : MonoBehaviour {
         {
             Collider2D collider2D = topCollider.gameObject.GetComponent<Collider2D>();
             Vector3 direction = (transform.position - topCollider.gameObject.transform.position).normalized;
-            Vector2 far = transform.position + circleCollider.radius * direction;
-            Vector2 near = transform.position - circleCollider.radius * direction;
-            if (collider2D.OverlapPoint(far) && collider2D.OverlapPoint(near) && deathEnabled)
+            Vector2 farestPointToObstacle = transform.position + circleCollider.radius * direction;
+            Vector2 nearestPointToObstacle = transform.position - circleCollider.radius * direction;
+            bool farestPointCovered = collider2D.OverlapPoint(farestPointToObstacle);
+            bool nearestpointCovered = collider2D.OverlapPoint(nearestPointToObstacle);
+            if (farestPointCovered && nearestpointCovered && deathEnabled)
             {
                 PlayerDie();
             }
+            else if((farestPointCovered && !nearestpointCovered) || (!farestPointCovered && nearestpointCovered))
+            {
+                ShowSwapSafeIndicator(true);
+            }
+        }
+        else
+        {
+            ShowSwapSafeIndicator(false);
         }
 
         if (!topCollider && spriteRenderer.color == mainCamera.backgroundColor && deathEnabled)
@@ -145,6 +159,17 @@ public class PlayerController : MonoBehaviour {
             mainCamera.backgroundColor = GetOppositeColor(mainCamera.backgroundColor);
         }
 	}
+
+    public void ShowSwapSafeIndicator(bool show)
+    {
+        if (show)
+        {
+            swapSafeIndicator.enabled = true;
+        } else
+        {
+            swapSafeIndicator.enabled = false;
+        }
+    }
 
     public void Update ()
     {
@@ -190,7 +215,7 @@ public class PlayerController : MonoBehaviour {
 #endif
         }
 
-        DrawCircle ();
+        DrawPulseCircle ();
     }
 
     void SetRail (int railIndex)
@@ -223,37 +248,41 @@ public class PlayerController : MonoBehaviour {
 		GameManager.instance.GameOver();
 	}
 
-	void DrawCircle()
-	{
-		float x;
-		float y;
-		float z = -1f;
+	void DrawPulseCircle()
+    {
+        float z = -2f;
+        Color c = spriteRenderer.color;
+        alpha -= radiusIncrement / 2.5f;
+        radius += radiusIncrement;
 
-		Color c = spriteRenderer.color;
-		float angle = 0f;
-		alpha -= radiusIncrement/2.5f;
-		radius += radiusIncrement;
+        DrawCircle(radius, alpha, z, c, segments, line);
 
-		for (int i = 0; i < (segments + 1); i++)
-		{
-			x = Mathf.Sin (Mathf.Deg2Rad * angle) * radius;
-			y = Mathf.Cos (Mathf.Deg2Rad * angle) * radius;
-			line.SetPosition (i,new Vector3(x,y,z));
-			c.a = alpha;
-			line.SetColors (c, c);
-			angle += (360.25f / segments);
-		}
+        if (pulseCooldown <= 0)
+        {
+            radius = 1;
+            alpha = 1;
+            pulseCooldown = pulseInterval;
+        }
+        else
+        {
+            pulseCooldown -= Time.deltaTime;
+        }
+    }
 
-		if (pulseCooldown <= 0)
-		{
-			radius = 1;
-			alpha = 1;
-			pulseCooldown = pulseInterval;
-		}
-		else
-		{
-			pulseCooldown -= Time.deltaTime;
-		}
-	}
+    private void DrawCircle(float circleRadius, float alpha, float z, Color c, int segments, LineRenderer renderer)
+    {
+        float angle = 0f;
+        float x;
+        float y;
+        for (int i = 0; i < (segments + 1); i++)
+        {
+            x = Mathf.Sin(Mathf.Deg2Rad * angle) * circleRadius;
+            y = Mathf.Cos(Mathf.Deg2Rad * angle) * circleRadius;
+            renderer.SetPosition(i, new Vector3(x, y, z));
+            c.a = alpha;
+            renderer.SetColors(c, c);  
+            angle += (360.2f / segments);
+        }
 
+    }
 }
