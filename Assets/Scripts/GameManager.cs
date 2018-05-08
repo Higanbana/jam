@@ -160,17 +160,11 @@ public class GameManager : MonoBehaviour {
 
                     if (!level.name.Equals("Credits"))
                     {
-<<<<<<< HEAD
-                        levelSelector.AddLevel(level);
-=======
-                        LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
-                        levelScreen.levelSelectCanvas = levelSelectCanvas;
-                        levelScreen.Init(level.name, (int) stats.highScores.GetValue(level.name).value, level.maxScore, level.difficulty);
-                        levelScreen.gameObject.transform.SetParent(levelSelector, false);
-                    } else
+                        levelSelector.AddLevel(level, (int)stats.highScores.GetValue(level.name).value);
+                    }
+                    else
                     {
                         level.deathEnabled = false;
->>>>>>> bf2c803bd7d6f84e9a6c7d5369e3c84f8e9752ac
                     }
                     
                 }

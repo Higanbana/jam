@@ -1727,6 +1727,39 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 181968114}
+--- !u!1 &202538947
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 202538948}
+  m_Layer: 0
+  m_Name: LevelIcons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &202538948
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 202538947}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1723482746}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.1}
+  m_AnchorMax: {x: 0.5, y: 0.1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &219714371
 GameObject:
   m_ObjectHideFlags: 0
@@ -7252,7 +7285,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ace5489303867724ebc3693547c93e45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panel: {fileID: 1764281143}
+  levelSelectorCanvas: {fileID: 1723482745}
+  levelSelectorPanel: {fileID: 1764281143}
+  levelIconsPanel: {fileID: 202538948}
+  levelIconPrefab: {fileID: 224317579233374632, guid: b3e3f0e76b9cbd143af0bd24a3d0848d,
+    type: 2}
+  levelScreenPrefab: {fileID: 11426234, guid: 4dbb29efbf1fc494da9a3ec319f8ade4, type: 2}
   fallbackIntensity: 0.1
   snapThreshold: 0.05
 --- !u!1 &1407189501
@@ -9392,6 +9430,7 @@ RectTransform:
   - {fileID: 1536775479}
   - {fileID: 1555020885}
   - {fileID: 108332611}
+  - {fileID: 202538948}
   m_Father: {fileID: 1389859298}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9722,7 +9761,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -1359, y: 0}
+  m_SizeDelta: {x: -625, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1764281144
 MonoBehaviour:
@@ -11744,11 +11783,9 @@ MonoBehaviour:
   gameOverCanvas: {fileID: 1886352094}
   gameCanvas: {fileID: 1407696679}
   levelClearCanvas: {fileID: 1666654687}
-  levelSelectCanvas: {fileID: 1723482745}
   achievementListPanel: {fileID: 1163179356}
   pauseButton: {fileID: 40123469}
-  levelSelector: {fileID: 1764281143}
-  levelScreenPrefab: {fileID: 11426234, guid: 4dbb29efbf1fc494da9a3ec319f8ade4, type: 2}
+  levelSelector: {fileID: 1401964050}
   stats:
     death:
       name: Deaths

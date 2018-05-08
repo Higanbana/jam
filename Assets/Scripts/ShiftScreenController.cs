@@ -26,16 +26,16 @@ public class ShiftScreenController : MonoBehaviour {
         screenCount = levelSelectorPanel.childCount;
     }
     
-    public void AddLevel(Level level)
+    public void AddLevel(Level level, int highscore)
     {
         LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
         levelScreen.levelSelectCanvas = levelSelectorCanvas;
-        levelScreen.Init(level.name, 0, level.maxScore, level.difficulty);
+        levelScreen.Init(level.name, highscore, level.maxScore, level.difficulty);
         levelScreen.gameObject.transform.SetParent(levelSelectorPanel, false);
 
         RectTransform levelIcon = (RectTransform)Instantiate(levelIconPrefab, Vector3.zero, Quaternion.identity);
-        levelIcon.position = new Vector3(levelIcon.rect.width * levelIconsPanel.childCount, 0f, 0f);
         levelIcon.SetParent(levelIconsPanel, false);
+        levelIcon.localPosition = new Vector3(levelIcon.rect.width * (levelIconsPanel.childCount - 0.5f), 0f, 0f);
         levelIconsPanel.offsetMin = new Vector2(-0.5f * levelIcon.rect.width * levelIconsPanel.childCount, 0f);
     }
 
