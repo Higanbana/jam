@@ -68,13 +68,10 @@ public class GameManager : MonoBehaviour {
     public GameObject gameOverCanvas;
     public GameObject gameCanvas;
     public GameObject levelClearCanvas;
-    public GameObject levelSelectCanvas;
     public GameObject achievementListPanel;
 	public GameObject pauseButton;
 
-
-    public RectTransform levelSelector;
-    public LevelScreenController levelScreenPrefab;
+    public ShiftScreenController levelSelector;
     private List<Level> levels;
 
     private int levelIndex = 0;
@@ -161,10 +158,7 @@ public class GameManager : MonoBehaviour {
 
                     if (!level.name.Equals("Credits"))
                     {
-                        LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
-                        levelScreen.levelSelectCanvas = levelSelectCanvas;
-                        levelScreen.Init(level.name, 0, level.maxScore, level.difficulty);
-                        levelScreen.gameObject.transform.SetParent(levelSelector, false);
+                        levelSelector.AddLevel(level);
                     }
                 }
             }
