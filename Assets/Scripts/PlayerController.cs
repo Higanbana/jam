@@ -100,15 +100,15 @@ public class PlayerController : MonoBehaviour {
         {
             Collider2D collider2D = topCollider.gameObject.GetComponent<Collider2D>();
             Vector3 direction = (transform.position - topCollider.gameObject.transform.position).normalized;
-            Vector2 farestPointToObstacle = transform.position + circleCollider.radius * direction;
+            Vector2 farthestPointToObstacle = transform.position + circleCollider.radius * direction;
             Vector2 nearestPointToObstacle = transform.position - circleCollider.radius * direction;
-            bool farestPointCovered = collider2D.OverlapPoint(farestPointToObstacle);
+            bool farthestPointCovered = collider2D.OverlapPoint(farthestPointToObstacle);
             bool nearestpointCovered = collider2D.OverlapPoint(nearestPointToObstacle);
-            if (farestPointCovered && nearestpointCovered && deathEnabled)
+            if (farthestPointCovered && nearestpointCovered && deathEnabled)
             {
                 PlayerDie();
             }
-            else if((farestPointCovered && !nearestpointCovered) || (!farestPointCovered && nearestpointCovered))
+            else if((farthestPointCovered && !nearestpointCovered) || (!farthestPointCovered && nearestpointCovered))
             {
                 ShowSwapSafeIndicator(true);
             }
