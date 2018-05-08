@@ -51,10 +51,10 @@ public class PlayerController : MonoBehaviour {
 
         line = GetComponent<LineRenderer>();
 		line.SetVertexCount (segments + 1);
-		DrawPulseCircle ();
+		DrawPulseCircle();
 
         swapSafeIndicator.SetVertexCount(segments + 1);
-        DrawCircle(circleCollider.radius, 1f, -1f, Color.red, segments, swapSafeIndicator);
+        DrawCircle(circleCollider.radius, 0.75f, -1f, Color.gray, segments, swapSafeIndicator);
 
     }
 	
@@ -281,7 +281,7 @@ public class PlayerController : MonoBehaviour {
             renderer.SetPosition(i, new Vector3(x, y, z));
             c.a = alpha;
             renderer.SetColors(c, c);  
-            angle += (360.2f / segments);
+            angle += 360.2f/segments;
         }
 
     }
