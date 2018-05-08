@@ -232,7 +232,7 @@ public abstract class Achievement
 
 public class NumericAchievement : Achievement
 {
-    List<NumericProperty> properties = new List<NumericProperty>();
+    Dictionary<string, NumericProperty> properties = new Dictionary<string, NumericProperty>();
     public enum Compare { GreaterThan, Equal, LowerThan };
     protected float threshold = 0;
     protected Compare compareMethod;
@@ -248,7 +248,12 @@ public class NumericAchievement : Achievement
     {
         if (property is NumericProperty)
         {
-            properties.Add(property as NumericProperty);
+            if (properties.ContainsKey(property.name)) {
+                properties.Add(property.name, property as NumericProperty);
+            } else
+            {
+                properties[property.name] = property as NumericProperty;
+            }
         } else
         {
             throw new InvalidOperationException("Numeric Achievement must have numeric property");
@@ -263,7 +268,7 @@ public class NumericAchievement : Achievement
     protected float GetValue()
     {
         float result = 0;
-        foreach ( NumericProperty prop in properties)
+        foreach (NumericProperty prop in properties.Values)
         {
             result += prop.value;
         }
@@ -352,6 +357,7 @@ public class PlayerStatistics
         plays.NotifyAchievements(true);
         successPlays.NotifyAchievements(true);
         perfectPlays.NotifyAchievements(true);
+        highScores.NotifyAchievements(true);
     }
 
     public void Reset()
@@ -365,6 +371,16 @@ public class PlayerStatistics
         highScores.SetValue(0f);
     }
 
+    internal void RegisterAchievements()
+    {
+        totalScore.RegisterAchievements();
+        death.RegisterAchievements();
+        colorChange.RegisterAchievements();
+        plays.RegisterAchievements();
+        successPlays.RegisterAchievements();
+        perfectPlays.RegisterAchievements();
+        highScores.RegisterAchievements();
+    }
 }
 
 [Serializable]
@@ -373,7 +389,7 @@ public abstract class Property
     public string name = "";
     protected int[] achievementIndex;
    
-    public void NotifyAchievements (bool silent = false)
+    public virtual void NotifyAchievements (bool silent = false)
     {
         for (int i = 0; i < achievementIndex.Length; i++)
         {
@@ -385,6 +401,7 @@ public abstract class Property
     }
 
     public abstract string GetString();
+    public abstract void RegisterAchievements();
 
 }
 
@@ -397,7 +414,12 @@ public class NumericProperty : Property {
         this.value = value;
         this.name = name;
         this.achievementIndex = achievements;
-        foreach (int index in achievements)
+        RegisterAchievements();
+    }
+
+    public override void RegisterAchievements()
+    {
+        foreach (int index in this.achievementIndex)
         {
             if (AchievementManager.instance)
             {
@@ -415,6 +437,7 @@ public class NumericProperty : Property {
     public void SetValue(float value)
     {
         this.value = value;
+        NotifyAchievements(true);
     }
 
     public override string GetString()
@@ -448,6 +471,7 @@ public class NumericProperties : Property
     public void SetValue(string id, float newValue)
     {
         value[id].SetValue(newValue);
+        NotifyAchievements(true);
     }
 
     public void SetValue(float newValue)
@@ -471,6 +495,23 @@ public class NumericProperties : Property
     public void Increment(string id)
     {
         value[id].Increment();
+        NotifyAchievements();
+    }
+
+    public override void RegisterAchievements()
+    {
+        foreach (string id in value.Keys)
+        {
+            value[id].RegisterAchievements();
+        }
+    }
+
+    public override void NotifyAchievements(bool silent = false)
+    {
+        foreach (string id in value.Keys)
+        {
+            value[id].NotifyAchievements(silent);
+        }
     }
 
     internal void InitValue(String id)

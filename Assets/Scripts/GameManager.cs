@@ -185,6 +185,7 @@ public class GameManager : MonoBehaviour {
             BinaryFormatter bf = new BinaryFormatter();
             FileStream file = File.Open(Application.persistentDataPath + "/achievements.dat", FileMode.Open);
             stats = (PlayerStatistics)bf.Deserialize(file);
+            stats.RegisterAchievements();
             stats.CheckAchievements();
             file.Close();
         }
