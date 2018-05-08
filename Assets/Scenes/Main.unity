@@ -1755,10 +1755,10 @@ RectTransform:
   m_Father: {fileID: 1723482746}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.1}
-  m_AnchorMax: {x: 0.5, y: 0.1}
+  m_AnchorMin: {x: 0.5, y: 0.08}
+  m_AnchorMax: {x: 0.5, y: 0.12}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 100, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &219714371
 GameObject:
@@ -7291,6 +7291,8 @@ MonoBehaviour:
   levelIconPrefab: {fileID: 224317579233374632, guid: b3e3f0e76b9cbd143af0bd24a3d0848d,
     type: 2}
   levelScreenPrefab: {fileID: 11426234, guid: 4dbb29efbf1fc494da9a3ec319f8ade4, type: 2}
+  defaultColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.19607843}
+  highlightColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 0.78431374}
   fallbackIntensity: 0.1
   snapThreshold: 0.05
 --- !u!1 &1407189501
