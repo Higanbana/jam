@@ -371,7 +371,6 @@ public class PlayerStatistics
 public abstract class Property
 {
     public string name = "";
-    private float value = 0;
     protected int[] achievementIndex;
    
     public void NotifyAchievements (bool silent = false)
@@ -478,7 +477,9 @@ public class NumericProperties : Property
     {
         foreach (Level level in levels)
         {
-            value.Add(level.name, new NumericProperty("High Score - " + level.name, 0, new int[] { }));
+            if (!value.ContainsKey(level.name)) {
+                value.Add(level.name, new NumericProperty("High Score - " + level.name, 0, new int[] { }));
+            }
         }
     }
 }

@@ -28,7 +28,13 @@ public class PlayerController : MonoBehaviour {
 	public float radiusIncrement;
 	public float pulseInterval;
 	private float pulseCooldown = 0f;
+    private bool deathEnabled = false;
 	LineRenderer line;
+
+    public void EnableDeath(bool enable)
+    {
+        deathEnabled = enable;
+    }
 
 	void OnEnable ()
 	{
@@ -92,13 +98,13 @@ public class PlayerController : MonoBehaviour {
             Vector3 direction = (transform.position - topCollider.gameObject.transform.position).normalized;
             Vector2 far = transform.position + circleCollider.radius * direction;
             Vector2 near = transform.position - circleCollider.radius * direction;
-            if (collider2D.OverlapPoint(far) && collider2D.OverlapPoint(near))
+            if (collider2D.OverlapPoint(far) && collider2D.OverlapPoint(near) && deathEnabled)
             {
                 PlayerDie();
             }
         }
 
-        if (!topCollider && spriteRenderer.color == mainCamera.backgroundColor)
+        if (!topCollider && spriteRenderer.color == mainCamera.backgroundColor && deathEnabled)
         {
             PlayerDie();
         }
@@ -120,18 +126,21 @@ public class PlayerController : MonoBehaviour {
         {
             return Color.white;
         }
-        else
+        else if(color == Color.white)
         {
             return Color.black;
+        } else
+        {
+            return color;
         }
     }
 
 	public void SwapColor ()
 	{
-        GameManager.instance.stats.colorChange.Increment();
+        if (deathEnabled) { GameManager.instance.stats.colorChange.Increment(); }
         spriteRenderer.color = GetOppositeColor(spriteRenderer.color);
 
-        if (touchTrigger)
+        if (touchTrigger || !deathEnabled)
         {
             mainCamera.backgroundColor = GetOppositeColor(mainCamera.backgroundColor);
         }

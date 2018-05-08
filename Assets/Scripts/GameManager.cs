@@ -16,6 +16,7 @@ public class Level
     public float duration = 0f;
     public float speed = 0f;
     public float beat = 0f;
+    public bool deathEnabled = true;
     public List<SpawnParameters> spawns = new List<SpawnParameters>();
 
     static Color GetColor (string colorName)
@@ -219,6 +220,9 @@ public class GameManager : MonoBehaviour {
                         levelScreen.levelSelectCanvas = levelSelectCanvas;
                         levelScreen.Init(level.name, 0, level.maxScore, level.difficulty);
                         levelScreen.gameObject.transform.SetParent(levelSelector, false);
+                    } else
+                    {
+                        level.deathEnabled = false;
                     }
                 }
             }
@@ -242,15 +246,15 @@ public class GameManager : MonoBehaviour {
             FileStream file = File.Open(Application.persistentDataPath + "/achievements.dat", FileMode.Open);
             stats = (PlayerStatistics)bf.Deserialize(file);
             stats.CheckAchievements();
-            stats.InitHighScores(levels);
             file.Close();
         }
         else
         {
             stats = new PlayerStatistics();
         }
+        stats.InitHighScores(levels);
 
-  
+
     }
     
 
@@ -275,6 +279,7 @@ public class GameManager : MonoBehaviour {
         // Start new game
         player.SetActive(true);
         player.GetComponent<PlayerController>().pulseInterval = levels[levelIndex].beat;
+        player.GetComponent<PlayerController>().EnableDeath(levels[levelIndex].deathEnabled);
 
         // Put Camera to White
         mainCamera.backgroundColor = Color.white;
