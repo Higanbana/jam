@@ -17,7 +17,45 @@ public class Level
     public float speed = 0f;
     public float beat = 0f;
     public bool deathEnabled = true;
+    public List<float> checkPoints = new List<float>();
+    public int lastCheckPointIndex = -1;
+    public int blackScoreAtCheckPoint = 0;
+    public int whiteScoreAtCheckPoint = 0;
     public List<SpawnParameters> spawns = new List<SpawnParameters>();
+
+    public bool UpdateCheckPoint(float time, int blackScore, int whiteScore)
+    {
+        if (lastCheckPointIndex < checkPoints.Count)
+        {
+            if (time > checkPoints[lastCheckPointIndex + 1])
+            {
+                lastCheckPointIndex++;
+                blackScoreAtCheckPoint = blackScore;
+                whiteScoreAtCheckPoint = whiteScore;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public float GetLastCheckPoint()
+    {
+        if (lastCheckPointIndex >= 0)
+        {
+            return checkPoints[lastCheckPointIndex];
+        } else
+        {
+            return 0;
+        }
+    }
+
+    public void ResetCheckPoint()
+    {
+        lastCheckPointIndex = -1;
+        blackScoreAtCheckPoint = 0;
+        whiteScoreAtCheckPoint = 0;
+    }
+
 
     public void LoadSpawn (string[] spawnParameters)
     {
@@ -41,6 +79,13 @@ public class Level
                     break;
                 case 'T':
                     spawn = TextParameters.UnstreamText(this, spawnParameters);
+                    break;
+                case 'P':
+                    float time;
+                    if (spawnParameters.Length >= 2 & float.TryParse(spawnParameters[1], out time))
+                    {
+                        checkPoints.Add(time);
+                    }
                     break;
             }
             if (spawn != null)
@@ -210,6 +255,7 @@ public class GameManager : MonoBehaviour {
         {
             levelIndex = 0;
         }
+        levels[levelIndex].ResetCheckPoint();
     }
 
     public void StartGame()
@@ -226,12 +272,15 @@ public class GameManager : MonoBehaviour {
         mainCamera.backgroundColor = Color.white;
 
         SetPauseState(GameState.GameOn);
+        Level currentLevel = levels[levelIndex];
 
-        timeSlider.maxValue = levels[levelIndex].duration;
-        timeSlider.value = 0f;
+        startTime = currentLevel.GetLastCheckPoint();
 
-        blackCollected = 0;
-        whiteCollected = 0;
+        timeSlider.maxValue = currentLevel.duration;
+        timeSlider.value = startTime;
+
+        blackCollected = currentLevel.blackScoreAtCheckPoint;
+        whiteCollected = currentLevel.whiteScoreAtCheckPoint;
 
         SoundManager.instance.ChangeBackgroundMusic(levels[levelIndex].music, false);
         SoundManager.instance.SetMusicAtTime(startTime);
@@ -344,6 +393,7 @@ public class GameManager : MonoBehaviour {
 
         // Update score display
         UpdateUI();
+        UpdateCheckPoint();
     }
 
 	public void TogglePause()
@@ -411,6 +461,11 @@ public class GameManager : MonoBehaviour {
         scoreText.text = GetScore().ToString();
         timeText.text = string.Format("{0:0.00}", spawner.time);
         timeSlider.value = spawner.time;
+    }
+
+    void UpdateCheckPoint()
+    {
+        levels[levelIndex].UpdateCheckPoint(spawner.time, blackCollected, whiteCollected);
     }
 
     void UpdateLevelClearText()

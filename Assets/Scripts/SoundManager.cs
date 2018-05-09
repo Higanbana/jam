@@ -36,6 +36,7 @@ public class SoundManager : MonoBehaviour {
 
     public void ChangeBackgroundMusic (int musicIndex, bool forceloop)
     {
+        musicSource.time = 0;
         musicSource.clip = musicClips[musicIndex];
         musicSource.loop = forceloop;
         musicSource.Play();
