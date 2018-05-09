@@ -25,15 +25,12 @@ public class Level
 
     public bool UpdateCheckPoint(float time, int blackScore, int whiteScore)
     {
-        if (lastCheckPointIndex < checkPoints.Count)
+        if (lastCheckPointIndex < checkPoints.Count-1 && time > checkPoints[lastCheckPointIndex + 1])
         {
-            if (time > checkPoints[lastCheckPointIndex + 1])
-            {
                 lastCheckPointIndex++;
                 blackScoreAtCheckPoint = blackScore;
                 whiteScoreAtCheckPoint = whiteScore;
                 return true;
-            }
         }
         return false;
     }

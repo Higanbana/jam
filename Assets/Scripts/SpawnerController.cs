@@ -16,6 +16,7 @@ public class SpawnerController : MonoBehaviour {
 
     [HideInInspector]
     public float time = 0f;
+    public float deltaTime= 0f;
 
     private int spawnIndex = 0;
 
@@ -39,7 +40,8 @@ public class SpawnerController : MonoBehaviour {
         level = newLevel;
         time = startTime;
         spawnIndex = 0;
-        while (spawnIndex < level.spawns.Count && level.spawns[spawnIndex].spawnTime <= time)
+        deltaTime = newLevel.speed * transform.position.x;
+        while (spawnIndex < level.spawns.Count && level.spawns[spawnIndex].spawnTime <= time-deltaTime)
         {
             spawnIndex++;
         }
