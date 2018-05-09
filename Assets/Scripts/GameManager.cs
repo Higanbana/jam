@@ -225,11 +225,7 @@ public class GameManager : MonoBehaviour {
 
                     levels.Add(level);
 
-                    if (!level.name.Equals("Credits"))
-                    {
-                        levelSelector.AddLevel(level);
-                    }
-                    else
+                    if (level.name.Equals("Credits"))
                     {
                         level.deathEnabled = false;
                     }
@@ -280,6 +276,14 @@ public class GameManager : MonoBehaviour {
             }
         });
 
+        // Create related UI
+        foreach (Level level in levels)
+        {
+            if (level.deathEnabled)
+            {
+                levelSelector.AddLevel(level);
+            }
+        }
     }
     
 
