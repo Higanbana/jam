@@ -30,18 +30,14 @@ public class SoundManager : MonoBehaviour {
 
     public void PlaySound (AudioClip clip)
     {
-        soundSource.clip = clip;
-        soundSource.Play();
+        soundSource.PlayOneShot(clip);
     }
 
     public void ChangeBackgroundMusic (int musicIndex, float time = 0f, bool forceloop = true)
     {
         if (musicSource.clip != musicClips[musicIndex])
         {
-            musicSource.clip = musicClips[musicIndex];
-            musicSource.loop = forceloop;
-            musicSource.Play();
-            musicSource.time = time;
+            SetBackgroundMusic(musicIndex, time, forceloop);
         }
     }
 
@@ -60,8 +56,16 @@ public class SoundManager : MonoBehaviour {
 
     public void ResetBackgroundMusic ()
 	{
-		ChangeBackgroundMusic (0);
+		SetBackgroundMusic (0);
 	}
+
+    void SetBackgroundMusic(int musicIndex, float time = 0f, bool forceloop = true)
+    {
+        musicSource.clip = musicClips[musicIndex];
+        musicSource.loop = forceloop;
+        musicSource.Play();
+        musicSource.time = time;
+    }
 
     public void SetMusicAtTime (float time)
     {

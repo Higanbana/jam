@@ -270,6 +270,7 @@ public class GameManager : MonoBehaviour {
     // Stop Game
     public void EndGame() 
     {
+        // Stop time
         SetPauseState(GameState.GameOff);
         spawner.gameObject.SetActive(false);
 
@@ -292,6 +293,9 @@ public class GameManager : MonoBehaviour {
         {
             Destroy(item);
         }
+
+        // Reset music
+        SoundManager.instance.SetMusicAtTime(0f);
     }
 
     public void QuitGame()
