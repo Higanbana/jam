@@ -17,6 +17,7 @@ public class SpawnerController : MonoBehaviour {
     [HideInInspector]
     public float time = 0f;
 
+
     private int spawnIndex = 0;
 
     public float invFrequency;
@@ -39,10 +40,13 @@ public class SpawnerController : MonoBehaviour {
         level = newLevel;
         time = startTime;
         spawnIndex = 0;
-        while (spawnIndex < level.spawns.Count && level.spawns[spawnIndex].spawnTime <= time)
+
+        // Spawn objects that should be displayed on screen at startTime
+        while (spawnIndex < level.spawns.Count && level.spawns[spawnIndex].spawnTime < time-level.deltaTime-5)
         {
             spawnIndex++;
         }
+        FixedUpdate();
     }
 
 	void FixedUpdate ()

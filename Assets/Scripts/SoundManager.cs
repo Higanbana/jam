@@ -39,6 +39,7 @@ public class SoundManager : MonoBehaviour {
         {
             SetBackgroundMusic(musicIndex, time, forceloop);
         }
+
     }
 
     public void ChangeBackgroundMusic(string musicName, float time = 0f, bool forceloop = true)
