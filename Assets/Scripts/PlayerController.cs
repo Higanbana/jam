@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class PlayerController : MonoBehaviour {
 
@@ -32,6 +33,8 @@ public class PlayerController : MonoBehaviour {
     private bool deathEnabled = false;
 	private LineRenderer line;
     public LineRenderer swapSafeIndicator;
+
+    private int safeFrames = 1;
 
     public void EnableDeath(bool enable)
     {
@@ -218,11 +221,26 @@ public class PlayerController : MonoBehaviour {
         DrawPulseCircle ();
     }
 
-    void SetRail (int railIndex)
+    public void SetRail (int railIndex)
     {
         int targetRail = Mathf.Min(Mathf.Max(railIndex, (5 - maxRailNumber) / 2), 3 + (maxRailNumber - 3) / 2);
         transform.position = rails[targetRail].position;
         currentRail = targetRail;
+    }
+
+    public int GetRail()
+    {
+        return currentRail;
+    }
+
+    public Color GetColor()
+    {
+        return spriteRenderer.color;
+    }
+
+    public void SetColor(Color color)
+    {
+        spriteRenderer.color = color;
     }
 
     void OnTriggerEnter2D(Collider2D collider)
@@ -243,9 +261,16 @@ public class PlayerController : MonoBehaviour {
 
     void PlayerDie()
 	{
-		gameObject.SetActive(false);
-		SoundManager.instance.PlaySound(dieSound);
-		GameManager.instance.GameOver();
+        if (safeFrames <= 0)
+        {
+            gameObject.SetActive(false);
+            SoundManager.instance.PlaySound(dieSound);
+            GameManager.instance.GameOver();
+            safeFrames = 1;
+        } else
+        {
+            safeFrames--;
+        }
 	}
 
 	void DrawPulseCircle()
@@ -285,4 +310,5 @@ public class PlayerController : MonoBehaviour {
         }
 
     }
+
 }

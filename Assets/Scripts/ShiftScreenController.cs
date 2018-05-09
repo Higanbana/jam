@@ -32,11 +32,11 @@ public class ShiftScreenController : MonoBehaviour {
         levelIconsPanel.GetChild(levelIndex).GetComponentInChildren<Image>().color = highlightColor;
     }
     
-    public void AddLevel(Level level, int highscore)
+    public void AddLevel(Level level)
     {
         LevelScreenController levelScreen = (LevelScreenController)Instantiate(levelScreenPrefab, Vector3.zero, Quaternion.identity);
         levelScreen.levelSelectCanvas = levelSelectorCanvas;
-        levelScreen.Init(level.name, highscore, level.maxScore, level.difficulty);
+        levelScreen.Init(level.name, (int) GameManager.instance.stats.highScores.GetValue(level.name).value, level.maxScore, level.difficulty);
         levelScreen.gameObject.transform.SetParent(levelSelectorPanel, false);
 
         RectTransform levelIcon = (RectTransform)Instantiate(levelIconPrefab, Vector3.zero, Quaternion.identity);

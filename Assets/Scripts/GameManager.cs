@@ -7,6 +7,23 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public enum GameState { GameOn, GamePaused, GameOff };
 
+public class CheckPointSave
+{
+    
+    public int blackScoreAtCheckPoint = 0;
+    public int whiteScoreAtCheckPoint = 0;
+    public int railIndex = 2;
+    public Color playerColor = Color.black;
+
+    public void Save(int blackScore, int whiteScore, int railIndex, Color playerColor)
+    {
+        this.blackScoreAtCheckPoint = blackScore;
+        this.whiteScoreAtCheckPoint = whiteScore;
+        this.railIndex = railIndex;
+        this.playerColor = playerColor;
+    }
+}
+
 public class Level
 {
     public string name = "";
@@ -17,20 +34,24 @@ public class Level
     public float speed = 0f;
     public float beat = 0f;
     public bool deathEnabled = true;
+    public float deltaTime; // Time needed for a spawned object to reach player's position
+
+    // Check points
     public List<float> checkPoints = new List<float>();
     public int lastCheckPointIndex = -1;
-    public int blackScoreAtCheckPoint = 0;
-    public int whiteScoreAtCheckPoint = 0;
-    public List<SpawnParameters> spawns = new List<SpawnParameters>();
+    public CheckPointSave savedState = new CheckPointSave();
 
-    public bool UpdateCheckPoint(float time, int blackScore, int whiteScore)
+
+    // Spawns
+    public List<SpawnParameters> spawns = new List<SpawnParameters>();  
+
+    public bool UpdateCheckPoint(float time, int blackScore, int whiteScore, int railIndex, Color playerColor)
     {
         if (lastCheckPointIndex < checkPoints.Count-1 && time > checkPoints[lastCheckPointIndex + 1])
         {
-                lastCheckPointIndex++;
-                blackScoreAtCheckPoint = blackScore;
-                whiteScoreAtCheckPoint = whiteScore;
-                return true;
+            lastCheckPointIndex++;
+            savedState.Save(blackScore, whiteScore, railIndex, playerColor);
+            return true;
         }
         return false;
     }
@@ -49,12 +70,11 @@ public class Level
     public void ResetCheckPoint()
     {
         lastCheckPointIndex = -1;
-        blackScoreAtCheckPoint = 0;
-        whiteScoreAtCheckPoint = 0;
+        savedState = new CheckPointSave();
     }
 
-
-    public void LoadSpawn (string[] spawnParameters)
+    // Delta time : time for a spawned object to reach player
+    public void LoadSpawn (string[] spawnParameters, float deltaTime)
     {
         if (spawnParameters.Length > 0 && spawnParameters[0].Length > 0)
         {
@@ -81,7 +101,7 @@ public class Level
                     float time;
                     if (spawnParameters.Length >= 2 & float.TryParse(spawnParameters[1], out time))
                     {
-                        checkPoints.Add(time);
+                        checkPoints.Add(time+deltaTime);
                     }
                     break;
             }
@@ -191,18 +211,22 @@ public class GameManager : MonoBehaviour {
                 if (initOk)
                 {
                     stats.InitHighScore(level.name);
+                    level.deltaTime = (spawner.gameObject.transform.position.x - rails.position.x + player.GetComponent<CircleCollider2D>().radius) / level.speed;
                     for (int lineIndex = 1; lineIndex < spawns.Length; lineIndex++)
                     {
-                        level.LoadSpawn(spawns[lineIndex].Split(fieldSeparator));
+                        level.LoadSpawn(spawns[lineIndex].Split(fieldSeparator), level.deltaTime);
                     }
 
-                    level.duration += (spawner.gameObject.transform.position.x - rails.position.x) / level.speed;
+                    level.duration += level.deltaTime;
 
                     levels.Add(level);
 
                     if (!level.name.Equals("Credits"))
                     {
-                        levelSelector.AddLevel(level, (int)stats.highScores.GetValue(level.name).value);
+                        levelSelector.AddLevel(level
+                            
+                            
+                            );
                     }
                     else
                     {
@@ -262,8 +286,9 @@ public class GameManager : MonoBehaviour {
 
         // Start new game
         player.SetActive(true);
-        player.GetComponent<PlayerController>().pulseInterval = levels[levelIndex].beat;
-        player.GetComponent<PlayerController>().EnableDeath(levels[levelIndex].deathEnabled);
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        playerController.pulseInterval = levels[levelIndex].beat;
+        playerController.EnableDeath(levels[levelIndex].deathEnabled);
 
         // Put Camera to White
         mainCamera.backgroundColor = Color.white;
@@ -276,13 +301,22 @@ public class GameManager : MonoBehaviour {
         timeSlider.maxValue = currentLevel.duration;
         timeSlider.value = startTime;
 
-        blackCollected = currentLevel.blackScoreAtCheckPoint;
-        whiteCollected = currentLevel.whiteScoreAtCheckPoint;
+        RestoreSavedState(currentLevel.savedState);
 
-        SoundManager.instance.ChangeBackgroundMusic(levels[levelIndex].music, false);
+        SoundManager.instance.ChangeBackgroundMusic(currentLevel.music, false);
         SoundManager.instance.SetMusicAtTime(startTime);
 
-        spawner.StartLevel(levels[levelIndex], startTime);
+        spawner.StartLevel(currentLevel, startTime);
+
+    }
+
+    public void RestoreSavedState(CheckPointSave savedState)
+    {
+        blackCollected = savedState.blackScoreAtCheckPoint;
+        whiteCollected = savedState.whiteScoreAtCheckPoint;
+        PlayerController playerController = player.GetComponent<PlayerController>();
+        playerController.SetRail(savedState.railIndex);
+        playerController.SetColor(savedState.playerColor);
     }
 
     public void StartGame(string levelName)
@@ -390,7 +424,11 @@ public class GameManager : MonoBehaviour {
 
         // Update score display
         UpdateUI();
-        UpdateCheckPoint();
+
+        // Check check points
+        if (gameState == GameState.GameOn) {
+            UpdateCheckPoint();
+        }
     }
 
 	public void TogglePause()
@@ -462,7 +500,8 @@ public class GameManager : MonoBehaviour {
 
     void UpdateCheckPoint()
     {
-        levels[levelIndex].UpdateCheckPoint(spawner.time, blackCollected, whiteCollected);
+        PlayerController controller = player.GetComponent<PlayerController>();
+        levels[levelIndex].UpdateCheckPoint(spawner.time, blackCollected, whiteCollected, controller.GetRail(), controller.GetColor());
     }
 
     void UpdateLevelClearText()
