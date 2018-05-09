@@ -11,6 +11,7 @@ public class Level
 {
     public string name = "";
     public string music = "";
+    public int index = 0;
     public int difficulty = 0;
     public int maxScore = 0;
     public float duration = 0f;
@@ -139,14 +140,15 @@ public class GameManager : MonoBehaviour {
             string[] spawnParameters = spawns[0].Split(fieldSeparator);
 
             // Init level metadata
-            if(spawnParameters.Length >= 4)
+            if(spawnParameters.Length >= 5)
             {
                 level.music = spawnParameters[0];
-                bool initOk = true;
-                initOk &= int.TryParse(spawnParameters[1], out level.difficulty);
-                initOk &= float.TryParse(spawnParameters[2], out level.speed);
-                initOk &= float.TryParse(spawnParameters[3], out level.beat);
-                if (initOk)
+                bool initOkay = true;
+                initOkay &= int.TryParse(spawnParameters[1], out level.index);
+                initOkay &= int.TryParse(spawnParameters[2], out level.difficulty);
+                initOkay &= float.TryParse(spawnParameters[3], out level.speed);
+                initOkay &= float.TryParse(spawnParameters[4], out level.beat);
+                if (initOkay)
                 {
                     stats.InitHighScore(level.name);
                     for (int lineIndex = 1; lineIndex < spawns.Length; lineIndex++)
@@ -158,11 +160,7 @@ public class GameManager : MonoBehaviour {
 
                     levels.Add(level);
 
-                    if (!level.name.Equals("Credits"))
-                    {
-                        levelSelector.AddLevel(level, (int)stats.highScores.GetValue(level.name).value);
-                    }
-                    else
+                    if (level.name.Equals("Credits"))
                     {
                         level.deathEnabled = false;
                     }
@@ -196,17 +194,42 @@ public class GameManager : MonoBehaviour {
             LoadLevel(levelAsset);
         }
 
+        // Sort Levels
+        levels.Sort(delegate(Level fst, Level snd)
+        {
+            if (fst.index == snd.index)
+            {
+                return 0;
+            }
+            else if (fst.index > snd.index)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        });
+
+        // Create related UI
+        foreach (Level level in levels)
+        {
+            if (level.deathEnabled)
+            {
+                levelSelector.AddLevel(level, (int)stats.highScores.GetValue(level.name).value);
+            }
+        }
     }
     
 
     public void SetLevel(string name)
     {
         levelIndex = 0;     
-        while(levelIndex < levels.Count && !levels[levelIndex].name.Equals(name))
+        while (levelIndex < levels.Count && !levels[levelIndex].name.Equals(name))
         {
             levelIndex++;
         }
-        if(levelIndex == levels.Count)
+        if (levelIndex == levels.Count)
         {
             levelIndex = 0;
         }
@@ -233,8 +256,7 @@ public class GameManager : MonoBehaviour {
         blackCollected = 0;
         whiteCollected = 0;
 
-        SoundManager.instance.ChangeBackgroundMusic(levels[levelIndex].music, false);
-        SoundManager.instance.SetMusicAtTime(startTime);
+        SoundManager.instance.ChangeBackgroundMusic(levels[levelIndex].music, startTime, false);
 
         spawner.StartLevel(levels[levelIndex], startTime);
     }
@@ -386,7 +408,7 @@ public class GameManager : MonoBehaviour {
             Time.timeScale = 1;
             gameState = GameState.GameOn;
             pauseCanvas.SetActive(false);
-            SoundManager.instance.musicSource.Play();
+            SoundManager.instance.musicSource.UnPause();
 			pauseButton.SetActive (true);
             gameCanvas.SetActive(true);
         }

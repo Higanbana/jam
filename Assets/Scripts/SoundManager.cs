@@ -34,29 +34,33 @@ public class SoundManager : MonoBehaviour {
         soundSource.Play();
     }
 
-    public void ChangeBackgroundMusic (int musicIndex, bool forceloop)
+    public void ChangeBackgroundMusic (int musicIndex, float time = 0f, bool forceloop = true)
     {
-        musicSource.clip = musicClips[musicIndex];
-        musicSource.loop = forceloop;
-        musicSource.Play();
+        if (musicSource.clip != musicClips[musicIndex])
+        {
+            musicSource.clip = musicClips[musicIndex];
+            musicSource.loop = forceloop;
+            musicSource.Play();
+            musicSource.time = time;
+        }
     }
 
-    public void ChangeBackgroundMusic(string musicName, bool forceloop)
+    public void ChangeBackgroundMusic(string musicName, float time = 0f, bool forceloop = true)
     {
         int musicIndex = 0;
         while (musicIndex < musicClips.Length && !musicClips[musicIndex].name.Equals(musicName))
         {
             musicIndex++;
         }
-        if(musicIndex < musicClips.Length)
+        if (musicIndex < musicClips.Length)
         {
-            ChangeBackgroundMusic(musicIndex, forceloop);
+            ChangeBackgroundMusic(musicIndex, time, forceloop);
         }
     }
 
     public void ResetBackgroundMusic ()
 	{
-		ChangeBackgroundMusic (0, true);
+		ChangeBackgroundMusic (0);
 	}
 
     public void SetMusicAtTime (float time)
