@@ -5765,6 +5765,7 @@ MonoBehaviour:
   radiusIncrement: 0.05
   pulseInterval: 2.1385546
   swapSafeIndicator: {fileID: 1275359674}
+  colorInverted: 0
 --- !u!58 &1090049517
 CircleCollider2D:
   m_ObjectHideFlags: 0

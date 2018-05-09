@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour {
     private bool deathEnabled = false;
 	private LineRenderer line;
     public LineRenderer swapSafeIndicator;
+    public bool colorInverted = false;
 
     private int safeFrames = 1;
 
@@ -159,7 +160,8 @@ public class PlayerController : MonoBehaviour {
 
         if (touchTrigger || !deathEnabled)
         {
-            mainCamera.backgroundColor = GetOppositeColor(mainCamera.backgroundColor);
+            InvertBackgroundColor();
+            colorInverted = !colorInverted;
         }
 	}
 
@@ -311,4 +313,16 @@ public class PlayerController : MonoBehaviour {
 
     }
 
+    internal void RestoreInvertedColor(bool colorInverted)
+    {
+        this.colorInverted = colorInverted;
+        if (colorInverted) {
+            InvertBackgroundColor();
+        }
+    }
+
+    private void InvertBackgroundColor()
+    {
+        mainCamera.backgroundColor = GetOppositeColor(mainCamera.backgroundColor);
+    }
 }

@@ -14,13 +14,15 @@ public class CheckPointSave
     public int whiteScoreAtCheckPoint = 0;
     public int railIndex = 2;
     public Color playerColor = Color.black;
+    public bool colorInverted;
 
-    public void Save(int blackScore, int whiteScore, int railIndex, Color playerColor)
+    public void Save(int blackScore, int whiteScore, int railIndex, Color playerColor, bool colorInverted)
     {
         this.blackScoreAtCheckPoint = blackScore;
         this.whiteScoreAtCheckPoint = whiteScore;
         this.railIndex = railIndex;
         this.playerColor = playerColor;
+        this.colorInverted = colorInverted;
     }
 }
 
@@ -45,12 +47,12 @@ public class Level
     // Spawns
     public List<SpawnParameters> spawns = new List<SpawnParameters>();  
 
-    public bool UpdateCheckPoint(float time, int blackScore, int whiteScore, int railIndex, Color playerColor)
+    public bool UpdateCheckPoint(float time, int blackScore, int whiteScore, int railIndex, Color playerColor, bool colorInverted)
     {
         if (lastCheckPointIndex < checkPoints.Count-1 && time > checkPoints[lastCheckPointIndex + 1])
         {
             lastCheckPointIndex++;
-            savedState.Save(blackScore, whiteScore, railIndex, playerColor);
+            savedState.Save(blackScore, whiteScore, railIndex, playerColor, colorInverted);
             return true;
         }
         return false;
@@ -317,6 +319,8 @@ public class GameManager : MonoBehaviour {
         PlayerController playerController = player.GetComponent<PlayerController>();
         playerController.SetRail(savedState.railIndex);
         playerController.SetColor(savedState.playerColor);
+        playerController.RestoreInvertedColor(savedState.colorInverted);
+       
     }
 
     public void StartGame(string levelName)
@@ -501,7 +505,7 @@ public class GameManager : MonoBehaviour {
     void UpdateCheckPoint()
     {
         PlayerController controller = player.GetComponent<PlayerController>();
-        levels[levelIndex].UpdateCheckPoint(spawner.time, blackCollected, whiteCollected, controller.GetRail(), controller.GetColor());
+        levels[levelIndex].UpdateCheckPoint(spawner.time, blackCollected, whiteCollected, controller.GetRail(), controller.GetColor(), controller.colorInverted);
     }
 
     void UpdateLevelClearText()
