@@ -5,11 +5,11 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22458690}
-  - 222: {fileID: 22262148}
-  - 114: {fileID: 11457808}
+  - component: {fileID: 22458690}
+  - component: {fileID: 22262148}
+  - component: {fileID: 11457808}
   m_Layer: 5
   m_Name: HighScore
   m_TagString: Untagged
@@ -22,12 +22,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22403794}
-  - 222: {fileID: 22202732}
-  - 114: {fileID: 11434014}
-  - 114: {fileID: 11468576}
+  - component: {fileID: 22403794}
+  - component: {fileID: 22202732}
+  - component: {fileID: 11434014}
+  - component: {fileID: 11468576}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -40,11 +40,11 @@ GameObject:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22471328}
-  - 222: {fileID: 22224532}
-  - 114: {fileID: 11491370}
+  - component: {fileID: 22471328}
+  - component: {fileID: 22224532}
+  - component: {fileID: 11491370}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -57,12 +57,12 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22428440}
-  - 222: {fileID: 22275564}
-  - 114: {fileID: 11489834}
-  - 114: {fileID: 11426234}
+  - component: {fileID: 22428440}
+  - component: {fileID: 22275564}
+  - component: {fileID: 11489834}
+  - component: {fileID: 11426234}
   m_Layer: 5
   m_Name: LevelScreen
   m_TagString: Untagged
@@ -75,9 +75,9 @@ GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
+  serializedVersion: 5
   m_Component:
-  - 224: {fileID: 22480564}
+  - component: {fileID: 22480564}
   m_Layer: 5
   m_Name: Difficulty
   m_TagString: Untagged
@@ -100,6 +100,9 @@ MonoBehaviour:
   trigger: {fileID: 11468576}
   title: {fileID: 11491370}
   score: {fileID: 11457808}
+  maxScore: 0
+  highScore: 0
+  levelID: 
   difficultyMode: {fileID: 22480564}
   difficultyPrefab: {fileID: 22424174, guid: 0f4473f0d535ea54498f6e413ecd4552, type: 2}
   selectionSound: {fileID: 8300000, guid: ed61b47f354b99d418a619dd5d86ab30, type: 3}
@@ -208,8 +211,9 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 1
+  m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!114 &11491370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -280,6 +284,7 @@ RectTransform:
   - {fileID: 22471328}
   m_Father: {fileID: 22428440}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 80}
@@ -300,6 +305,7 @@ RectTransform:
   - {fileID: 22403794}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -317,6 +323,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22428440}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -80}
@@ -334,6 +341,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22403794}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -351,6 +359,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22428440}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 20}

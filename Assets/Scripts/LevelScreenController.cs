@@ -20,6 +20,7 @@ public class LevelScreenController : MonoBehaviour {
     public AudioClip selectionSound;
     public AudioClip mouseOverSound;
     public GameObject levelSelectCanvas;
+    public float canvasWidth;
 
 	void Awake () {
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -27,7 +28,8 @@ public class LevelScreenController : MonoBehaviour {
 	}
 
 	void Update () {
-        layout.minWidth = mainCamera.pixelWidth;
+        // Use screen size before canvas scaler's scale for minWidth setting 
+        layout.minWidth = mainCamera.pixelWidth / levelSelectCanvas.transform.localScale.x;
         SetScore((int) GameManager.instance.stats.highScores.GetValue(levelID).value);
 	}
 
