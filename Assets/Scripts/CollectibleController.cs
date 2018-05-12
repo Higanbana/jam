@@ -36,7 +36,7 @@ public class CollectibleController : MonoBehaviour {
     void Update ()
     {
         Color myColor = spriteRenderer.color;
-        Color playerColor = GameManager.instance.player.GetComponent<SpriteRenderer>().color;
+        Color playerColor = GameManager.instance.player.Renderer.color;
         myColor.r = playerColor.r;
         myColor.g = playerColor.g;
         myColor.b = playerColor.b;

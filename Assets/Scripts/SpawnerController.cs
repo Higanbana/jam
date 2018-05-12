@@ -4,10 +4,14 @@ using System.Collections;
 
 public class SpawnerController : MonoBehaviour {
 
+    [Header("Prefabs")]
+
     public ObstacleController obstaclePrefab;
     public CollectibleController collectiblePrefab;
     public CollectibleTextController collectibleTextPrefab;
     public WaveController wavePrefab;
+
+    [Header("Rails")]
 
     public Transform[] rails;
 
@@ -17,16 +21,12 @@ public class SpawnerController : MonoBehaviour {
     [HideInInspector]
     public float time = 0f;
 
-
     private int spawnIndex = 0;
-
-    public float invFrequency;
     
     void OnEnable ()
     {
         spawnIndex = 0;
         time = 0f;
-        invFrequency = 1f/SoundManager.instance.musicSource.clip.frequency;
     }
 
     public int GetOrderInLayer ()

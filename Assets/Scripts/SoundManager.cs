@@ -4,9 +4,15 @@ using System.Collections;
 public class SoundManager : MonoBehaviour {
 
     public static SoundManager instance = null;
+
+    [Header("Sound Sources")]
+
     public AudioSource soundSource;
     public AudioSource musicSource;
     public AudioSource achievementSource;
+
+    [Header("Sound Clips")]
+
     public AudioClip[] musicClips;
 
 	void Awake () {

@@ -6,14 +6,17 @@ using System;
 
 public class PlayerController : MonoBehaviour {
 
-	private SpriteRenderer spriteRenderer;
-    private CircleCollider2D circleCollider;
+    [Header("Camera")]
 
     public Camera mainCamera;
+
+    [Header("Rails")]
 
     public Transform[] rails;
     private int currentRail;
     public int maxRailNumber = 3;
+
+    [Header("UI")]
 
     public RectTransform upArrow;
     public RectTransform downArrow;
@@ -26,17 +29,31 @@ public class PlayerController : MonoBehaviour {
     private bool goUp = false;
     private bool goDown = false;
 
+    [Header("Sound")]
+
     public AudioClip dieSound;
 
-	public int segments;
+    [Header("Pulse")]
+
+    public int segments;
 	private float radius = 1;
 	private float alpha = 1f;
 	public float radiusIncrement;
 	public float pulseInterval;
 	private float pulseCooldown = 0f;
+
+    [Header("Warning")]
+    public int warningDuration = 10;
+    public float warningAmplitude = 0.2f;
+    private int warningCount = 0;
+
+    private SpriteRenderer spriteRenderer;
+    private CircleCollider2D circleCollider;
+    private LineRenderer lineRenderer;
+
     private bool deathEnabled = false;
-	private LineRenderer line;
-    public LineRenderer swapSafeIndicator;
+
+    [HideInInspector]
     public bool colorInverted = false;
 
     private int safeFrames = 1;
@@ -46,23 +63,24 @@ public class PlayerController : MonoBehaviour {
         deathEnabled = enable;
     }
 
+    void Awake()
+    {
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        circleCollider = GetComponent<CircleCollider2D>();
+        lineRenderer = GetComponent<LineRenderer>();
+        lineRenderer.SetVertexCount(segments + 1);
+    }
+
 	void OnEnable ()
 	{
         currentRail = 2;
         transform.position = rails[currentRail].position;
-		spriteRenderer = GetComponent<SpriteRenderer> ();
-		circleCollider = GetComponent<CircleCollider2D> ();
 		spriteRenderer.color = Color.black;
 
         colliders = new List<GameObject>();
         touchTrigger = false;
 
-        line = GetComponent<LineRenderer>();
-		line.SetVertexCount (segments + 1);
 		DrawPulseCircle();
-
-        swapSafeIndicator.SetVertexCount(segments + 1);
-        DrawCircle(circleCollider.radius, 0.75f, -1f, Color.gray, segments, swapSafeIndicator);
 
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
         upArrow.gameObject.SetActive(true);
@@ -106,34 +124,60 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-	void FixedUpdate ()
+    void SetWarning(bool state)
     {
-        GameObject topCollider = FindTopCollider();
-        if (topCollider && spriteRenderer.color == topCollider.gameObject.GetComponent<SpriteRenderer>().color)
+        if (!state)
         {
-            Collider2D collider2D = topCollider.gameObject.GetComponent<Collider2D>();
-            Vector3 direction = (transform.position - topCollider.gameObject.transform.position).normalized;
-            Vector2 farthestPointToObstacle = transform.position + circleCollider.radius * direction;
-            Vector2 nearestPointToObstacle = transform.position - circleCollider.radius * direction;
-            bool farthestPointCovered = collider2D.OverlapPoint(farthestPointToObstacle);
-            bool nearestpointCovered = collider2D.OverlapPoint(nearestPointToObstacle);
-            if (farthestPointCovered && nearestpointCovered && deathEnabled)
-            {
-                PlayerDie();
-            }
-            else if((farthestPointCovered && !nearestpointCovered) || (!farthestPointCovered && nearestpointCovered))
-            {
-                ShowSwapSafeIndicator(true);
-            }
+            spriteRenderer.transform.localScale = Vector3.one;
+            warningCount = 0;
         }
         else
         {
-            ShowSwapSafeIndicator(false);
+            warningCount = (warningCount + 1) % warningDuration;
+            spriteRenderer.transform.localScale = Vector3.one * (1f - warningAmplitude * (float)Math.Sin(2f * Math.PI * (float)warningCount/(float)warningDuration));
         }
+    }
 
-        if (!topCollider && spriteRenderer.color == mainCamera.backgroundColor && deathEnabled)
+	void FixedUpdate ()
+    {
+        if (deathEnabled)
         {
-            PlayerDie();
+            GameObject topCollider = FindTopCollider();
+            if (topCollider)
+            {
+                Collider2D collider2D = topCollider.gameObject.GetComponent<Collider2D>();
+                Vector2 rightEndPoint = transform.position + circleCollider.radius * Vector3.right;
+                Vector2 leftEndPoint = transform.position - circleCollider.radius * Vector3.right;
+                bool rightEndPointCovered = collider2D.OverlapPoint(rightEndPoint);
+                bool leftEndPointCovered = collider2D.OverlapPoint(leftEndPoint);
+                Color playerColor = spriteRenderer.color;
+                Color colliderColor = topCollider.GetComponent<SpriteRenderer>().color;
+                if (leftEndPointCovered && rightEndPointCovered && playerColor == colliderColor)
+                {
+                    PlayerDie();
+                }
+                else if (rightEndPointCovered && !leftEndPointCovered && playerColor == colliderColor)
+                {
+                    SetWarning(true);
+                }
+                else if (!rightEndPointCovered && leftEndPointCovered && playerColor != colliderColor)
+                {
+                    SetWarning(true);
+                }
+                else
+                {
+                    SetWarning(false);
+                }
+            }
+            else
+            {
+                SetWarning(false);
+            }
+
+            if (!topCollider && spriteRenderer.color == mainCamera.backgroundColor && deathEnabled)
+            {
+                PlayerDie();
+            }
         }
         if (goUp)
         {
@@ -173,17 +217,6 @@ public class PlayerController : MonoBehaviour {
             colorInverted = !colorInverted;
         }
 	}
-
-    public void ShowSwapSafeIndicator(bool show)
-    {
-        if (show)
-        {
-            swapSafeIndicator.enabled = true;
-        } else
-        {
-            swapSafeIndicator.enabled = false;
-        }
-    }
 
     public void Update ()
     {
@@ -288,7 +321,7 @@ public class PlayerController : MonoBehaviour {
         alpha -= radiusIncrement / 2.5f;
         radius += radiusIncrement;
 
-        DrawCircle(radius, alpha, z, c, segments, line);
+        DrawCircle(radius, alpha, z, c, segments, lineRenderer);
 
         if (pulseCooldown <= 0)
         {
@@ -330,5 +363,15 @@ public class PlayerController : MonoBehaviour {
     private void InvertBackgroundColor()
     {
         mainCamera.backgroundColor = GetOppositeColor(mainCamera.backgroundColor);
+    }
+
+    public CircleCollider2D Collider
+    {
+        get { return circleCollider; }
+    }
+
+    public SpriteRenderer Renderer
+    {
+        get { return spriteRenderer; }
     }
 }

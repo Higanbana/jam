@@ -118,41 +118,50 @@ public class Level
 
 public class GameManager : MonoBehaviour {
 
-    public GameObject player;
+    public static GameManager instance = null;
+
+    [Header("Main")]
+
+    public PlayerController player;
     public SpawnerController spawner;
     public Transform rails;
     public Camera mainCamera;
 
     public GameState gameState = GameState.GameOff;
 
+    [Header("UI")]
+
     public Text scoreText;
     public Text timeText;
     public Text msgText;
     public Slider timeSlider;
+    public GameObject pauseButton;
+
+    [Header("Canvas")]
 
     public GameObject pauseCanvas;
     public GameObject gameOverCanvas;
     public GameObject gameCanvas;
     public GameObject levelClearCanvas;
     public GameObject achievementListPanel;
-	public GameObject pauseButton;
+
+    [Header("Levels")]
 
     public ShiftScreenController levelSelector;
     private List<Level> levels;
+    public float startTime;
+    public float endLevelDelay;
 
     private int levelIndex = 0;
 
+    [Header("Statistics")]
+
     public PlayerStatistics stats;
-
-    private const char lineSeparator = '\n';
-    private const char fieldSeparator = ',';
-
-    public float startTime;
-    public float endLevelDelay;
     private int blackCollected;
     private int whiteCollected;
 
-	public static GameManager instance = null;
+    private const char lineSeparator = '\n';
+    private const char fieldSeparator = ',';
 
     void Start ()
 	{
@@ -307,10 +316,9 @@ public class GameManager : MonoBehaviour {
         stats.plays.Increment();
 
         // Start new game
-        player.SetActive(true);
-        PlayerController playerController = player.GetComponent<PlayerController>();
-        playerController.pulseInterval = levels[levelIndex].beat;
-        playerController.EnableDeath(levels[levelIndex].deathEnabled);
+        player.gameObject.SetActive(true);
+        player.pulseInterval = levels[levelIndex].beat;
+        player.EnableDeath(levels[levelIndex].deathEnabled);
 
         // Put Camera to White
         mainCamera.backgroundColor = Color.white;
@@ -335,10 +343,9 @@ public class GameManager : MonoBehaviour {
     {
         blackCollected = savedState.blackScoreAtCheckPoint;
         whiteCollected = savedState.whiteScoreAtCheckPoint;
-        PlayerController playerController = player.GetComponent<PlayerController>();
-        playerController.SetRail(savedState.railIndex);
-        playerController.SetColor(savedState.playerColor);
-        playerController.RestoreInvertedColor(savedState.colorInverted);
+        player.SetRail(savedState.railIndex);
+        player.SetColor(savedState.playerColor);
+        player.RestoreInvertedColor(savedState.colorInverted);
        
     }
 
@@ -356,7 +363,7 @@ public class GameManager : MonoBehaviour {
         spawner.gameObject.SetActive(false);
 
         // Hide Player
-        player.SetActive(false);
+        player.gameObject.SetActive(false);
 
         // Put Back Camera to White
         mainCamera.backgroundColor = Color.white;
