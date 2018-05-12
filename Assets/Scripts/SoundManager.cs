@@ -41,11 +41,10 @@ public class SoundManager : MonoBehaviour {
 
     public void ChangeBackgroundMusic (int musicIndex, float time = 0f, bool forceloop = true)
     {
-        if (musicSource.clip != musicClips[musicIndex])
-        {
-            SetBackgroundMusic(musicIndex, time, forceloop);
-        }
-
+        musicSource.clip = musicClips[musicIndex];
+        musicSource.loop = forceloop;
+        musicSource.time = time;
+        musicSource.Play();
     }
 
     public void ChangeBackgroundMusic(string musicName, float time = 0f, bool forceloop = true)
@@ -63,7 +62,7 @@ public class SoundManager : MonoBehaviour {
 
     public void ResetBackgroundMusic ()
 	{
-		SetBackgroundMusic (0);
+		ChangeBackgroundMusic (0);
 	}
 
     void SetBackgroundMusic(int musicIndex, float time = 0f, bool forceloop = true)

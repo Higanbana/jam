@@ -53,9 +53,6 @@ public class PlayerController : MonoBehaviour {
 
     private bool deathEnabled = false;
 
-    [HideInInspector]
-    public bool colorInverted = false;
-
     private int safeFrames = 1;
 
     public void EnableDeath(bool enable)
@@ -214,7 +211,6 @@ public class PlayerController : MonoBehaviour {
         if (touchTrigger || !deathEnabled)
         {
             InvertBackgroundColor();
-            colorInverted = !colorInverted;
         }
 	}
 
@@ -350,14 +346,6 @@ public class PlayerController : MonoBehaviour {
             angle += 360.2f/segments;
         }
 
-    }
-
-    internal void RestoreInvertedColor(bool colorInverted)
-    {
-        this.colorInverted = colorInverted;
-        if (colorInverted) {
-            InvertBackgroundColor();
-        }
     }
 
     private void InvertBackgroundColor()
