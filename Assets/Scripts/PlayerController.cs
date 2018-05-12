@@ -15,6 +15,10 @@ public class PlayerController : MonoBehaviour {
     private int currentRail;
     public int maxRailNumber = 3;
 
+    public RectTransform upArrow;
+    public RectTransform downArrow;
+    public RectTransform swap;
+
     [HideInInspector]
     public bool touchTrigger = false;
     private List<GameObject> colliders;
@@ -60,8 +64,13 @@ public class PlayerController : MonoBehaviour {
         swapSafeIndicator.SetVertexCount(segments + 1);
         DrawCircle(circleCollider.radius, 0.75f, -1f, Color.gray, segments, swapSafeIndicator);
 
+#if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
+        upArrow.gameObject.SetActive(true);
+        downArrow.gameObject.SetActive(true);
+        swap.gameObject.SetActive(true);
+#endif
     }
-	
+
     GameObject FindTopCollider ()
     {
         colliders.RemoveAll(item => item == null);
@@ -200,18 +209,15 @@ public class PlayerController : MonoBehaviour {
                 if (touch.phase == TouchPhase.Began)
                 {
                     Vector2 position = touch.position;
-                    if(position.x < 0.5f * mainCamera.pixelWidth)
+                    if (upArrow.rect.Contains(position))
                     {
-                        if(position.y < 0.5f * mainCamera.pixelHeight)
-                        {
-                            goDown = true;
-                        }
-                        else
-                        {
-                            goUp = true;
-                        }
+                        goUp = true;
                     }
-                    else
+                    else if (downArrow.rect.Contains(position))
+                    {
+                        goDown = true;
+                    }
+                    else if (swap.rect.Contains(position))
                     {
                         SwapColor();
                     }
