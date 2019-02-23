@@ -112,6 +112,10 @@ public class GameManager : MonoBehaviour {
                 initOkay &= int.TryParse(spawnParameters[2], out level.difficulty);
                 initOkay &= float.TryParse(spawnParameters[3], out level.speed);
                 initOkay &= float.TryParse(spawnParameters[4], out level.beat);
+                if (spawnParameters.Length >= 6)
+                {
+                    initOkay &= int.TryParse(spawnParameters[5], out level.railNumber);
+                }
                 if (initOkay)
                 {
                     stats.InitHighScore(level.name);
@@ -213,6 +217,7 @@ public class GameManager : MonoBehaviour {
         player.SyncPulse(currentLevel.beat, startTime);
         player.gameObject.SetActive(true);
         player.EnableDeath(currentLevel.deathEnabled);
+        player.maxRailNumber = currentLevel.railNumber;
 
         // Put Camera to White
         mainCamera.backgroundColor = Color.white;

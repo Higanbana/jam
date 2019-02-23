@@ -32,6 +32,7 @@ public class Level
     public float speed = 0f;
     public float beat = 0f;
     public bool deathEnabled = true;
+    public int railNumber = 3;
     public float deltaTime; // Time needed for a spawned object to reach player's position
 
     // Check points
