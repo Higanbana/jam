@@ -11998,7 +11998,7 @@ MonoBehaviour:
       value: 0
     highScores:
       name: High Scores
-  startTime: 0
+  startTime: 30
   endLevelDelay: 3
 --- !u!4 &2082912470
 Transform:

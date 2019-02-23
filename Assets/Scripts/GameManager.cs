@@ -37,6 +37,7 @@ public class Level
     public float speed = 0f;
     public float beat = 0f;
     public bool deathEnabled = true;
+    public int railNumber = 3;
     public float deltaTime; // Time needed for a spawned object to reach player's position
 
     // Check points
@@ -212,6 +213,7 @@ public class GameManager : MonoBehaviour {
                 initOkay &= int.TryParse(spawnParameters[2], out level.difficulty);
                 initOkay &= float.TryParse(spawnParameters[3], out level.speed);
                 initOkay &= float.TryParse(spawnParameters[4], out level.beat);
+                initOkay &= int.TryParse(spawnParameters[5], out level.railNumber);
                 if (initOkay)
                 {
                     stats.InitHighScore(level.name);
@@ -311,6 +313,7 @@ public class GameManager : MonoBehaviour {
         PlayerController playerController = player.GetComponent<PlayerController>();
         playerController.pulseInterval = levels[levelIndex].beat;
         playerController.EnableDeath(levels[levelIndex].deathEnabled);
+        playerController.maxRailNumber = levels[levelIndex].railNumber;
 
         // Put Camera to White
         mainCamera.backgroundColor = Color.white;
