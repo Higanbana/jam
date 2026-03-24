@@ -314,8 +314,9 @@ public class PlayerController : MonoBehaviour {
     {
         float z = -2f;
         Color c = spriteRenderer.color;
-        alpha -= radiusIncrement / 2.5f;
-        radius += radiusIncrement;
+        float pulseStep = radiusIncrement * Time.deltaTime * 60f;
+        alpha -= pulseStep / 2.5f;
+        radius += pulseStep;
 
         DrawCircle(radius, alpha, z, c, segments, lineRenderer);
 
