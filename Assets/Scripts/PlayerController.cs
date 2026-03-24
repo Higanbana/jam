@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour {
         colliders = new List<GameObject>();
         touchTrigger = false;
 
-		DrawPulseCircle();
+		RenderPulseCircle();
 
 #if UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE
         upArrow.gameObject.SetActive(true);
@@ -312,13 +312,9 @@ public class PlayerController : MonoBehaviour {
 
 	void DrawPulseCircle()
     {
-        float z = -2f;
-        Color c = spriteRenderer.color;
         float pulseStep = radiusIncrement * Time.deltaTime * 60f;
         alpha -= pulseStep / 2.5f;
         radius += pulseStep;
-
-        DrawCircle(radius, alpha, z, c, segments, lineRenderer);
 
         if (pulseCooldown <= 0)
         {
@@ -330,6 +326,15 @@ public class PlayerController : MonoBehaviour {
         {
             pulseCooldown -= Time.deltaTime;
         }
+
+        RenderPulseCircle();
+    }
+
+    void RenderPulseCircle()
+    {
+        float z = -2f;
+        Color c = spriteRenderer.color;
+        DrawCircle(radius, alpha, z, c, segments, lineRenderer);
     }
 
     private void DrawCircle(float circleRadius, float alpha, float z, Color c, int segments, LineRenderer renderer)
@@ -362,5 +367,24 @@ public class PlayerController : MonoBehaviour {
     public SpriteRenderer Renderer
     {
         get { return spriteRenderer; }
+    }
+
+    public void SyncPulse(float beatInterval, float elapsedTime)
+    {
+        pulseInterval = beatInterval;
+
+        if (pulseInterval <= 0f)
+        {
+            radius = 1f;
+            alpha = 1f;
+            pulseCooldown = 0f;
+            return;
+        }
+
+        float phaseTime = elapsedTime % pulseInterval;
+        float pulseRatePerSecond = radiusIncrement * 60f;
+        radius = 1f + pulseRatePerSecond * phaseTime;
+        alpha = 1f - (pulseRatePerSecond * phaseTime) / 2.5f;
+        pulseCooldown = pulseInterval - phaseTime;
     }
 }

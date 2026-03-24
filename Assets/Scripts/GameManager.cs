@@ -203,21 +203,21 @@ public class GameManager : MonoBehaviour {
 
     public void StartGame()
 	{
+        Level currentLevel = levels[levelIndex];
+        startTime = currentLevel.GetLastCheckPoint();
+
         // Modify global player stats
         stats.plays.Increment();
 
         // Start new game
+        player.SyncPulse(currentLevel.beat, startTime);
         player.gameObject.SetActive(true);
-        player.pulseInterval = levels[levelIndex].beat;
-        player.EnableDeath(levels[levelIndex].deathEnabled);
+        player.EnableDeath(currentLevel.deathEnabled);
 
         // Put Camera to White
         mainCamera.backgroundColor = Color.white;
 
         SetPauseState(GameState.GameOn);
-        Level currentLevel = levels[levelIndex];
-
-        startTime = currentLevel.GetLastCheckPoint();
 
         timeSlider.maxValue = currentLevel.duration;
         timeSlider.value = startTime;
