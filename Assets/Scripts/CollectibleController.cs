@@ -29,7 +29,7 @@ public class CollectibleController : MonoBehaviour {
     public void Setup(float angle, float speed, int orderInLayer)
     {
         transform.RotateAround(transform.position, Vector3.forward, angle - 90.0f);
-        rigidBody.velocity = Vector3.left * speed;
+        rigidBody.linearVelocity = Vector3.left * speed;
         spriteRenderer.sortingOrder = orderInLayer;
     }
 

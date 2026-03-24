@@ -31,7 +31,7 @@ public class CollectibleTextController : MonoBehaviour
     public void Setup(float angle, float speed, int orderInLayer, string letter)
     {
         transform.RotateAround(transform.position, Vector3.forward, angle);
-        rigidBody.velocity = Vector3.left * speed;
+        rigidBody.linearVelocity = Vector3.left * speed;
         GetComponent<MeshRenderer>().sortingOrder = orderInLayer;
         textMesh.text = letter;
     }
@@ -39,7 +39,7 @@ public class CollectibleTextController : MonoBehaviour
     void Update()
     {
         Color myColor = textMesh.color;
-        Color playerColor = GameManager.instance.player.GetComponent<SpriteRenderer>().color;
+        Color playerColor = GameManager.instance.player.Renderer.color;
         myColor.r = playerColor.r;
         myColor.g = playerColor.g;
         myColor.b = playerColor.b;

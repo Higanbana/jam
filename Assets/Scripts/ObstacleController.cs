@@ -17,7 +17,7 @@ public class ObstacleController : MonoBehaviour {
         scale.x = length;
         scale.y = height;
         transform.localScale = scale;
-        rigidBody.velocity = Vector3.left * speed;
+        rigidBody.linearVelocity = Vector3.left * speed;
         spriteRenderer.color = color;
         spriteRenderer.sortingOrder = orderInLayer;
     }
