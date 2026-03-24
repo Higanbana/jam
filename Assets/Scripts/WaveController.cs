@@ -23,7 +23,7 @@ public class WaveController : MonoBehaviour {
 	
 	void Update ()
     {
-        transform.localScale += Vector3.one * scaleFactor;
+        transform.localScale += Vector3.one * (scaleFactor * Time.deltaTime * 60f);
         if(transform.localScale.x > 10f * mainCamera.orthographicSize)
         {
             mainCamera.backgroundColor = spriteRenderer.color;
