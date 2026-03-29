@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CollectibleTextController : MonoBehaviour
 {
+    private const float DeathAnimationDuration = 0.2f;
+    private const float DeathAnimationScaleMultiplier = 6f;
 
     private TextMesh textMesh;
     private Rigidbody2D rigidBody;
@@ -16,15 +18,23 @@ public class CollectibleTextController : MonoBehaviour
 
     IEnumerator DeathAnimation()
     {
-        while (textMesh.color.a > 0)
-        {
-            Color color = textMesh.color;
-            transform.localScale = transform.localScale * 1.2f;
-            color.a = color.a - 0.1f;
-            textMesh.color = color;
-            yield return null;
+        Color startColor = textMesh.color;
+        Vector3 startScale = transform.localScale;
+        Vector3 endScale = startScale * DeathAnimationScaleMultiplier;
+        float elapsed = 0f;
 
+        while (elapsed < DeathAnimationDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / DeathAnimationDuration);
+
+            Color color = startColor;
+            color.a = 1f - t;
+            textMesh.color = color;
+            transform.localScale = Vector3.Lerp(startScale, endScale, t);
+            yield return null;
         }
+
         Destroy(gameObject);
     }
 

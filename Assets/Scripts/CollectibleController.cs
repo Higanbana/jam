@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class CollectibleController : MonoBehaviour {
+    private const float DeathAnimationDuration = 0.2f;
+    private const float DeathAnimationScaleMultiplier = 6f;
 
     private SpriteRenderer spriteRenderer;
     private Rigidbody2D rigidBody;
@@ -14,15 +16,23 @@ public class CollectibleController : MonoBehaviour {
 
     IEnumerator DeathAnimation ()
     {
-        while (spriteRenderer.color.a > 0)
-        {
-            Color color = spriteRenderer.color ;
-            transform.localScale = transform.localScale * 1.2f;
-            color.a = color.a - 0.1f;
-            spriteRenderer.color = color;          
-            yield return null;
+        Color startColor = spriteRenderer.color;
+        Vector3 startScale = transform.localScale;
+        Vector3 endScale = startScale * DeathAnimationScaleMultiplier;
+        float elapsed = 0f;
 
+        while (elapsed < DeathAnimationDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / DeathAnimationDuration);
+
+            Color color = startColor;
+            color.a = 1f - t;
+            spriteRenderer.color = color;
+            transform.localScale = Vector3.Lerp(startScale, endScale, t);
+            yield return null;
         }
+
         Destroy(gameObject);
     }
 

@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 public enum GameState { GameOn, GamePaused, GameOff };
 
 public class GameManager : MonoBehaviour {
+    private const float MessageFadeDuration = 1.5f;
 
     public static GameManager instance = null;
 
@@ -332,9 +333,11 @@ public class GameManager : MonoBehaviour {
             msgColor.a = 1f;
             msgText.color = msgColor;
             yield return new WaitForSeconds(time);
-            while (msgColor.a > 0f)
+            float elapsed = 0f;
+            while (elapsed < MessageFadeDuration)
             {
-                msgColor.a -= 0.01f;
+                elapsed += Time.deltaTime;
+                msgColor.a = 1f - Mathf.Clamp01(elapsed / MessageFadeDuration);
                 msgText.color = msgColor;
                 yield return null;
             }
