@@ -218,7 +218,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (!GameManager.instance.IsPaused())
         {
-#if UNITY_STANDALONE || UNITY_WEBPLAYER
+#if UNITY_STANDALONE || UNITY_WEBPLAYER || UNITY_WEBGL
             if (Input.GetButtonDown("Up"))
             {
                 goUp = true;

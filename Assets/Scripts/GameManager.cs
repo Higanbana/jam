@@ -66,6 +66,11 @@ public class GameManager : MonoBehaviour {
 		}
 
         levels = new List<Level>();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        WebGLInput.captureAllKeyboardInput = true;
+#endif
+
         Load();
         SetLevel("Come And Find Me");
 	}
