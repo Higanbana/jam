@@ -110,8 +110,8 @@ public class GameManager : MonoBehaviour {
                 bool initOkay = true;
                 initOkay &= int.TryParse(spawnParameters[1], out level.index);
                 initOkay &= int.TryParse(spawnParameters[2], out level.difficulty);
-                initOkay &= float.TryParse(spawnParameters[3], out level.speed);
-                initOkay &= float.TryParse(spawnParameters[4], out level.beat);
+                initOkay &= CsvParsing.TryParseFloat(spawnParameters[3], out level.speed);
+                initOkay &= CsvParsing.TryParseFloat(spawnParameters[4], out level.beat);
                 if (spawnParameters.Length >= 6)
                 {
                     initOkay &= int.TryParse(spawnParameters[5], out level.railNumber);

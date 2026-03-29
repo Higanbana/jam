@@ -20,7 +20,7 @@ public class TextParameters : SpawnParameters
         {
             float startTime;
             float endTime;
-            if (float.TryParse(parameters[1], out startTime) && float.TryParse(parameters[2], out endTime))
+            if (CsvParsing.TryParseFloat(parameters[1], out startTime) && CsvParsing.TryParseFloat(parameters[2], out endTime))
             {
                 if (level.duration < startTime)
                 {

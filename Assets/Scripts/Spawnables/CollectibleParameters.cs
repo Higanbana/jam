@@ -23,7 +23,7 @@ public class CollectibleParameters : SpawnParameters
             float startTime;
             int railIndex;
             float angle;
-            if (float.TryParse(parameters[1], out startTime) && int.TryParse(parameters[2], out railIndex) && float.TryParse(parameters[3], out angle))
+            if (CsvParsing.TryParseFloat(parameters[1], out startTime) && int.TryParse(parameters[2], out railIndex) && CsvParsing.TryParseFloat(parameters[3], out angle))
             {
                 if (level.duration < startTime)
                 {

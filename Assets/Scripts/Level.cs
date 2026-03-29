@@ -99,7 +99,7 @@ public class Level
                     break;
                 case 'P':
                     float time;
-                    if (spawnParameters.Length >= 2 & float.TryParse(spawnParameters[1], out time))
+                    if (spawnParameters.Length >= 2 & CsvParsing.TryParseFloat(spawnParameters[1], out time))
                     {
                         checkPoints.Add(time + deltaTime);
                     }

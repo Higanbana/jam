@@ -23,7 +23,7 @@ public class ObstacleParameters : SpawnParameters
             float startTime;
             float endTime;
             int railIndex;
-            if (float.TryParse(parameters[1], out startTime) && int.TryParse(parameters[2], out railIndex) && float.TryParse(parameters[3], out endTime))
+            if (CsvParsing.TryParseFloat(parameters[1], out startTime) && int.TryParse(parameters[2], out railIndex) && CsvParsing.TryParseFloat(parameters[3], out endTime))
             {
                 if (level.duration < startTime)
                 {

@@ -24,7 +24,7 @@ public class WaveParameters : SpawnParameters
             float X;
             float Y;
             float speed;
-            if (float.TryParse(parameters[1], out startTime) && float.TryParse(parameters[2], out X) && float.TryParse(parameters[3], out Y) && float.TryParse(parameters[5], out speed))
+            if (CsvParsing.TryParseFloat(parameters[1], out startTime) && CsvParsing.TryParseFloat(parameters[2], out X) && CsvParsing.TryParseFloat(parameters[3], out Y) && CsvParsing.TryParseFloat(parameters[5], out speed))
             {
                 if (level.duration < startTime)
                 {
